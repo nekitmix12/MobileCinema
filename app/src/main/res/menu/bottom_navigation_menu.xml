@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/navigation_feedScreen"
+        android:icon="@drawable/title_feed"
+        android:title="@string/feed" />
+    <item
+        android:id="@+id/navigation_moviesScreen"
+        android:icon="@drawable/title_movies"
+        android:title="@string/movies" />
+    <item
+        android:id="@+id/navigation_favoritesScreen"
+        android:icon="@drawable/title_library"
+        android:title="@string/favorite" />
+    <item
+        android:id="@+id/navigation_profileScreen"
+        android:icon="@drawable/title_person"
+        android:title="@string/person" />
+</menu>

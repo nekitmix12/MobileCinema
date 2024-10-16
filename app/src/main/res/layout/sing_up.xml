@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="@string/cinema_background"
+        android:scaleType="centerCrop"
+        android:src="@drawable/icon_background"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp"
+        />
+
+    <com.example.mobilecinema.ui.custom_class.TopCropImageView
+        android:id="@+id/topCropImageView2"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:cornerRadius="32dp"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginBottom="30dp"
+        app:src="@drawable/background" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="match_parent"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_height="45dp"
+        android:background="@drawable/sing_in_imput_text"
+        android:hint="@string/sing_up"
+        android:textColorHint="@color/gray_faded"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.957" />
+
+    <RelativeLayout
+        android:id="@+id/linearLayout3"
+        android:layout_width="match_parent"
+        android:layout_height="352dp"
+        android:orientation="vertical"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        app:layout_constraintBottom_toBottomOf="@+id/button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/imageView3"
+        app:layout_constraintVertical_bias="0.84">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginBottom="8dp"
+            android:layout_weight="1"
+            android:id="@+id/loginSignUp"
+            android:background="@drawable/sing_in_imput_text"
+            android:hint="@string/login"
+            android:paddingStart="15dp"
+
+            android:textColor="@color/gray_faded"
+            android:textColorHint="@color/gray_faded"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/emailSignUp"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginBottom="8dp"
+            android:layout_weight="1"
+            android:layout_below="@id/loginSignUp"
+            android:background="@drawable/sing_in_imput_text"
+            android:hint="@string/email"
+            android:paddingStart="15dp"
+
+            android:textColor="@color/gray_faded"
+            android:textColorHint="@color/gray_faded"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/nameSignUp"
+            android:layout_below="@id/emailSignUp"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginBottom="8dp"
+            android:layout_weight="1"
+            android:background="@drawable/sing_in_imput_text"
+            android:hint="@string/name"
+            android:paddingStart="15dp"
+
+            android:textColor="@color/gray_faded"
+            android:textColorHint="@color/gray_faded"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/passwordSignUp"
+            android:layout_below="@id/nameSignUp"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginBottom="8dp"
+            android:layout_weight="1"
+            android:background="@drawable/sing_in_imput_text"
+            android:hint="@string/password"
+            android:paddingStart="15dp"
+
+            android:textColor="@color/gray_faded"
+            android:textColorHint="@color/gray_faded"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/confirmPasswordSignUp"
+            android:layout_below="@id/passwordSignUp"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginBottom="8dp"
+            android:layout_weight="1"
+            android:background="@drawable/sing_in_imput_text"
+            android:hint="@string/confirm_password"
+            android:paddingStart="15dp"
+
+            android:textColor="@color/gray_faded"
+            android:textColorHint="@color/gray_faded"
+            android:textSize="14sp" />
+
+
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:layout_marginStart="24dp"
+        app:layout_constraintBottom_toBottomOf="@+id/linearLayout3"
+        app:layout_constraintEnd_toEndOf="@+id/linearLayout3"
+        app:layout_constraintStart_toStartOf="@+id/linearLayout3"
+        app:layout_constraintTop_toTopOf="@+id/linearLayout3"
+        app:layout_constraintVertical_bias="0.79"
+        >
+
+        <Button
+            android:id="@+id/womenButtonSignUp"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/gradient_accent"
+            android:hint="@string/man"
+            android:paddingStart="15dp"
+            android:textColorHint="@color/white"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/menButtonSignUp"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/sing_in_imput_text"
+            android:hint="@string/women"
+            android:paddingStart="15dp"
+            android:textColorHint="@color/white"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintWidth_percent="0.90"
+        app:layout_constraintHeight_percent="0.05"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.05"
+        android:gravity="center_vertical">
+
+        <Button
+            android:id="@+id/singUpBackButton"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:background="@drawable/button"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_percent="0.90"
+            app:layout_constraintHorizontal_bias="0.9"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.9" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="22dp"
+            android:text="@string/sign_in_account"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            />
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

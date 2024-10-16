@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">MobileCinema</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome!"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+    <string name="movie_catalog">Добро пожаловать в MovieCatalog</string>
+    <string name="sign_up">Войти в аккаунт</string>
+    <string name="sign_in">Зарегистрироваться</string>
+    <string name="cinema_background">cinema_background</string>
+    <string name="login">Логин</string>
+    <string name="password">Пароль</string>
+    <string name="sing_in">Войти</string>
+    <string name="sign_in_account">Вход в аккаунт</string>
+    <string name="email">Электронная почта</string>
+    <string name="name">Имя</string>
+    <string name="confirm_password">Подтвердить пароль</string>
+    <string name="man">Мужчина</string>
+    <string name="women">Женщина</string>
+    <string name="person">Профиль</string>
+    <string name="feed">Лента</string>
+    <string name="movies">Фильмы</string>
+    <string name="favorite">Избранное</string>
+    <string name="preference_is_logged_in">shared_prefs_name</string>
+    <string name="sing_up">Зарегестрироваться</string>
+</resources>

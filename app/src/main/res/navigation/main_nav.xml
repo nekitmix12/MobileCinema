@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_nav"
+    app:startDestination="@id/moviesScreen">
+
+    <fragment
+        android:id="@+id/moviesScreen"
+        android:name="com.example.mobilecinema.presentation.MoviesScreen"
+        android:label="MoviesScreen" />
+    <fragment
+        android:id="@+id/feedScreen"
+        android:name="com.example.mobilecinema.presentation.FeedScreen"
+        android:label="FeedScreen" />
+    <fragment
+        android:id="@+id/profileScreen"
+        android:name="com.example.mobilecinema.presentation.ProfileScreen"
+        android:label="ProfileScreen"/>
+    <fragment
+        android:id="@+id/favoritesScreen"
+        android:name="com.example.mobilecinema.presentation.FavoritesScreen"
+        android:label="FavoritesScreen" />
+    <fragment
+        android:id="@+id/friendsScreen"
+        android:name="com.example.mobilecinema.presentation.FriendsScreen"
+        android:label="FriendsScreen" />
+</navigation>
