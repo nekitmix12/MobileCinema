@@ -57,8 +57,9 @@ android {
 }
 
 dependencies {
-    implementation("com.google.dagger:hilt-android:2.51.1")
-    kapt("com.google.dagger:hilt-android-compiler:2.51.1")
+    implementation (libs.retrofit2.kotlinx.serialization.converter)
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.android.compiler)
     implementation (libs.converter.gson)
     implementation (libs.retrofit)
     implementation (libs.logging.interceptor)

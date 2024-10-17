@@ -1,4 +1,4 @@
-package com.example.mobilecinema.data.datasource.remote
+package com.example.mobilecinema.data.datasource.remote.api_service
 
 import com.example.mobilecinema.data.model.movie.MovieDetailsModel
 import retrofit2.http.DELETE
@@ -6,7 +6,7 @@ import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
 
-interface RemoteReviewDataSource {
+interface ApiServiceReview {
     @POST("/movie/{movieId}/review/add")
     suspend fun addReview(@Path("movieId") movieId: String, movieDetailsModel: MovieDetailsModel)
 

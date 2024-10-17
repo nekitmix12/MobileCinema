@@ -1,4 +1,4 @@
-package com.example.mobilecinema.data.model
+package com.example.mobilecinema.data.model.movie
 
 import kotlinx.serialization.Serializable
 

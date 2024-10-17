@@ -1,26 +1,18 @@
-package com.example.mobilecinema.data.model
+package com.example.mobilecinema.data.model.movie
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.util.UUID
 
 @Serializable
-data class MovieElementModel (
+data class GenreModel (
 
-    val id: String,
+    @SerialName("id")
+    val id:String,
 
     @SerialName("name")
-    val moveName: String?,
+    val genreName:String?
 
-    val poster:	String?,
-
-    val year: Int,
-
-    val country: String?,
-
-    val genres:	GenreModel?,
-
-    val reviews: ReviewShortModel?
 ){
     init{
         require(try {

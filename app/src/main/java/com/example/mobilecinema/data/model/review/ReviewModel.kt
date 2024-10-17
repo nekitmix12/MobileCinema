@@ -1,5 +1,6 @@
-package com.example.mobilecinema.data.model
+package com.example.mobilecinema.data.model.review
 
+import com.example.mobilecinema.data.model.auth.UserShortModel
 import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
 import java.util.UUID

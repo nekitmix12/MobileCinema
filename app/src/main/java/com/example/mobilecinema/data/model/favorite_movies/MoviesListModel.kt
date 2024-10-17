@@ -1,6 +1,6 @@
 package com.example.mobilecinema.data.model.favorite_movies
 
-import com.example.mobilecinema.data.model.MovieElementModel
+import com.example.mobilecinema.data.model.movie.MovieElementModel
 import kotlinx.serialization.Serializable
 
 @Serializable

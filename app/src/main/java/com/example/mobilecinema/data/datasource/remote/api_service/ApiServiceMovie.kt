@@ -1,11 +1,11 @@
-package com.example.mobilecinema.data.datasource.remote
+package com.example.mobilecinema.data.datasource.remote.api_service
 
 import com.example.mobilecinema.data.model.movie.MovieDetailsModel
 import com.example.mobilecinema.data.model.movie.MoviesPagedListModel
 import retrofit2.http.GET
 import retrofit2.http.Path
 
-interface RemoteMovieDataSource {
+interface ApiServiceMovie {
     @GET("/movies/{page}")
     suspend fun getMovies(@Path("page") page: Int): MoviesPagedListModel
 

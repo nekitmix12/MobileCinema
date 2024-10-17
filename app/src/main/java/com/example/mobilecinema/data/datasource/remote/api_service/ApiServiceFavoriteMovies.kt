@@ -1,4 +1,4 @@
-package com.example.mobilecinema.data.datasource.remote
+package com.example.mobilecinema.data.datasource.remote.api_service
 
 import com.example.mobilecinema.data.model.favorite_movies.MoviesListModel
 import retrofit2.http.DELETE
@@ -6,7 +6,7 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
 
-interface RemoteFavoriteMoviesDataSource {
+interface ApiServiceFavoriteMovies {
     @GET("/favorites")
     suspend fun getFavorites(): MoviesListModel
 
