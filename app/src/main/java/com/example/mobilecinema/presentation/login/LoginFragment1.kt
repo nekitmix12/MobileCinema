@@ -21,7 +21,7 @@ import com.example.mobilecinema.R
 
 class LoginFragment1 : Fragment() {
 
-    private lateinit var loginViewModel: LoginViewModel
+    /*private lateinit var loginViewModel: LoginViewModel
     private var _binding: FragmentLogin1Binding? = null
 
     // This property is only valid between onCreateView and
@@ -127,5 +127,5 @@ class LoginFragment1 : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
+    }*/
 }

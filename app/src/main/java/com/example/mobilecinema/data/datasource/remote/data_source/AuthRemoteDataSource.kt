@@ -7,9 +7,9 @@ import kotlinx.coroutines.flow.Flow
 import retrofit2.Response
 
 interface AuthRemoteDataSource {
-    suspend fun loginUser(loginCredentials: LoginCredentials):Flow<Response<AuthToken>>
+    fun loginUser(loginCredentials: LoginCredentials):Flow<AuthToken>
 
-    suspend fun registration(userRegisterModel: UserRegisterModel):Flow<Response<AuthToken>>
+    fun registration(userRegisterModel: UserRegisterModel):Flow<AuthToken>
 
-    suspend fun logout()
+    fun logout()
 }

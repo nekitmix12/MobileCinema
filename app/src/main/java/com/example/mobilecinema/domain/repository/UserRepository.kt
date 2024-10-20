@@ -8,9 +8,9 @@ import retrofit2.Response
 
 
 interface UserRepository {
-    fun loginUser(loginCredentials: LoginCredentials): Flow<Response<AuthToken>>
+    fun loginUser(loginCredentials: LoginCredentials): Flow<AuthToken>
 
-    fun registration(registerModel: UserRegisterModel): Flow<Response<AuthToken>>
+    fun registration(registerModel: UserRegisterModel): Flow<AuthToken>
 
     fun logout()
 }

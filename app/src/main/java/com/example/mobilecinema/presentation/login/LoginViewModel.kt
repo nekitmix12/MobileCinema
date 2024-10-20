@@ -4,14 +4,53 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import android.util.Patterns
-import com.example.mobilecinema.data.LoginRepository
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
+//import com.example.mobilecinema.data.LoginRepository
 import com.example.mobilecinema.data.Result
 
 import com.example.mobilecinema.R
+import com.example.mobilecinema.data.model.auth.AuthToken
+import com.example.mobilecinema.data.model.auth.LoginCredentials
+import com.example.mobilecinema.domain.use_case.user_use_case.LoginUserUseCase
+import com.example.mobilecinema.presentation.UiState
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
+import retrofit2.Response
 
-class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel() {
+//private val loginRepository: LoginRepository
+class LoginViewModel(
+    private val useCase: LoginUserUseCase,
+    private val converter: AuthConverter
+) : ViewModel() {
 
-    private val _loginForm = MutableLiveData<LoginFormState>()
+
+    private val _usersFlow =
+        MutableStateFlow<UiState<AuthToken>>(UiState.Loading)
+
+    val usersFlow: StateFlow<UiState<AuthToken>> = _usersFlow
+
+
+    fun load() {
+        viewModelScope.launch {
+            useCase.execute(LoginUserUseCase.Request(LoginCredentials("s","s")))
+                .map {
+                    converter.convert(it)
+                }
+
+                .collect {
+                    _usersFlow.value = it
+                }
+        }
+    }
+
+
+
+
+/*    private val _loginForm = MutableLiveData<LoginFormState>()
     val loginFormState: LiveData<LoginFormState> = _loginForm
 
     private val _loginResult = MutableLiveData<LoginResult>()
@@ -51,5 +90,5 @@ class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel()
     // A placeholder password validation check
     private fun isPasswordValid(password: String): Boolean {
         return password.length > 5
-    }
+    }*/
 }

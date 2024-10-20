@@ -17,7 +17,6 @@ class AuthInterceptor (private val tokenStorage: TokenStorage):Interceptor {
                 .build()
             chain.proceed(newRequest)
         } else {
-
             chain.proceed(request)
         }
     }

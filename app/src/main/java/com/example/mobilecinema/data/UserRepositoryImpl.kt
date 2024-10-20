@@ -5,6 +5,7 @@ import com.example.mobilecinema.data.model.auth.AuthToken
 import com.example.mobilecinema.data.model.auth.LoginCredentials
 import com.example.mobilecinema.data.model.auth.UserRegisterModel
 import com.example.mobilecinema.domain.repository.UserRepository
+import kotlinx.coroutines.flow.Flow
 import retrofit2.Response
 
 class UserRepositoryImpl(
@@ -12,11 +13,11 @@ class UserRepositoryImpl(
     AuthRemoteDataSource
 ) : UserRepository {
 
-    override fun loginUser(loginCredentials: LoginCredentials): Response<AuthToken> =
+    override fun loginUser(loginCredentials: LoginCredentials): Flow<AuthToken> =
         authRemoteDataSource.loginUser(loginCredentials)
 
 
-    override fun registration(registerModel: UserRegisterModel): Response<AuthToken> =
+    override fun registration(registerModel: UserRegisterModel): Flow<AuthToken> =
         authRemoteDataSource.registration(registerModel)
 
 
