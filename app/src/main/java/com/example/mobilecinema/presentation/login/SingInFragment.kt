@@ -38,6 +38,7 @@ class SingInFragment:Fragment(R.layout.sing_in) {
         val configuration = UseCase.Configuration(Dispatchers.IO)
         val loginUserUseCase =LoginUserUseCase(configuration,userRepository)
         val authConverter = AuthConverter()
+
         viewModel = ViewModelProvider(this,LoginViewModelFactory(loginUserUseCase,authConverter))[LoginViewModel::class]
         binding!!.singInInButton.setOnClickListener{viewModel.load()}
     }

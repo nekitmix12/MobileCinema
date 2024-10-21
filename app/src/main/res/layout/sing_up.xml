@@ -17,7 +17,7 @@
         tools:layout_editor_absoluteY="0dp"
         />
 
-    <com.example.mobilecinema.ui.custom_class.TopCropImageView
+    <com.example.mobilecinema.presentation.custom_class.TopCropImageView
         android:id="@+id/topCropImageView2"
         android:layout_width="match_parent"
         android:layout_height="0dp"
