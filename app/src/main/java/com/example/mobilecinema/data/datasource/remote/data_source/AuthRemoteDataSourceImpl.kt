@@ -13,7 +13,7 @@ import retrofit2.Response
 
 class AuthRemoteDataSourceImpl (private val apiServiceAuth: ApiServiceAuth) :
     AuthRemoteDataSource {
-    override fun logout() {
+    override suspend fun logout() {
         apiServiceAuth.postLogout()
     }
 

@@ -32,7 +32,7 @@ class SingInFragment:Fragment(R.layout.sing_in) {
         val tokenStorage = TokenStorageImpl(sharedPreferences)
         val authInterceptor = AuthInterceptor(tokenStorage)
         val networkModule = NetworkModule()
-        val apiServiceAuth = networkModule.provideUserService(networkModule.provideRetrofit(networkModule.provideOkHttpClient(authInterceptor)))
+        val apiServiceAuth = networkModule.provideAuthService(networkModule.provideRetrofit(networkModule.provideOkHttpClient(authInterceptor)))
         val authRemoteDataSource = AuthRemoteDataSourceImpl(apiServiceAuth)
         val userRepository = UserRepositoryImpl(authRemoteDataSource)
         val configuration = UseCase.Configuration(Dispatchers.IO)

@@ -15,8 +15,8 @@
         android:scaleType="centerCrop"
         android:src="@drawable/icon_background" />
 
-    <com.example.mobilecinema.ui.custom_class.TopCropImageView
-        app:cornerRadius="32dp"
+    <com.example.mobilecinema.presentation.custom_class.TopCropImageView
+        app:cornerRadius="0dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="@+id/imageView2"

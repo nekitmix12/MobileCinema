@@ -1,5 +1,6 @@
 package com.example.mobilecinema.presentation.login
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -36,15 +37,17 @@ class LoginViewModel(
 
     fun load() {
         viewModelScope.launch {
-            useCase.execute(LoginUserUseCase.Request(LoginCredentials("s","s")))
+            useCase.execute(LoginUserUseCase.Request(LoginCredentials("string","string")))
                 .map {
                     converter.convert(it)
                 }
 
                 .collect {
                     _usersFlow.value = it
+                    Log.d("login",it.toString())
                 }
         }
+
     }
 
 

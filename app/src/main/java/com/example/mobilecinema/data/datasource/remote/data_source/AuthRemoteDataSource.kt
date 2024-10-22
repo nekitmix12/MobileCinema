@@ -11,5 +11,5 @@ interface AuthRemoteDataSource {
 
     fun registration(userRegisterModel: UserRegisterModel):Flow<AuthToken>
 
-    fun logout()
+    suspend fun logout()
 }
