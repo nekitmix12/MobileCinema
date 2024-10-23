@@ -1,8 +1,7 @@
 package com.example.mobilecinema.presentation.login
 
-import android.content.Context
 import com.example.mobilecinema.data.model.auth.AuthToken
-import com.example.mobilecinema.domain.use_case.user_use_case.LoginUserUseCase
+import com.example.mobilecinema.domain.use_case.auth_use_case.LoginUserUseCase
 import com.example.mobilecinema.presentation.UiState
 import com.example.mobilecinema.domain.Result
 

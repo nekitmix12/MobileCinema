@@ -1,10 +1,9 @@
-package com.example.mobilecinema.data
+package com.example.mobilecinema.data.datasource.local
 
-import android.annotation.SuppressLint
 import android.content.SharedPreferences
-import javax.inject.Inject
+import com.example.mobilecinema.domain.repository.LocalStorageRepository
 
-class TokenStorageImpl (private val sharedPreferences: SharedPreferences):TokenStorage {
+class TokenStorageDataSourceImpl (private val sharedPreferences: SharedPreferences): LocalStorageRepository {
 
     override fun getToken(): String? {
         return sharedPreferences.getString("authToken", null)

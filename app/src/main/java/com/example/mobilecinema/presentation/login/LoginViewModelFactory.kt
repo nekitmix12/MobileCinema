@@ -2,7 +2,7 @@ package com.example.mobilecinema.presentation.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.mobilecinema.domain.use_case.user_use_case.LoginUserUseCase
+import com.example.mobilecinema.domain.use_case.auth_use_case.LoginUserUseCase
 
 /**
  * ViewModel provider factory to instantiate LoginViewModel.

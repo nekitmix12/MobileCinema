@@ -1,97 +1,91 @@
 package com.example.mobilecinema.presentation.login
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
-import android.util.Patterns
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.CreationExtras
 //import com.example.mobilecinema.data.LoginRepository
-import com.example.mobilecinema.data.Result
 
-import com.example.mobilecinema.R
 import com.example.mobilecinema.data.model.auth.AuthToken
 import com.example.mobilecinema.data.model.auth.LoginCredentials
-import com.example.mobilecinema.domain.use_case.user_use_case.LoginUserUseCase
+import com.example.mobilecinema.domain.use_case.auth_use_case.AddStorageUseCase
+import com.example.mobilecinema.domain.use_case.auth_use_case.LoginUserUseCase
 import com.example.mobilecinema.presentation.UiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import retrofit2.Response
 
 //private val loginRepository: LoginRepository
 class LoginViewModel(
+    private val addStorageUseCase: AddStorageUseCase,
     private val useCase: LoginUserUseCase,
     private val converter: AuthConverter
 ) : ViewModel() {
-
 
     private val _usersFlow =
         MutableStateFlow<UiState<AuthToken>>(UiState.Loading)
 
     val usersFlow: StateFlow<UiState<AuthToken>> = _usersFlow
 
+    private val _userLogin =
+        MutableStateFlow<String>("")
+
+    val userLogin: StateFlow<String> = _userLogin
+
+    private val _userPassword =
+        MutableStateFlow<String>("")
+
+    val userPassword: StateFlow<String> = _userPassword
+
+    private fun validateInput(): Boolean
+    = userPassword.value == "" && userLogin.value == ""
+
 
     fun load() {
+        if (validateInput())return
         viewModelScope.launch {
-            useCase.execute(LoginUserUseCase.Request(LoginCredentials("string","string")))
+            useCase.execute(
+                LoginUserUseCase.Request(
+                    LoginCredentials(
+                        userLogin.value,
+                        userPassword.value
+                    )
+                )
+            )
                 .map {
                     converter.convert(it)
                 }
 
                 .collect {
                     _usersFlow.value = it
-                    Log.d("login",it.toString())
+
                 }
+            usersFlow.collect{
+                when(it){
+                    is UiState.Loading->{
+
+                    }
+                    is UiState.Error -> {
+                        Log.d("login",it.errorMessage)
+                    }
+                    is UiState.Success -> {
+                        Log.d("login",it.data.token)
+                        addStorageUseCase.addStorage(it.data.token)
+                    }
+                }
+            }
         }
 
     }
 
-
-
-
-/*    private val _loginForm = MutableLiveData<LoginFormState>()
-    val loginFormState: LiveData<LoginFormState> = _loginForm
-
-    private val _loginResult = MutableLiveData<LoginResult>()
-    val loginResult: LiveData<LoginResult> = _loginResult
-
-    fun login(username: String, password: String) {
-        // can be launched in a separate asynchronous job
-        val result = loginRepository.login(username, password)
-
-        if (result is Result.Success) {
-            _loginResult.value =
-                LoginResult(success = LoggedInUserView(displayName = result.data.displayName))
-        } else {
-            _loginResult.value = LoginResult(error = R.string.login_failed)
-        }
+    fun setLogin(login: String) {
+        _userLogin.value = login
     }
 
-    fun loginDataChanged(username: String, password: String) {
-        if (!isUserNameValid(username)) {
-            _loginForm.value = LoginFormState(usernameError = R.string.invalid_username)
-        } else if (!isPasswordValid(password)) {
-            _loginForm.value = LoginFormState(passwordError = R.string.invalid_password)
-        } else {
-            _loginForm.value = LoginFormState(isDataValid = true)
-        }
+    fun setPassword(password: String) {
+        _userPassword.value = password
     }
 
-    // A placeholder username validation check
-    private fun isUserNameValid(username: String): Boolean {
-        return if (username.contains("@")) {
-            Patterns.EMAIL_ADDRESS.matcher(username).matches()
-        } else {
-            username.isNotBlank()
-        }
-    }
 
-    // A placeholder password validation check
-    private fun isPasswordValid(password: String): Boolean {
-        return password.length > 5
-    }*/
 }

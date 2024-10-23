@@ -1,12 +1,10 @@
 package com.example.mobilecinema.data.network
 
-import com.example.mobilecinema.data.TokenStorage
-import com.example.mobilecinema.domain.repository.UserRepository
+import com.example.mobilecinema.data.datasource.local.TokenStorageDataSourceImpl
 import okhttp3.Interceptor
 import okhttp3.Response
-import javax.inject.Inject
 
-class AuthInterceptor (private val tokenStorage: TokenStorage):Interceptor {
+class AuthInterceptor (private val tokenStorage: TokenStorageDataSourceImpl):Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
         val token = tokenStorage.getToken()

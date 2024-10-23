@@ -1,7 +1,7 @@
 package com.example.mobilecinema.di
 
-import com.example.mobilecinema.domain.repository.UserRepository
 import com.example.mobilecinema.data.UserRepositoryImpl
+import com.example.mobilecinema.domain.repository.AuthRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -13,7 +13,7 @@ abstract class RepositoryModule {
     @Binds
     abstract fun bindUserRepository
                 (userRepositoryImpl: UserRepositoryImpl):
-            UserRepository
+            AuthRepository
 /*    @Binds
     abstract fun bindInteractionRepository
                 (interactionRepositoryImpl:

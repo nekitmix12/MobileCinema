@@ -1,7 +1,8 @@
 package com.example.mobilecinema.data.network
 
 import android.content.Context
-import com.example.mobilecinema.data.TokenStorageImpl
+import com.example.mobilecinema.R
+import com.example.mobilecinema.data.datasource.local.TokenStorageDataSourceImpl
 import com.example.mobilecinema.data.datasource.remote.api_service.ApiServiceAuth
 import com.example.mobilecinema.data.datasource.remote.api_service.ApiServiceFavoriteMovies
 import com.example.mobilecinema.data.datasource.remote.api_service.ApiServiceMovie
@@ -23,7 +24,6 @@ class NetworkModule {
         .readTimeout(15, TimeUnit.SECONDS)
         .connectTimeout(15, TimeUnit.SECONDS)
         .build()
-
 
     @OptIn(ExperimentalSerializationApi::class)
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit = Retrofit.Builder()
@@ -48,6 +48,6 @@ class NetworkModule {
             ApiServiceUser =
         retrofit.create(ApiServiceUser::class.java)
 
-    fun provideTokenStorage(context: Context): TokenStorageImpl =
-        TokenStorageImpl(context.getSharedPreferences("authPrefs", Context.MODE_PRIVATE))
+    fun provideTokenStorage(context: Context): TokenStorageDataSourceImpl =
+        TokenStorageDataSourceImpl(context.getSharedPreferences(context.getString(R.string.preference_is_logged_in), Context.MODE_PRIVATE))
 }

@@ -36,7 +36,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
         android:layout_height="45dp"
-        android:background="@drawable/sing_in_imput_text"
+        android:background="@drawable/sing_in_input_text"
         android:hint="@string/sing_up"
         android:textColorHint="@color/gray_faded"
         android:textSize="14sp"
@@ -60,12 +60,12 @@
         app:layout_constraintVertical_bias="0.84">
 
         <EditText
+            android:id="@+id/loginSignUp"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="43dp"
             android:layout_marginBottom="8dp"
             android:layout_weight="1"
-            android:id="@+id/loginSignUp"
-            android:background="@drawable/sing_in_imput_text"
+            android:background="@drawable/sing_in_input_text"
             android:hint="@string/login"
             android:paddingStart="15dp"
 
@@ -76,11 +76,11 @@
         <EditText
             android:id="@+id/emailSignUp"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="43dp"
             android:layout_marginBottom="8dp"
             android:layout_weight="1"
             android:layout_below="@id/loginSignUp"
-            android:background="@drawable/sing_in_imput_text"
+            android:background="@drawable/sing_in_input_text"
             android:hint="@string/email"
             android:paddingStart="15dp"
 
@@ -92,10 +92,10 @@
             android:id="@+id/nameSignUp"
             android:layout_below="@id/emailSignUp"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="43dp"
             android:layout_marginBottom="8dp"
             android:layout_weight="1"
-            android:background="@drawable/sing_in_imput_text"
+            android:background="@drawable/sing_in_input_text"
             android:hint="@string/name"
             android:paddingStart="15dp"
 
@@ -107,10 +107,10 @@
             android:id="@+id/passwordSignUp"
             android:layout_below="@id/nameSignUp"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="43dp"
             android:layout_marginBottom="8dp"
             android:layout_weight="1"
-            android:background="@drawable/sing_in_imput_text"
+            android:background="@drawable/sing_in_input_text"
             android:hint="@string/password"
             android:paddingStart="15dp"
 
@@ -122,11 +122,25 @@
             android:id="@+id/confirmPasswordSignUp"
             android:layout_below="@id/passwordSignUp"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="43dp"
             android:layout_marginBottom="8dp"
             android:layout_weight="1"
-            android:background="@drawable/sing_in_imput_text"
+            android:background="@drawable/sing_in_input_text"
             android:hint="@string/confirm_password"
+            android:paddingStart="15dp"
+
+            android:textColor="@color/gray_faded"
+            android:textColorHint="@color/gray_faded"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/dateSignUp"
+            android:layout_below="@id/confirmPasswordSignUp"
+            android:layout_width="match_parent"
+            android:layout_height="43dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/sing_in_input_text"
+            android:hint="@string/birth_date"
             android:paddingStart="15dp"
 
             android:textColor="@color/gray_faded"
@@ -146,7 +160,7 @@
         app:layout_constraintEnd_toEndOf="@+id/linearLayout3"
         app:layout_constraintStart_toStartOf="@+id/linearLayout3"
         app:layout_constraintTop_toTopOf="@+id/linearLayout3"
-        app:layout_constraintVertical_bias="0.79"
+        app:layout_constraintVertical_bias="1"
         >
 
         <Button
@@ -165,7 +179,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@drawable/sing_in_imput_text"
+            android:background="@drawable/sing_in_input_text"
             android:hint="@string/women"
             android:paddingStart="15dp"
             android:textColorHint="@color/white"
@@ -209,5 +223,76 @@
             />
     </LinearLayout>
 
+    <ImageView
+        android:id="@+id/calendarCloseSignUp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/title_calendar"
+        app:layout_constraintBottom_toBottomOf="@+id/button"
+        app:layout_constraintEnd_toEndOf="@+id/linearLayout3"
+        app:layout_constraintStart_toStartOf="@+id/linearLayout3"
+        app:layout_constraintTop_toTopOf="@+id/linearLayout3"
+        app:layout_constraintVertical_bias="0.67"
+        app:layout_constraintHorizontal_bias="0.95"/>
+
+    <ImageView
+        android:id="@+id/loginCloseSignUp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/title_close"
+        app:layout_constraintBottom_toBottomOf="@+id/button"
+        app:layout_constraintEnd_toEndOf="@+id/linearLayout3"
+        app:layout_constraintStart_toStartOf="@+id/linearLayout3"
+        app:layout_constraintTop_toTopOf="@+id/linearLayout3"
+        app:layout_constraintVertical_bias="0.03"
+        app:layout_constraintHorizontal_bias="0.95"/>
+
+    <ImageView
+        android:id="@+id/emailCloseSignUp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/title_close"
+        app:layout_constraintBottom_toBottomOf="@+id/button"
+        app:layout_constraintEnd_toEndOf="@+id/linearLayout3"
+        app:layout_constraintStart_toStartOf="@+id/linearLayout3"
+        app:layout_constraintTop_toTopOf="@+id/linearLayout3"
+        app:layout_constraintVertical_bias="0.16"
+        app:layout_constraintHorizontal_bias="0.95"/>
+
+    <ImageView
+        android:id="@+id/nameCloseSignUp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/title_close"
+        app:layout_constraintBottom_toBottomOf="@+id/button"
+        app:layout_constraintEnd_toEndOf="@+id/linearLayout3"
+        app:layout_constraintStart_toStartOf="@+id/linearLayout3"
+        app:layout_constraintTop_toTopOf="@+id/linearLayout3"
+        app:layout_constraintVertical_bias="0.28"
+        app:layout_constraintHorizontal_bias="0.95"/>
+
+    <ImageView
+        android:id="@+id/passwordCloseSignUp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/title_eye"
+        app:layout_constraintBottom_toBottomOf="@+id/button"
+        app:layout_constraintEnd_toEndOf="@+id/linearLayout3"
+        app:layout_constraintStart_toStartOf="@+id/linearLayout3"
+        app:layout_constraintTop_toTopOf="@+id/linearLayout3"
+        app:layout_constraintVertical_bias="0.41"
+        app:layout_constraintHorizontal_bias="0.95"/>
+
+    <ImageView
+        android:id="@+id/confirmPasswordCloseSignUp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/title_eye"
+        app:layout_constraintBottom_toBottomOf="@+id/button"
+        app:layout_constraintEnd_toEndOf="@+id/linearLayout3"
+        app:layout_constraintStart_toStartOf="@+id/linearLayout3"
+        app:layout_constraintTop_toTopOf="@+id/linearLayout3"
+        app:layout_constraintVertical_bias="0.54"
+        app:layout_constraintHorizontal_bias="0.95"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

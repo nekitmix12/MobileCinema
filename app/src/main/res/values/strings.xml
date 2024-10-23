@@ -27,4 +27,6 @@
     <string name="favorite">Избранное</string>
     <string name="preference_is_logged_in">shared_prefs_name</string>
     <string name="sing_up">Зарегестрироваться</string>
+    <string name="close">close</string>
+    <string name="birth_date">Дата рождения</string>
 </resources>
