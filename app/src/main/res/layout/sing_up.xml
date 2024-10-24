@@ -139,6 +139,7 @@
             android:layout_width="match_parent"
             android:layout_height="43dp"
             android:layout_marginBottom="8dp"
+            android:inputType="number"
             android:background="@drawable/sing_in_input_text"
             android:hint="@string/birth_date"
             android:paddingStart="15dp"
@@ -272,7 +273,7 @@
         app:layout_constraintHorizontal_bias="0.95"/>
 
     <ImageView
-        android:id="@+id/passwordCloseSignUp"
+        android:id="@+id/passwordWatchSignUp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/title_eye"
@@ -284,7 +285,7 @@
         app:layout_constraintHorizontal_bias="0.95"/>
 
     <ImageView
-        android:id="@+id/confirmPasswordCloseSignUp"
+        android:id="@+id/confirmPasswordWatchSignUp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/title_eye"

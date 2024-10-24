@@ -22,6 +22,7 @@ import com.example.mobilecinema.data.network.AuthInterceptor
 import com.example.mobilecinema.data.network.NetworkModule
 import com.example.mobilecinema.databinding.SingInBinding
 import com.example.mobilecinema.domain.UseCase
+import com.example.mobilecinema.domain.use_case.auth_use_case.AddStorageUseCase
 import com.example.mobilecinema.domain.use_case.auth_use_case.LoginUserUseCase
 import com.example.mobilecinema.presentation.UiState
 import kotlinx.coroutines.Dispatchers
@@ -53,9 +54,10 @@ class SingInFragment : Fragment(R.layout.sing_in) {
         val configuration = UseCase.Configuration(Dispatchers.IO)
         val loginUserUseCase = LoginUserUseCase(configuration, userRepository)
         val authConverter = AuthConverter()
+        val addStorageUseCase = AddStorageUseCase(userRepository)
 
         viewModel = ViewModelProvider(
-            this, LoginViewModelFactory(loginUserUseCase, authConverter)
+            this, LoginViewModelFactory(loginUserUseCase, authConverter, addStorageUseCase)
         )[LoginViewModel::class]
 
         binding!!.singInInButton.setOnClickListener {
