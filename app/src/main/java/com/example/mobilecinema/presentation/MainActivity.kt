@@ -17,7 +17,7 @@ class MainActivity:AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val intent = if (sharedPref.getBoolean(PREF,false)) {
+        val intent = if (sharedPref.getString(getString(R.string.preference_is_logged_in),"")!="") {
             Intent(this, CinemaActivity::class.java)
         } else {
             Intent(this, WelcomeActivity::class.java)

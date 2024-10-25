@@ -61,6 +61,10 @@ class LoginViewModel(
                     _usersFlow.value = it
 
                 }
+
+        }
+
+        viewModelScope.launch {
             usersFlow.collect{
                 when(it){
                     is UiState.Loading->{
@@ -76,7 +80,6 @@ class LoginViewModel(
                 }
             }
         }
-
     }
 
     fun setLogin(login: String) {

@@ -2,11 +2,11 @@ package com.example.mobilecinema.presentation.login
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.text.method.PasswordTransformationMethod
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -24,6 +24,7 @@ import com.example.mobilecinema.databinding.SingInBinding
 import com.example.mobilecinema.domain.UseCase
 import com.example.mobilecinema.domain.use_case.auth_use_case.AddStorageUseCase
 import com.example.mobilecinema.domain.use_case.auth_use_case.LoginUserUseCase
+import com.example.mobilecinema.presentation.CinemaActivity
 import com.example.mobilecinema.presentation.UiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -32,7 +33,7 @@ class SingInFragment : Fragment(R.layout.sing_in) {
     private var binding: SingInBinding? = null
     private lateinit var viewModel: LoginViewModel
 
-    @SuppressLint("UseCompatLoadingForDrawables")
+    @SuppressLint("UseCompatLoadingForDrawables", "ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = SingInBinding.bind(view)
@@ -71,10 +72,16 @@ class SingInFragment : Fragment(R.layout.sing_in) {
                     }
 
                     is UiState.Error -> {
+                        Toast.makeText(
+                            requireContext(),
+                            "Возникла неизвестная ошибка, попробуйте войти позднее" + it.errorMessage,
+                            Toast.LENGTH_LONG
+                        ).show()
                     }
 
                     is UiState.Success -> {
-                        Toast.makeText(requireContext(), it.data.token, Toast.LENGTH_SHORT)
+                        startActivity(Intent(requireContext(), CinemaActivity::class.java))
+                        Toast.makeText(requireContext(), it.data.token, Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -83,6 +90,7 @@ class SingInFragment : Fragment(R.layout.sing_in) {
         val deleteLogin = binding!!.loginCloseSingIn
         val watchPassword = binding!!.passwordWatchSingIn
         val passwordText = binding!!.passwordSingIn
+
         var show = false
         watchPassword.setOnClickListener {
             if (show) {
@@ -120,9 +128,9 @@ class SingInFragment : Fragment(R.layout.sing_in) {
             }
 
         })
+
         passwordText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                Log.d("text",s.toString())
                 if (s.toString() == "") watchPassword.visibility = View.VISIBLE
             }
 
@@ -135,7 +143,8 @@ class SingInFragment : Fragment(R.layout.sing_in) {
             }
 
         })
-        binding!!.rootSignInLayout.setOnTouchListener { v, event ->
+
+        binding!!.rootSignInLayout.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {
                 hideKeyboard()
             }
@@ -143,14 +152,15 @@ class SingInFragment : Fragment(R.layout.sing_in) {
         }
     }
 
-private fun hideKeyboard() {
-    val activity = activity ?: return
-    val view = activity.currentFocus
-    if (view != null) {
-        val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(view.windowToken, 0)
+    private fun hideKeyboard() {
+        val activity = activity ?: return
+        val view = activity.currentFocus
+        if (view != null) {
+            val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(view.windowToken, 0)
+        }
     }
-}
+
     private fun close() {
         parentFragmentManager.popBackStack()
     }

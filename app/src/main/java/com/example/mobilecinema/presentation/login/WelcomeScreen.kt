@@ -1,12 +1,10 @@
-package com.example.mobilecinema.presentation
+package com.example.mobilecinema.presentation.login
 
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.example.mobilecinema.R
 import com.example.mobilecinema.databinding.FragmentWelcomeBinding
-import com.example.mobilecinema.presentation.login.SingInFragment
-import com.example.mobilecinema.presentation.login.SingUpFragment
 
 class WelcomeScreen: Fragment(R.layout.fragment_welcome) {
 

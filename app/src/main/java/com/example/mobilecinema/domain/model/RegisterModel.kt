@@ -1,4 +1,4 @@
-package com.example.mobilecinema.presentation
+package com.example.mobilecinema.domain.model
 
 data class RegisterModel (
     val login: String = "",

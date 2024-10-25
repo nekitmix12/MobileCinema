@@ -1,8 +1,6 @@
 package com.example.mobilecinema.presentation.login
 
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -11,12 +9,16 @@ import androidx.lifecycle.viewModelScope
 import com.example.mobilecinema.data.model.auth.AuthToken
 import com.example.mobilecinema.data.model.auth.UserRegisterModel
 import com.example.mobilecinema.domain.use_case.auth_use_case.AddStorageUseCase
+import com.example.mobilecinema.domain.use_case.auth_use_case.DataConverter
 import com.example.mobilecinema.domain.use_case.auth_use_case.RegisterUseCase
-import com.example.mobilecinema.domain.use_case.auth_use_case.ValidateBirthDate
-import com.example.mobilecinema.domain.use_case.auth_use_case.ValidateConfirmPassword
-import com.example.mobilecinema.domain.use_case.auth_use_case.ValidateEmail
-import com.example.mobilecinema.domain.use_case.auth_use_case.ValidatePassword
-import com.example.mobilecinema.presentation.RegisterModel
+import com.example.mobilecinema.domain.use_case.auth_use_case.validate.ValidateBirthDate
+import com.example.mobilecinema.domain.use_case.auth_use_case.validate.ValidateConfirmPassword
+import com.example.mobilecinema.domain.use_case.auth_use_case.validate.ValidateEmail
+import com.example.mobilecinema.domain.use_case.auth_use_case.validate.ValidateGender
+import com.example.mobilecinema.domain.use_case.auth_use_case.validate.ValidateLogin
+import com.example.mobilecinema.domain.use_case.auth_use_case.validate.ValidateName
+import com.example.mobilecinema.domain.use_case.auth_use_case.validate.ValidatePassword
+import com.example.mobilecinema.domain.model.RegisterModel
 import com.example.mobilecinema.presentation.UiState
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,24 +26,22 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Instant
-import kotlinx.datetime.toKotlinInstant
-import java.time.LocalDate
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
 
 
 class SignUpViewModel(
+    private val validateLogin: ValidateLogin = ValidateLogin(),
+    private val validateName: ValidateName = ValidateName(),
+    private val validateGender: ValidateGender = ValidateGender(),
     private val validateEmail: ValidateEmail = ValidateEmail(),
     private val validatePassword: ValidatePassword = ValidatePassword(),
     private val validateConfirmPassword: ValidateConfirmPassword = ValidateConfirmPassword(),
     private val validateBirthDate: ValidateBirthDate = ValidateBirthDate(),
+    private val dataConverter: DataConverter = DataConverter(),
     private val addStorageUseCase: AddStorageUseCase,
     private val useCase: RegisterUseCase,
     private val converter: RegisterConverter
 ) : ViewModel() {
-    private val _usersFlow =
-        MutableStateFlow<UiState<AuthToken>>(UiState.Loading)
+    private val _usersFlow = MutableStateFlow<UiState<AuthToken>>(UiState.Loading)
 
     val usersFlow: StateFlow<UiState<AuthToken>> = _usersFlow
 
@@ -50,33 +50,6 @@ class SignUpViewModel(
     private val validationEventChannel = Channel<ValidationEvent>()
     val validationEvents = validationEventChannel.receiveAsFlow()
 
-    private val _userName =
-        MutableStateFlow<String>("")
-    val userName: StateFlow<String> = _userName
-
-    private val _userLogin =
-        MutableStateFlow("")
-    val userLogin: StateFlow<String> = _userLogin
-
-    private val _userEmail =
-        MutableStateFlow("")
-    val userEmail: StateFlow<String> = _userEmail
-
-    private val _userPassword =
-        MutableStateFlow("")
-    val userPassword: StateFlow<String> = _userPassword
-
-    private val _userConfirmPassword =
-        MutableStateFlow("")
-    val userConfirmPassword: StateFlow<String> = _userConfirmPassword
-
-    private val _userBirthDate =
-        MutableStateFlow<Instant?>(null)
-    val userBirthDate: StateFlow<Instant?> = _userBirthDate
-
-    private val _userSex =
-        MutableStateFlow(0)
-    val userSex = _userSex
 
     fun onEvent(event: RegistrationFormEvent) {
         when (event) {
@@ -104,7 +77,11 @@ class SignUpViewModel(
             }
 
             is RegistrationFormEvent.BirthDateChanged -> {
-                state = state.copy(birthDate = event.birthDate)
+                state = state.copy(
+                    birthDate = if (event.birthDate.length > 10) dataConverter.convertDateFormat(
+                        event.birthDate
+                    ) else event.birthDate
+                )
 
             }
 
@@ -119,44 +96,19 @@ class SignUpViewModel(
         }
     }
 
-    private fun submitData() {
-        val emailResult = validateEmail.execute(state.email)
-        val passwordResult = validatePassword.execute(state.password)
-        val confirmPasswordResult =
-            validateConfirmPassword.execute(state.confirmPassword, state.confirmPassword)
-
-        val hasError = listOf(
-            emailResult,
-            passwordResult,
-            confirmPasswordResult
-        ).any { it.errorManager != null }
-        if (hasError) {
-            state = state.copy(
-                emailError = emailResult.errorManager,
-                passwordError = passwordResult.errorManager,
-                confirmPasswordError = confirmPasswordResult.errorManager
-            )
-            return
-        }
-        viewModelScope.launch {
-            validationEventChannel.send(ValidationEvent.Success)
-        }
-    }
-
-    fun load() {
+    private fun load() {
         viewModelScope.launch {
             useCase.execute(
                 RegisterUseCase.Request(
                     UserRegisterModel(
-                        userName = userName.value,
-                        userLogin = userLogin.value,
-                        password = userConfirmPassword.value,
-                        birthDate = userBirthDate.value!!,
-                        gender = userSex.value
+                        userName = state.name,
+                        userLogin = state.login,
+                        password = state.password,
+                        birthDate = state.birthDate,
+                        gender = state.gender
                     )
                 )
-            )
-                .map {
+            ).map {
                     converter.convert(it)
                 }
 
@@ -164,6 +116,9 @@ class SignUpViewModel(
                     _usersFlow.value = it
 
                 }
+
+        }
+        viewModelScope.launch {
             usersFlow.collect {
                 when (it) {
                     is UiState.Loading -> {
@@ -184,42 +139,40 @@ class SignUpViewModel(
 
     }
 
-    fun addBirthDate(s: String?) {
+    private fun submitData() {
+        val emailResult = validateEmail.execute(state.email)
+        val passwordResult = validatePassword.execute(state.password)
+        val confirmPasswordResult =
+            validateConfirmPassword.execute(state.confirmPassword, state.confirmPassword)
+        val nameResult = validateName.execute(state.name)
+        val loginResult = validateLogin.execute(state.login)
+        val birthDateResult = validateBirthDate.execute(state.birthDate)
+        val genderResult = validateGender.execute(state.gender)
 
+        val hasError = listOf(
+            nameResult, emailResult, passwordResult, confirmPasswordResult
+        ).any { it.errorManager != null }
+
+        if (hasError) {
+            state = state.copy(
+                nameError = nameResult.errorManager,
+                emailError = emailResult.errorManager,
+                loginError = loginResult.errorManager,
+                passwordError = passwordResult.errorManager,
+                confirmPasswordError = confirmPasswordResult.errorManager,
+                birthDateError = birthDateResult.errorManager,
+                genderError = genderResult.errorManager
+            )
+            Log.d("use_case", state.toString())
+            return
+        }
+
+        viewModelScope.launch {
+            validationEventChannel.send(ValidationEvent.Success)
+        }
+        load()
     }
 
-    fun setName(s: String) {
-        _userName.value = s
-    }
-
-    fun setLogin(s: String) {
-        _userLogin.value = s
-    }
-
-    fun setPassword(s: String) {
-        _userConfirmPassword.value = s
-    }
-
-    fun setConfirmPassword(s: String) {
-        _userConfirmPassword.value = s
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    fun setDate(s: String) {
-        val format = DateTimeFormatter.ofPattern("dd.MM.yyyy")
-
-        val localDateTime = LocalDate.parse(s, format)
-        _userBirthDate.value =
-            localDateTime.atStartOfDay(ZoneId.systemDefault()).toInstant().toKotlinInstant()
-    }
-
-    fun setGender(value: Int) {
-        _userSex.value = value
-    }
-
-    fun setEmail(s: String) {
-
-    }
 
     sealed class ValidationEvent {
         object Success : ValidationEvent()

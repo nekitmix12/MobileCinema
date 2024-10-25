@@ -1,15 +1,24 @@
 package com.example.mobilecinema.presentation.login
 
+import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.content.Context
+import android.content.Intent
 import android.icu.util.Calendar
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.text.method.PasswordTransformationMethod
 import android.util.Log
+import android.view.MotionEvent
 import android.view.View
+import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.example.mobilecinema.R
 import com.example.mobilecinema.data.UserRepositoryImpl
 import com.example.mobilecinema.data.datasource.local.TokenStorageDataSourceImpl
@@ -20,12 +29,20 @@ import com.example.mobilecinema.databinding.SingUpBinding
 import com.example.mobilecinema.domain.UseCase
 import com.example.mobilecinema.domain.use_case.auth_use_case.AddStorageUseCase
 import com.example.mobilecinema.domain.use_case.auth_use_case.RegisterUseCase
+import com.example.mobilecinema.presentation.CinemaActivity
+import com.example.mobilecinema.presentation.UiState
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class SingUpFragment : Fragment(R.layout.sing_up) {
     private var binding: SingUpBinding? = null
     private lateinit var viewModel: SignUpViewModel
 
+    @SuppressLint(
+        "UnsafeRepeatOnLifecycleDetector", "UseCompatLoadingForDrawables",
+        "ClickableViewAccessibility"
+    )
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = SingUpBinding.bind(view)
@@ -66,6 +83,8 @@ class SingUpFragment : Fragment(R.layout.sing_up) {
         val calendarDate = binding!!.calendarCloseSignUp
         val womenButtonSignUp = binding!!.womenButtonSignUp
         val menButtonSignUp = binding!!.menButtonSignUp
+
+
         nameSignUp.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 if (s.toString() == "") closeName.visibility = View.VISIBLE
@@ -76,7 +95,7 @@ class SingUpFragment : Fragment(R.layout.sing_up) {
             }
 
             override fun afterTextChanged(s: Editable?) {
-                viewModel.setLogin(s.toString())
+                viewModel.onEvent(RegistrationFormEvent.NameChanged(s.toString()))
                 if (s.toString() == "") closeName.visibility = View.INVISIBLE
             }
 
@@ -92,7 +111,7 @@ class SingUpFragment : Fragment(R.layout.sing_up) {
             }
 
             override fun afterTextChanged(s: Editable?) {
-                viewModel.setLogin(s.toString())
+                viewModel.onEvent(RegistrationFormEvent.LoginChanged(s.toString()))
                 if (s.toString() == "") closeLogin.visibility = View.INVISIBLE
             }
 
@@ -108,7 +127,10 @@ class SingUpFragment : Fragment(R.layout.sing_up) {
             }
 
             override fun afterTextChanged(s: Editable?) {
-                viewModel.setLogin(s.toString())
+                viewModel.onEvent(RegistrationFormEvent.EmailChanged(s.toString()))
+                if (viewModel.state.emailError != null) {
+                    viewModel.onEvent(RegistrationFormEvent.Submit)
+                }
                 if (s.toString() == "") closeEmail.visibility = View.INVISIBLE
             }
 
@@ -124,7 +146,7 @@ class SingUpFragment : Fragment(R.layout.sing_up) {
             }
 
             override fun afterTextChanged(s: Editable?) {
-                viewModel.setLogin(s.toString())
+                viewModel.onEvent(RegistrationFormEvent.PasswordChanged(s.toString()))
                 if (s.toString() == "") passwordWatch.visibility = View.INVISIBLE
             }
 
@@ -140,7 +162,7 @@ class SingUpFragment : Fragment(R.layout.sing_up) {
             }
 
             override fun afterTextChanged(s: Editable?) {
-                viewModel.setLogin(s.toString())
+                viewModel.onEvent(RegistrationFormEvent.ConfirmPasswordChanged(s.toString()))
                 if (s.toString() == "") confirmPasswordWatch.visibility = View.INVISIBLE
             }
 
@@ -156,10 +178,8 @@ class SingUpFragment : Fragment(R.layout.sing_up) {
             }
 
             override fun afterTextChanged(s: Editable?) {
-
-                viewModel.setLogin(s.toString())
                 if (isUpdate) return
-
+                viewModel.onEvent(RegistrationFormEvent.BirthDateChanged(s.toString()))
                 isUpdate = true
 
                 s?.let {
@@ -168,27 +188,95 @@ class SingUpFragment : Fragment(R.layout.sing_up) {
                     for (i in oText.indices)
                         if (i < 8) {
                             text.append(oText[i])
-                            if(i == 1 && i != oText.length - 1)
-                                 text.append(".")
-                            if(i == 3 && i != oText.length - 1)
+                            if (i == 1 && i != oText.length - 1)
                                 text.append(".")
-                            }
+                            if (i == 3 && i != oText.length - 1)
+                                text.append(".")
+                        }
 
                     dateSignUp.setText(text.toString())
                     dateSignUp.setSelection(text.length)
-                    val pattern = "(0[1-9]|[12][0-9]|3[01])\\.(0[1-9]|1[0-2])\\.(19|20)\\d{2}".toRegex()
-                    if(s.matches(pattern))
-                        viewModel.addBirthDate(s.toString())
-                    else
-                        viewModel.addBirthDate(null)
                 }
                 isUpdate = false
             }
 
         })
 
+        var clickFemale = false
+        var clickMale = false
+        menButtonSignUp.setOnClickListener {
+            clickMale = !clickMale
+            clickFemale = false
+            womenButtonSignUp.setBackgroundResource(R.drawable.sing_in_input_text)
+            if (clickMale) {
+                viewModel.onEvent(RegistrationFormEvent.GenderChanged(1))
+                menButtonSignUp.setBackgroundResource(R.drawable.gradient_accent)
+            } else {
+                viewModel.onEvent(RegistrationFormEvent.GenderChanged(-1))
+                menButtonSignUp.setBackgroundResource(R.drawable.sing_in_input_text)
+            }
+        }
+
+        womenButtonSignUp.setOnClickListener {
+            clickMale = false
+            clickFemale = !clickFemale
+            menButtonSignUp.setBackgroundResource(R.drawable.sing_in_input_text)
+            if (clickFemale) {
+                viewModel.onEvent(RegistrationFormEvent.GenderChanged(0))
+                womenButtonSignUp.setBackgroundResource(R.drawable.gradient_accent)
+            } else {
+                viewModel.onEvent(RegistrationFormEvent.GenderChanged(-1))
+                womenButtonSignUp.setBackgroundResource(R.drawable.sing_in_input_text)
+
+            }
+        }
+
         closeName.setOnClickListener {
             nameSignUp.text = Editable.Factory.getInstance().newEditable("")
+        }
+
+        closeLogin.setOnClickListener {
+            loginSignUp.text = Editable.Factory.getInstance().newEditable("")
+        }
+
+        closeEmail.setOnClickListener {
+            emailSignUp.text = Editable.Factory.getInstance().newEditable("")
+        }
+
+        var showPassword = true
+        passwordWatch.setOnClickListener {
+            if (showPassword) {
+                passwordWatch.setImageDrawable(
+                    requireContext().getDrawable(R.drawable.title_eye_off)
+                )
+                passwordSignUp.transformationMethod = PasswordTransformationMethod.getInstance()
+                showPassword = false
+
+            } else {
+                passwordWatch.setImageDrawable(requireContext().getDrawable(R.drawable.title_eye))
+                passwordSignUp.transformationMethod = null
+
+                showPassword = true
+            }
+        }
+
+        var showConfirmPassword = true
+        confirmPasswordWatch.setOnClickListener {
+            if (showConfirmPassword) {
+                confirmPasswordWatch.setImageDrawable(
+                    requireContext().getDrawable(R.drawable.title_eye_off)
+                )
+                confirmPasswordSignUp.transformationMethod =
+                    PasswordTransformationMethod.getInstance()
+                showConfirmPassword = false
+
+            } else {
+                confirmPasswordWatch.setImageDrawable(requireContext().getDrawable(R.drawable.title_eye))
+                confirmPasswordSignUp.transformationMethod =
+                    null
+
+                showConfirmPassword = true
+            }
         }
 
         val calendar = Calendar.getInstance()
@@ -202,11 +290,67 @@ class SingUpFragment : Fragment(R.layout.sing_up) {
                 { _, selectedYear, selectedMonth, selectedDay ->
                     val selectedDate = "$selectedDay.${selectedMonth + 1}.$selectedYear"
                     dateSignUp.text = Editable.Factory.getInstance().newEditable(selectedDate)
-                    viewModel.addBirthDate(selectedDate)
+                    viewModel.onEvent(RegistrationFormEvent.BirthDateChanged(selectedDate))
                 },
                 year, month, day
             )
             datePickerDialog.show()
+        }
+
+        binding!!.regButton.setOnClickListener {
+            viewModel.onEvent(RegistrationFormEvent.Submit)
+        }
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.validationEvents.collectLatest { event ->
+                    when (event) {
+                        is SignUpViewModel.ValidationEvent.Success -> {
+                            Toast.makeText(
+                                requireContext(),
+                                "Validation successful!",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            viewModel.usersFlow.collect {
+                when (it) {
+                    is UiState.Loading -> {
+                    }
+
+                    is UiState.Error -> {
+                        Toast.makeText(requireContext(), it.errorMessage, Toast.LENGTH_SHORT).show()
+                    }
+
+                    is UiState.Success -> {
+                        Toast.makeText(requireContext(), it.data.token, Toast.LENGTH_SHORT).show()
+                        startActivity(Intent(requireContext(),CinemaActivity::class.java))
+                    }
+                }
+            }
+        }
+
+
+        binding!!.rootSignUpLayout.setOnTouchListener { _, event ->
+            if (event.action == MotionEvent.ACTION_DOWN) {
+                hideKeyboard()
+            }
+            false
+        }
+    }
+
+
+    private fun hideKeyboard() {
+        val activity = activity ?: return
+        val view = activity.currentFocus
+        if (view != null) {
+            val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(view.windowToken, 0)
         }
     }
 
@@ -221,7 +365,3 @@ class SingUpFragment : Fragment(R.layout.sing_up) {
     }
 
 }
-
-
-
-

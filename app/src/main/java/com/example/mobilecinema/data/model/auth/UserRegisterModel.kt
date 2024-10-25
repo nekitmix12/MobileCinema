@@ -17,7 +17,7 @@ data class UserRegisterModel (
     val password: String,
 
     @SerialName("birthDate")
-    val  birthDate: Instant,
+    val  birthDate: String,
 
     @SerialName("gender")
     val gender: Int

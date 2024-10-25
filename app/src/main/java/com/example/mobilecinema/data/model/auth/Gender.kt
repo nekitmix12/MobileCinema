@@ -5,5 +5,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 enum class Gender(sex: Int) {
     MALE(sex = 1),
-    FEMALE(sex = 2)
+    FEMALE(sex = 0)
 }
