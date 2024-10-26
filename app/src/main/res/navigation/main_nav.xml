@@ -10,7 +10,7 @@
         android:label="MoviesScreen" />
     <fragment
         android:id="@+id/feedScreen"
-        android:name="com.example.mobilecinema.presentation.FeedScreen"
+        android:name="com.example.mobilecinema.presentation.feed.FeedScreen"
         android:label="FeedScreen" />
     <fragment
         android:id="@+id/profileScreen"

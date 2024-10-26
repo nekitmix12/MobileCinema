@@ -19,43 +19,48 @@
         android:id="@+id/imageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/cardStackView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.074"
+        app:layout_constraintVertical_bias="0.333"
         app:srcCompat="@drawable/logo" />
 
     <TextView
-        android:id="@+id/textView"
-        android:layout_width="92dp"
-        android:layout_height="34dp"
-        android:text="TextView"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout6"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recyclerView3"
-        app:layout_constraintVertical_bias="0.343" />
+    android:id="@+id/textView"
+    android:layout_width="92dp"
+    android:layout_height="34dp"
+    android:text="TextView"
+    app:layout_constraintBottom_toTopOf="@+id/linearLayout6"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintHorizontal_bias="0.498"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/cardStackView"
+    app:layout_constraintVertical_bias="0.343" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView3"
-        android:layout_width="388dp"
-        android:layout_height="435dp"
+
+    <com.yuyakaido.android.cardstackview.CardStackView
+        android:id="@+id/cardStackView"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="118dp" />
+        app:layout_constraintTop_toTopOf="@+id/imageView4"
+        app:layout_constraintVertical_bias="0.26" />
 
     <LinearLayout
+        android:id="@+id/linearLayout7"
         android:layout_width="314dp"
         android:layout_height="77dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="@+id/imageView4"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recyclerView3"
-        app:layout_constraintVertical_bias="0.868">
+        app:layout_constraintTop_toBottomOf="@+id/cardStackView"
+        app:layout_constraintVertical_bias="0.743">
 
     </LinearLayout>
 
@@ -64,11 +69,11 @@
         android:layout_width="162dp"
         android:layout_height="39dp"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout7"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recyclerView3"
-        app:layout_constraintVertical_bias="0.323"></LinearLayout>
+        app:layout_constraintTop_toBottomOf="@+id/cardStackView"
+        app:layout_constraintVertical_bias="0.849" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

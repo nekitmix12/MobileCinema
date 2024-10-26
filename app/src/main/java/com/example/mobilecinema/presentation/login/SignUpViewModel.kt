@@ -19,7 +19,7 @@ import com.example.mobilecinema.domain.use_case.auth_use_case.validate.ValidateL
 import com.example.mobilecinema.domain.use_case.auth_use_case.validate.ValidateName
 import com.example.mobilecinema.domain.use_case.auth_use_case.validate.ValidatePassword
 import com.example.mobilecinema.domain.model.RegisterModel
-import com.example.mobilecinema.presentation.UiState
+import com.example.mobilecinema.domain.use_case.auth_use_case.UiState
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

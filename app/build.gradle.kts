@@ -57,6 +57,9 @@ android {
 }
 
 dependencies {
+    implementation (libs.logging.interceptor.v493)
+    implementation(libs.picasso)
+    implementation (libs.cardstackview)
     implementation (libs.retrofit2.kotlinx.serialization.converter)
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)

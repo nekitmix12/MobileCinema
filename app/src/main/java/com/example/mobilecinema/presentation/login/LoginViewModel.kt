@@ -1,7 +1,6 @@
 package com.example.mobilecinema.presentation.login
 
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 //import com.example.mobilecinema.data.LoginRepository
@@ -10,7 +9,7 @@ import com.example.mobilecinema.data.model.auth.AuthToken
 import com.example.mobilecinema.data.model.auth.LoginCredentials
 import com.example.mobilecinema.domain.use_case.auth_use_case.AddStorageUseCase
 import com.example.mobilecinema.domain.use_case.auth_use_case.LoginUserUseCase
-import com.example.mobilecinema.presentation.UiState
+import com.example.mobilecinema.domain.use_case.auth_use_case.UiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map

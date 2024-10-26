@@ -15,7 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.example.mobilecinema.R
-import com.example.mobilecinema.data.UserRepositoryImpl
+import com.example.mobilecinema.data.repository.UserRepositoryImpl
 import com.example.mobilecinema.data.datasource.local.TokenStorageDataSourceImpl
 import com.example.mobilecinema.data.datasource.remote.data_source.AuthRemoteDataSourceImpl
 import com.example.mobilecinema.data.network.AuthInterceptor
@@ -25,7 +25,7 @@ import com.example.mobilecinema.domain.UseCase
 import com.example.mobilecinema.domain.use_case.auth_use_case.AddStorageUseCase
 import com.example.mobilecinema.domain.use_case.auth_use_case.LoginUserUseCase
 import com.example.mobilecinema.presentation.CinemaActivity
-import com.example.mobilecinema.presentation.UiState
+import com.example.mobilecinema.domain.use_case.auth_use_case.UiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -80,6 +80,7 @@ class SingInFragment : Fragment(R.layout.sing_in) {
                     }
 
                     is UiState.Success -> {
+                        addStorageUseCase.addStorage(it.data.token)
                         startActivity(Intent(requireContext(), CinemaActivity::class.java))
                         Toast.makeText(requireContext(), it.data.token, Toast.LENGTH_SHORT).show()
                     }

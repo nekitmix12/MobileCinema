@@ -4,4 +4,20 @@
         <attr name="cornerRadius" format="dimension" />
         <attr name="src" format="reference" />
     </declare-styleable>
+    
+    <declare-styleable name="SwipeStack">
+        <attr name="allowedSwipeDirections" format="integer">
+            <enum name="only_left" value="1"/>
+            <enum name="only_right" value="2"/>
+            <enum name="both" value="0"/>
+        </attr>
+        <attr name="animationDuration" format="integer"/>
+        <attr name="stackSize" format="integer"/>
+        <attr name="stackSpacing" format="dimension"/>
+        <attr name="stackRotation" format="integer"/>
+        <attr name="swipeRotation" format="float"/>
+        <attr name="swipeOpacity" format="float"/>
+        <attr name="scaleFactor" format="float"/>
+        <attr name="disableHwAcceleration" format="float"/>
+    </declare-styleable>
 </resources>

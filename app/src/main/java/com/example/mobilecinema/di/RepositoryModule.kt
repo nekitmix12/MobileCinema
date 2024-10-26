@@ -1,6 +1,6 @@
 package com.example.mobilecinema.di
 
-import com.example.mobilecinema.data.UserRepositoryImpl
+import com.example.mobilecinema.data.repository.UserRepositoryImpl
 import com.example.mobilecinema.domain.repository.AuthRepository
 import dagger.Binds
 import dagger.Module

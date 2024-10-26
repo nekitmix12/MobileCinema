@@ -1,5 +1,6 @@
 package com.example.mobilecinema.domain.use_case.auth_use_case
 
+import android.util.Log
 import com.example.mobilecinema.data.model.auth.AuthToken
 import com.example.mobilecinema.data.model.auth.LoginCredentials
 import com.example.mobilecinema.domain.UseCase
@@ -12,6 +13,7 @@ class AddStorageUseCase(
 ) {
     fun addStorage(value: String){
         authRepository.save(value)
+        Log.d("add_storage_use_case",value)
     }
 
 }

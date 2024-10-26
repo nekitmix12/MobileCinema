@@ -6,9 +6,9 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 
 interface ApiServiceMovie {
-    @GET("/movies/{page}")
+    @GET("api/movies/{page}")
     suspend fun getMovies(@Path("page") page: Int): MoviesPagedListModel
 
-    @GET("/movies/details/{id}")
-    suspend fun getFilmDetails(@Path("id") id: Int): MovieDetailsModel
+    @GET("api/movies/details/{id}")
+    suspend fun getFilmDetails(@Path("id") id: String): MovieDetailsModel
 }

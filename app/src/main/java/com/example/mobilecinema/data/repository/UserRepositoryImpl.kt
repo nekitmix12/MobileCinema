@@ -1,4 +1,4 @@
-package com.example.mobilecinema.data
+package com.example.mobilecinema.data.repository
 
 import com.example.mobilecinema.data.datasource.remote.data_source.AuthRemoteDataSource
 import com.example.mobilecinema.data.model.auth.AuthToken
