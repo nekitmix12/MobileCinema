@@ -5,17 +5,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="16dp"
-    android:elevation="4dp">
+    android:background="@android:color/transparent">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent">
 
         <ImageView
             android:id="@+id/movie_card_id"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_constraintEnd_toEndOf="parent"
+            android:scaleType="centerCrop"
+            android:background="@android:color/transparent"
             tools:layout_editor_absoluteY="0dp" />
 
         <ImageView
@@ -24,6 +26,7 @@
             android:layout_width="200dp"
             android:layout_height="200dp"
             android:src="@drawable/title_like"
+
             app:layout_constraintBottom_toBottomOf="@+id/movie_card_id"
             app:layout_constraintEnd_toEndOf="@+id/movie_card_id"
             app:layout_constraintStart_toStartOf="@+id/movie_card_id"

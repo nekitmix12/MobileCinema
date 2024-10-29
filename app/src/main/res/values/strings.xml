@@ -29,4 +29,10 @@
     <string name="sing_up">Зарегестрироваться</string>
     <string name="close">close</string>
     <string name="birth_date">Дата рождения</string>
+    <string name="film_image_description">Упс....Что то пошло не так</string>
+    <string name="watch">Смотреть</string>
+    <string name="rand_film">Случайный фильм</string>
+    <string name="all_film">Все фильмы</string>
+    <string name="my_favorite">Мне нравится</string>
+    <string name="all">Все</string>
 </resources>

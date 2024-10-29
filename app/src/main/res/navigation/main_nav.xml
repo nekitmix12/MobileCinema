@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/moviesScreen"
-        android:name="com.example.mobilecinema.presentation.MoviesScreen"
+        android:name="com.example.mobilecinema.presentation.movies.MoviesScreen"
         android:label="MoviesScreen" />
     <fragment
         android:id="@+id/feedScreen"

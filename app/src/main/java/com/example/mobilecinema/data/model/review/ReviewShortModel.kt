@@ -8,13 +8,4 @@ data class ReviewShortModel (
 
     val id: String,
     val rating: Int
-){
-    init{
-        require(try {
-            UUID.fromString(id)
-            true
-        } catch (e: IllegalArgumentException) {
-            false
-        })
-    }
-}
+)

@@ -10,4 +10,5 @@
     <color name="dark_faded">#333333</color>
     <color name="gray_faded">#999999</color>
     <color name="dark">#1E1E1E</color>
+    <color name="transparent">#00000000</color>
 </resources>

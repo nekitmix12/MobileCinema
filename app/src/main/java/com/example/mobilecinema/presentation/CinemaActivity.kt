@@ -1,7 +1,9 @@
 package com.example.mobilecinema.presentation
 
+import android.graphics.PorterDuff
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.example.mobilecinema.R
@@ -17,10 +19,8 @@ class CinemaActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding?.root)
-        // Получаем NavHostFragment и NavController
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
         navController = navHostFragment.navController
-
         binding?.bottomNavigationView?.setOnItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.navigation_moviesScreen -> {

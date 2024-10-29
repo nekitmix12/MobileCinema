@@ -57,6 +57,8 @@ android {
 }
 
 dependencies {
+
+    implementation (libs.androidx.viewpager2.v100)
     implementation (libs.logging.interceptor.v493)
     implementation(libs.picasso)
     implementation (libs.cardstackview)

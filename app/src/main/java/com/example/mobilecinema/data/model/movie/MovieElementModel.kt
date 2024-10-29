@@ -19,16 +19,7 @@ data class MovieElementModel (
 
     val country: String?,
 
-    val genres:	GenreModel?,
+    val genres:	List<GenreModel?>,
 
-    val reviews: ReviewShortModel?
-){
-    init{
-        require(try {
-            UUID.fromString(id)
-            true
-        } catch (e: IllegalArgumentException) {
-            false
-        })
-    }
-}
+    val reviews: List<ReviewShortModel?>
+)

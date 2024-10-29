@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:drawable="@drawable/gradient_accent" />
+
+    <!-- Прозрачная иконка поверх градиента -->
+    <item
+        android:drawable="@drawable/title_feed" />
+</layer-list>
