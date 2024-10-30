@@ -5,14 +5,9 @@ import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import androidx.compose.ui.unit.dp
-import androidx.core.view.setMargins
-import androidx.core.view.size
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -25,6 +20,7 @@ import com.example.mobilecinema.data.network.NetworkModule
 import com.example.mobilecinema.data.repository.MoviesRepositoryImpl
 import com.example.mobilecinema.databinding.FeedScreenBinding
 import com.example.mobilecinema.domain.UseCase
+import com.example.mobilecinema.domain.converters.MoviesConverter
 import com.example.mobilecinema.domain.use_case.auth_use_case.UiState
 import com.example.mobilecinema.domain.use_case.movies_use_case.GetMoviesPageUseCase
 import com.yuyakaido.android.cardstackview.CardStackLayoutManager
