@@ -1,4 +1,4 @@
-package com.example.mobilecinema.domain.use_case.auth_use_case.validate
+package com.example.mobilecinema.domain.use_case.validate
 
 class ValidatePassword {
     fun execute(password: String): ValidationResult {

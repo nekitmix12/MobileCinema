@@ -21,7 +21,7 @@ import com.example.mobilecinema.data.repository.MoviesRepositoryImpl
 import com.example.mobilecinema.databinding.FeedScreenBinding
 import com.example.mobilecinema.domain.UseCase
 import com.example.mobilecinema.domain.converters.MoviesConverter
-import com.example.mobilecinema.domain.use_case.auth_use_case.UiState
+import com.example.mobilecinema.domain.use_case.UiState
 import com.example.mobilecinema.domain.use_case.movies_use_case.GetMoviesPageUseCase
 import com.yuyakaido.android.cardstackview.CardStackLayoutManager
 import com.yuyakaido.android.cardstackview.CardStackListener

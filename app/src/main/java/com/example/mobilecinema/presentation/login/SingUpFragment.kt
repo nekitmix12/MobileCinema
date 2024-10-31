@@ -19,7 +19,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.mobilecinema.R
-import com.example.mobilecinema.data.repository.UserRepositoryImpl
+import com.example.mobilecinema.data.repository.AuthRepositoryImpl
 import com.example.mobilecinema.data.datasource.local.TokenStorageDataSourceImpl
 import com.example.mobilecinema.data.datasource.remote.data_source.AuthRemoteDataSourceImpl
 import com.example.mobilecinema.data.network.AuthInterceptor
@@ -29,7 +29,7 @@ import com.example.mobilecinema.domain.UseCase
 import com.example.mobilecinema.domain.use_case.auth_use_case.AddStorageUseCase
 import com.example.mobilecinema.domain.use_case.auth_use_case.RegisterUseCase
 import com.example.mobilecinema.presentation.CinemaActivity
-import com.example.mobilecinema.domain.use_case.auth_use_case.UiState
+import com.example.mobilecinema.domain.use_case.UiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -58,7 +58,7 @@ class SingUpFragment : Fragment(R.layout.sing_up) {
             )
         )
         val authRemoteDataSource = AuthRemoteDataSourceImpl(apiServiceAuth)
-        val userRepository = UserRepositoryImpl(authRemoteDataSource, tokenStorage)
+        val userRepository = AuthRepositoryImpl(authRemoteDataSource, tokenStorage)
         val configuration = UseCase.Configuration(Dispatchers.IO)
         val registerUserUseCase = RegisterUseCase(configuration, userRepository)
         val registerConverter = RegisterConverter()

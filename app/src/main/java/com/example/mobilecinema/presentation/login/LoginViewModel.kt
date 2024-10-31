@@ -9,7 +9,7 @@ import com.example.mobilecinema.data.model.auth.AuthToken
 import com.example.mobilecinema.data.model.auth.LoginCredentials
 import com.example.mobilecinema.domain.use_case.auth_use_case.AddStorageUseCase
 import com.example.mobilecinema.domain.use_case.auth_use_case.LoginUserUseCase
-import com.example.mobilecinema.domain.use_case.auth_use_case.UiState
+import com.example.mobilecinema.domain.use_case.UiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map

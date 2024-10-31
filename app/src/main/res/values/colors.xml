@@ -11,4 +11,7 @@
     <color name="gray_faded">#999999</color>
     <color name="dark">#1E1E1E</color>
     <color name="transparent">#00000000</color>
+    <color name="gray">#CCCCCC</color>
+    <color name="gradient_1">#DF2800</color>
+    <color name="gradient_2">#FF6633</color>
 </resources>

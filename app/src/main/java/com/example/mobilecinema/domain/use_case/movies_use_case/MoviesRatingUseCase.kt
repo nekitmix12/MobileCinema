@@ -1,4 +1,4 @@
-package com.example.mobilecinema.domain.use_case.favorite_movies_use_case
+package com.example.mobilecinema.domain.use_case.movies_use_case
 
 import com.example.mobilecinema.data.model.movie.MovieElementModel
 import com.example.mobilecinema.domain.MoviesFilmRating

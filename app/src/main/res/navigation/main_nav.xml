@@ -14,7 +14,7 @@
         android:label="FeedScreen" />
     <fragment
         android:id="@+id/profileScreen"
-        android:name="com.example.mobilecinema.presentation.ProfileScreen"
+        android:name="com.example.mobilecinema.presentation.profile.ProfileScreen"
         android:label="ProfileScreen"/>
     <fragment
         android:id="@+id/favoritesScreen"

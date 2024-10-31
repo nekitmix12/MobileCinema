@@ -1,4 +1,4 @@
-package com.example.mobilecinema.domain.use_case.auth_use_case
+package com.example.mobilecinema.domain.use_case
 
 sealed class UiState<out T : Any> {
     data object Loading : UiState<Nothing>()

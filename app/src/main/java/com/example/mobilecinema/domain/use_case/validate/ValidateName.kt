@@ -1,6 +1,5 @@
-package com.example.mobilecinema.domain.use_case.auth_use_case.validate
+package com.example.mobilecinema.domain.use_case.validate
 
-import android.util.Patterns
 
 class ValidateName {
     fun execute(name: String): ValidationResult {

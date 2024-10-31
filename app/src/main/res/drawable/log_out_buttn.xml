@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/log_out">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/dark_faded" />
+            <corners android:radius="8dp" />
+        </shape>
+    </item>
+    <item
+        android:drawable="@drawable/title_sign_out"
+        android:width="22dp"
+        android:height="22dp"
+        android:gravity="center"
+        >
+    </item>
+</layer-list>

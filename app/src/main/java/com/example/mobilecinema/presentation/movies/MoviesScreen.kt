@@ -36,9 +36,9 @@ import com.example.mobilecinema.domain.UseCase
 import com.example.mobilecinema.domain.converters.FavoriteMoviesConverter
 import com.example.mobilecinema.domain.converters.MoviesConverter
 import com.example.mobilecinema.domain.converters.MoviesRatingConverter
-import com.example.mobilecinema.domain.use_case.auth_use_case.UiState
+import com.example.mobilecinema.domain.use_case.UiState
 import com.example.mobilecinema.domain.use_case.favorite_movies_use_case.GetFavoriteMoviesUseCase
-import com.example.mobilecinema.domain.use_case.favorite_movies_use_case.MoviesRatingUseCase
+import com.example.mobilecinema.domain.use_case.movies_use_case.MoviesRatingUseCase
 import com.example.mobilecinema.domain.use_case.movies_use_case.GetMoviesPageUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
