@@ -6,15 +6,15 @@ import com.example.mobilecinema.domain.UseCase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class FavoriteMoviesRatingUseCase(
-    private val favoritesMoviesFilmRating: MoviesFilmRating,
+class MoviesRatingUseCase(
+    private val moviesFilmRating: MoviesFilmRating,
     configuration: Configuration
-) : UseCase<FavoriteMoviesRatingUseCase.Request,
-        FavoriteMoviesRatingUseCase.Response>(configuration) {
+) : UseCase<MoviesRatingUseCase.Request,
+        MoviesRatingUseCase.Response>(configuration) {
 
     override fun process(request: Request): Flow<Response> {
         return flow {
-            val ratings = favoritesMoviesFilmRating.getFilmRating(request.movies)
+            val ratings = moviesFilmRating.getFilmRating(request.movies)
             emit(Response(ratings))
         }
 

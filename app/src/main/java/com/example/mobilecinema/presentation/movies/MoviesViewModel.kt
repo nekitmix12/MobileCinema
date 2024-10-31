@@ -4,12 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mobilecinema.data.model.favorite_movies.MoviesListModel
 import com.example.mobilecinema.data.model.movie.MoviesPagedListModel
-import com.example.mobilecinema.domain.MoviesFilmRating
 import com.example.mobilecinema.domain.converters.FavoriteMoviesConverter
+import com.example.mobilecinema.domain.converters.MoviesConverter
+import com.example.mobilecinema.domain.converters.MoviesRatingConverter
 import com.example.mobilecinema.domain.use_case.auth_use_case.UiState
 import com.example.mobilecinema.domain.use_case.favorite_movies_use_case.GetFavoriteMoviesUseCase
+import com.example.mobilecinema.domain.use_case.favorite_movies_use_case.MoviesRatingUseCase
 import com.example.mobilecinema.domain.use_case.movies_use_case.GetMoviesPageUseCase
-import com.example.mobilecinema.domain.converters.MoviesConverter
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
@@ -20,7 +21,8 @@ class MoviesViewModel(
     private val converter: MoviesConverter,
     private val getFavoriteMoviesUseCase: GetFavoriteMoviesUseCase,
     private val favoriteMoviesConverter: FavoriteMoviesConverter,
-    private val favoritesMoviesFilmRating: MoviesFilmRating
+    private val moviesFilmRating: MoviesRatingUseCase,
+    private val moviesRatingConverter: MoviesRatingConverter
 ) : ViewModel() {
     private val _movies = MutableStateFlow<UiState<MoviesPagedListModel>>(UiState.Loading)
     val movies: StateFlow<UiState<MoviesPagedListModel>> = _movies
@@ -28,9 +30,13 @@ class MoviesViewModel(
     private val _moviesFavorite = MutableStateFlow<UiState<MoviesListModel>>(UiState.Loading)
     val moviesFavorite: StateFlow<UiState<MoviesListModel>> = _moviesFavorite
 
+    private val _moviesRating = MutableStateFlow<UiState<List<Float>>>(UiState.Loading)
+    val moviesRating: StateFlow<UiState<List<Float>>> = _moviesRating
+
+
     private var id = 1
 
-    suspend fun loadMovies(){
+    suspend fun loadMovies() {
         viewModelScope.launch {
             useCase.execute(
                 GetMoviesPageUseCase.Request(
@@ -49,7 +55,7 @@ class MoviesViewModel(
         }
     }
 
-    suspend fun loadFavoritesMovies(){
+    suspend fun loadFavoritesMovies() {
         viewModelScope.launch {
             getFavoriteMoviesUseCase.execute()
                 .map {
@@ -61,10 +67,38 @@ class MoviesViewModel(
         }
     }
 
-    fun incId(){
+    suspend fun loadRatings() {
+
+        viewModelScope.launch {
+            movies.collect { it1 ->
+                when (it1) {
+                    is UiState.Loading -> {}
+                    is UiState.Error -> {}
+                    is UiState.Success -> {
+                        moviesFilmRating.execute(
+                            it1.data.movies?.let {
+                                MoviesRatingUseCase.Request(
+                                    movies = it
+                                )
+
+                            }
+                        ).map {
+                            moviesRatingConverter.convert(it)
+                        }.collect{
+                            _moviesRating.value = it
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
+    fun incId() {
         id += 1
     }
-    fun setCommonId(){
+
+    fun setCommonId() {
         id = 1
     }
 }

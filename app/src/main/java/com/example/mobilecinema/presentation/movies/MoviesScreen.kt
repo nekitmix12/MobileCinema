@@ -31,11 +31,14 @@ import com.example.mobilecinema.data.network.NetworkModule
 import com.example.mobilecinema.data.repository.FavoriteMoviesRepositoryImpl
 import com.example.mobilecinema.data.repository.MoviesRepositoryImpl
 import com.example.mobilecinema.databinding.MoviesBinding
+import com.example.mobilecinema.domain.MoviesFilmRatingImpl
 import com.example.mobilecinema.domain.UseCase
 import com.example.mobilecinema.domain.converters.FavoriteMoviesConverter
 import com.example.mobilecinema.domain.converters.MoviesConverter
+import com.example.mobilecinema.domain.converters.MoviesRatingConverter
 import com.example.mobilecinema.domain.use_case.auth_use_case.UiState
 import com.example.mobilecinema.domain.use_case.favorite_movies_use_case.GetFavoriteMoviesUseCase
+import com.example.mobilecinema.domain.use_case.favorite_movies_use_case.MoviesRatingUseCase
 import com.example.mobilecinema.domain.use_case.movies_use_case.GetMoviesPageUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -47,9 +50,11 @@ class MoviesScreen : Fragment(R.layout.movies) {
     private lateinit var adapter: TopImagesAdapter
     private lateinit var allFilmsAdapter: AllMoviesAdapter
     private lateinit var favoritesMoviesAdapter: FavoriteMoviesAdapter
+    private lateinit var moviesPagedListModel: MoviesPagedListModel
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = MoviesBinding.bind(view)
+
         val sharedPreferences = requireContext().getSharedPreferences(
             requireContext().getString(R.string.preference_is_logged_in), Context.MODE_PRIVATE
         )
@@ -79,13 +84,18 @@ class MoviesScreen : Fragment(R.layout.movies) {
         val getFavoriteMoviesUseCase =
             GetFavoriteMoviesUseCase(configuration, favoriteMoviesRepository)
         val favoriteMoviesConverter = FavoriteMoviesConverter()
+        val moviesRatingConverter = MoviesRatingConverter()
+        val moviesFilmRating = MoviesFilmRatingImpl()
+        val moviesRatingUseCase = MoviesRatingUseCase(moviesFilmRating, configuration)
         viewModel = ViewModelProvider(
             this,
             MoviesViewModelFactory(
                 getMoviesPageUseCase,
                 moviesConverter,
                 getFavoriteMoviesUseCase,
-                favoriteMoviesConverter
+                favoriteMoviesConverter,
+                moviesRatingUseCase,
+                moviesRatingConverter
             )
         )[MoviesViewModel::class]
 
@@ -95,6 +105,7 @@ class MoviesScreen : Fragment(R.layout.movies) {
 
         lifecycleScope.launch {
             viewModel!!.loadMovies()
+            viewModel!!.loadRatings()
         }
 
         lifecycleScope.launch {
@@ -102,7 +113,7 @@ class MoviesScreen : Fragment(R.layout.movies) {
         }
 
         lifecycleScope.launch {
-            viewModel!!.moviesFavorite.collect{
+            viewModel!!.moviesFavorite.collect {
                 when (it) {
                     is UiState.Loading -> {}
                     is UiState.Error -> {}
@@ -119,8 +130,22 @@ class MoviesScreen : Fragment(R.layout.movies) {
                     is UiState.Loading -> {}
                     is UiState.Error -> {}
                     is UiState.Success -> {
-                        createViewPager(it.data)
+                        createViewPager(MoviesListModel(it.data.movies))
+                        moviesPagedListModel = it.data
                         createAllMoviesRecycleView(it.data, listOf(0.2f))
+                    }
+                }
+            }
+
+
+        }
+        lifecycleScope.launch {
+            viewModel!!.moviesRating.collect {
+                when (it) {
+                    is UiState.Loading -> {}
+                    is UiState.Error -> {}
+                    is UiState.Success -> {
+                        createAllMoviesRecycleView(moviesPagedListModel, it.data)
                     }
                 }
             }
@@ -182,36 +207,53 @@ class MoviesScreen : Fragment(R.layout.movies) {
 
     }
 
-    private fun createViewPager(movies: MoviesPagedListModel) {
-        adapter = TopImagesAdapter(movies)
+    private fun createViewPager(movies: MoviesListModel) {
+        val currentMovies = MoviesListModel(movies = movies.movies!!.dropLast(1) + movies.movies[0])
+        adapter = TopImagesAdapter(currentMovies)
         viewPager.adapter = adapter
         var progressAnimator: ObjectAnimator? = null
         var progressBar: ProgressBar? = null
-        var lastPosition: Int = 0
+        var lastPosition = 0
         viewPager.registerOnPageChangeCallback(object :
             ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
 
-
-                progressAnimator?.cancel()
-                if (lastPosition == position + 1)
-                    progressBar?.progress = 0
+                val currentPosition = if(position==5)
+                    0
                 else
+                    position
+                progressAnimator?.cancel()
+                if (lastPosition == currentPosition + 1)
+                    progressBar?.progress = 0
+                else {
                     progressBar?.progress = 100
-                lastPosition = position
+                }
+                lastPosition = currentPosition
 
-                progressBar = getProgressBar(position)
+                if(viewPager.currentItem == 5) {
+                    viewPager.setCurrentItem(0, true)
+                    for(progressBarPos in 0..4){
+                        getProgressBar(progressBarPos)?.progress = 0
+
+                    }
+                }
+
+                progressBar = getProgressBar(currentPosition)
                 progressAnimator = getAnimator(progressBar)
+                Log.e("movies_screen", "$position, $currentPosition")
                 progressAnimator?.addListener(object : AnimatorListenerAdapter() {
                     override fun onAnimationEnd(animation: Animator) {
                         super.onAnimationEnd(animation)
-                        Log.e("movies_screen", position.toString())
-                        //viewPager.setCurrentItem(position+1,true)
+                        Log.e("movies_screen", currentPosition.toString()+"0")
+                        if (viewPager.currentItem == currentPosition)
+                            viewPager.setCurrentItem(currentPosition + 1, true)
+
                     }
                 })
+                Log.e("movies_screen", currentPosition.toString()+"1")
                 progressAnimator?.start()
-                changeFilmInfo(movies.movies!![position])
+                changeFilmInfo(currentMovies.movies!![currentPosition])
             }
         })
     }
@@ -255,6 +297,9 @@ class MoviesScreen : Fragment(R.layout.movies) {
                 }
             }
             text.layoutParams = param
+            Log.e("moviesScreen",moviesElement.genres.toString())
+            if(moviesElement.genres.size==i+1)
+                break
             text.text = moviesElement.genres[i]?.genreName
 
             relativeLayout.addView(text)
@@ -278,34 +323,36 @@ class MoviesScreen : Fragment(R.layout.movies) {
 
     fun getProgressBar(number: Int): ProgressBar? {
         var progressBar: ProgressBar? = null
-        when (number) {
-            0 -> {
-                progressBar = binding!!.firstProgressBar
+        if (binding != null) {
+            when (number) {
+                0 -> {
+                    progressBar = binding!!.firstProgressBar
+
+                }
+
+                1 -> {
+                    progressBar = binding!!.secondProgressBar
+
+                }
+
+                2 -> {
+                    progressBar = binding!!.thirdProgressBar
+
+                }
+
+                3 -> {
+                    progressBar = binding!!.fourthProgressBar
+
+                }
+
+                4 -> {
+                    progressBar = binding!!.fifthProgressBar
+
+                }
+
+                else -> return null
 
             }
-
-            1 -> {
-                progressBar = binding!!.secondProgressBar
-
-            }
-
-            2 -> {
-                progressBar = binding!!.thirdProgressBar
-
-            }
-
-            3 -> {
-                progressBar = binding!!.fourthProgressBar
-
-            }
-
-            4 -> {
-                progressBar = binding!!.fifthProgressBar
-
-            }
-
-            else -> return null
-
         }
         return progressBar
     }

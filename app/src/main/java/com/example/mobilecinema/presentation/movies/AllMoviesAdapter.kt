@@ -1,5 +1,6 @@
 package com.example.mobilecinema.presentation.movies
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +17,9 @@ class AllMoviesAdapter(val moviesMoviesElementModel: List<MovieElementModel>?,va
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val binding = MoviesElementAllFilmsBinding.bind(view)
         fun bind(position: Int) = with(binding){
-//            rating.text = ratings[position].toString()
+            Log.e("adapter",ratings.toString() + ", " + position)
+
+          rating.text = ratings[position].toString()
             val movie = moviesMoviesElementModel!![position].poster
             Picasso.get().load(movie)
                 .placeholder(R.drawable.icon_background)
