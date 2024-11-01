@@ -1,6 +1,7 @@
 package com.example.mobilecinema.presentation.login
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.example.mobilecinema.R
@@ -13,7 +14,7 @@ class WelcomeScreen: Fragment(R.layout.fragment_welcome) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentWelcomeBinding.bind(view)
-
+        Log.e("welcome","start")
         binding?.signInButton?.setOnClickListener{navigateToSignIn()}
         binding?.signUpButton?.setOnClickListener{navigateToSignUp()}
     }

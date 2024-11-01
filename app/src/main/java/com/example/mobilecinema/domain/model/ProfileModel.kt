@@ -1,7 +1,7 @@
 package com.example.mobilecinema.domain.model
 
 data class ProfileModel(
-    val login: String = "",
+    val login: String? = "",
     val loginError: String? = null,
     val name: String = "",
     val nameError: String? = null,

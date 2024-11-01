@@ -23,6 +23,7 @@ import com.example.mobilecinema.presentation.login.SignUpViewModel.ValidationEve
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
@@ -42,7 +43,9 @@ class ProfileViewModel(
 ) : ViewModel() {
 
     private var _profile = MutableStateFlow<UiState<ProfileDTO>>(UiState.Loading)
-    private val profile: StateFlow<UiState<ProfileDTO>> = _profile
+    val profile: StateFlow<UiState<ProfileDTO>> = _profile
+
+
 
     var state by mutableStateOf(ProfileModel())
 
@@ -58,10 +61,27 @@ class ProfileViewModel(
                 .collect {
                     _profile.value = it
                 }
+            profile.collect{
+                when(it){
+                    is UiState.Loading->{}
+                    is UiState.Success->{
+                        state = state.copy(
+                            id = it.data.id,
+                            gender = it.data.gender,
+                            email = it.data.email,
+                            birthDate=it.data.birthDate,
+                            login=it.data.nickName,
+                            avatarLink =it.data.avatarLink,
+                            name =it.data.name
+                        )
+                    }
+                    is UiState.Error->{}
+                }
+            }
         }
     }
 
-    fun putProfile(profileDTO: ProfileDTO) {
+    private fun putProfile(profileDTO: ProfileDTO) {
         viewModelScope.launch {
             putProfileUseCase.execute(
                 PutProfileUseCase.Request(

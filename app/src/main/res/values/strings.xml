@@ -35,4 +35,5 @@
     <string name="all_film">Все фильмы</string>
     <string name="my_favorite">Мне нравится</string>
     <string name="all">Все</string>
+    <string name="gender">Пол</string>
 </resources>

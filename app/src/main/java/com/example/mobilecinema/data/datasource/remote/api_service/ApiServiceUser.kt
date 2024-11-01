@@ -5,9 +5,9 @@ import retrofit2.http.GET
 import retrofit2.http.PUT
 
 interface ApiServiceUser {
-    @GET("/account/profile")
+    @GET("api/account/profile")
     suspend fun getProfile(): ProfileDTO
 
-    @PUT("/account/profile")
+    @PUT("api/account/profile")
     suspend fun editProfile(profileDTO: ProfileDTO)
 }

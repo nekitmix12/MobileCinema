@@ -2,11 +2,12 @@ package com.example.mobilecinema.data.repository
 
 import com.example.mobilecinema.data.datasource.remote.data_source.UserRemoteDataSource
 import com.example.mobilecinema.data.model.auth.ProfileDTO
+import com.example.mobilecinema.domain.repository.UserRepository
 import kotlinx.coroutines.flow.Flow
 
 class UserRepositoryImpl(
     private val userRemoteDataSource: UserRemoteDataSource
-) : UserRemoteDataSource {
+) : UserRepository {
     override fun getProfile(): Flow<ProfileDTO> {
         return userRemoteDataSource.getProfile()
     }

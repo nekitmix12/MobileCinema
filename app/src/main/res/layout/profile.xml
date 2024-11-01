@@ -113,7 +113,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginTop="16dp"
-            android:text="Дата родения"
+            android:text="@string/login"
             android:textColor="@color/gray"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -127,7 +127,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginTop="16dp"
-            android:text="Дата родения"
+            android:text="@string/email"
             android:textColor="@color/gray"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -193,7 +193,7 @@
             app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
         <EditText
-            android:id="@+id/name_profile_edittext"
+            android:id="@+id/name_profile_editText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
@@ -217,7 +217,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginTop="16dp"
-            android:text="Дата родения"
+            android:text="@string/name"
             android:textColor="@color/gray"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -231,7 +231,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginTop="16dp"
-            android:text="Дата родения"
+            android:text="@string/gender"
             android:textColor="@color/gray"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -251,7 +251,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/name_profile_edittext" />
+            app:layout_constraintTop_toBottomOf="@+id/name_profile_editText" />
 
         <LinearLayout
             android:id="@+id/linearLayout5"
@@ -268,7 +268,7 @@
             app:layout_constraintVertical_bias="1">
 
             <Button
-                android:id="@+id/womenButtonSignUp_profile"
+                android:id="@+id/men_button_profile"
                 style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -280,7 +280,7 @@
                 android:textSize="14sp" />
 
             <Button
-                android:id="@+id/menButtonSignUp_profile"
+                android:id="@+id/women_button_profile"
                 style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
