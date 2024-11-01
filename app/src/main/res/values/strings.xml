@@ -36,4 +36,14 @@
     <string name="my_favorite">Мне нравится</string>
     <string name="all">Все</string>
     <string name="gender">Пол</string>
+    <string name="rating">Рейтинг</string>
+    <string name="info">Информация</string>
+    <string name="country">Страны</string>
+    <string name="age">Возраст</string>
+    <string name="time">Время</string>
+    <string name="years">Год выхода</string>
+    <string name="producer">Режисер</string>
+    <string name="genres">Жанры</string>
+    <string name="finance">Финансы</string>
+    <string name="reviews">Отзывы</string>
 </resources>
