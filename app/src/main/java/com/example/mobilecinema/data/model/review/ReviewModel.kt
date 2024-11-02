@@ -11,16 +11,8 @@ data class ReviewModel (
     val rating:Int,
     val reviewText:	String?,
     val isAnonymous: Boolean,
-    val createDateTime:	Instant,
+    val createDateTime:	String,
     val author: UserShortModel
     )
 {
-    init{
-        require(try {
-            UUID.fromString(id)
-            true
-        } catch (e: IllegalArgumentException) {
-            false
-        })
-    }
 }

@@ -46,4 +46,11 @@
     <string name="genres">Жанры</string>
     <string name="finance">Финансы</string>
     <string name="reviews">Отзывы</string>
+    <string name="budget">Бюджет</string>
+    <string name="feel_in_world">Сборы в мире</string>
+    <string name="anonymous">Анонимный пользователь</string>
+    <string name="add_review">Добавить отзыв</string>
+    <string name="evaluation">Оценка</string>
+    <string name="anonymous_reviews">Анонимный отзыв</string>
+    <string name="send">Отправить</string>
 </resources>

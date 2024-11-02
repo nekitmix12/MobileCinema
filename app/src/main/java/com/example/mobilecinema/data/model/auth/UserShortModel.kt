@@ -11,13 +11,4 @@ data class UserShortModel (
 
     val avatar: String?
 
-){
-    init{
-        require(try {
-            UUID.fromString(userId)
-            true
-        } catch (e: IllegalArgumentException) {
-            false
-        })
-    }
-}
+)
