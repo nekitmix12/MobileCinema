@@ -4,7 +4,7 @@ import android.util.Log
 import okhttp3.Interceptor
 import okhttp3.Response
 
-class LoginInterceptor():Interceptor {
+class LoginInterceptor:Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
 
@@ -15,7 +15,7 @@ class LoginInterceptor():Interceptor {
 
         val endTime = System.nanoTime()
         Log.d("log_interceptor",("Received response for ${response.request.url} in ${(endTime - startTime) / 1e6} ms\n$response"))
-
+        Log.d("log_interceptor",("Code: ${response.code} ${response.message}"))
         return response
     }
 }

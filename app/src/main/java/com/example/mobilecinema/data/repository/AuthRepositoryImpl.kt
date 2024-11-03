@@ -1,5 +1,6 @@
 package com.example.mobilecinema.data.repository
 
+import android.util.Log
 import com.example.mobilecinema.data.datasource.remote.data_source.AuthRemoteDataSource
 import com.example.mobilecinema.data.model.auth.AuthToken
 import com.example.mobilecinema.data.model.auth.LoginCredentials
@@ -16,9 +17,10 @@ class AuthRepositoryImpl(
     LocalStorageRepository
 ) : AuthRepository {
 
-    override fun loginUser(loginCredentials: LoginCredentials): Flow<AuthToken> =
-        authRemoteDataSource.loginUser(loginCredentials)
-
+    override fun loginUser(loginCredentials: LoginCredentials): Flow<AuthToken> {
+        Log.d("",authRemoteDataSource.loginUser(loginCredentials).toString())
+        return authRemoteDataSource.loginUser(loginCredentials)
+    }
 
     override fun registration(registerModel: UserRegisterModel): Flow<AuthToken> =
         authRemoteDataSource.registration(registerModel)

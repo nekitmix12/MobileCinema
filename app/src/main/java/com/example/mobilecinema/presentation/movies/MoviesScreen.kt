@@ -58,7 +58,6 @@ class MoviesScreen : Fragment(R.layout.movies) {
         val sharedPreferences = requireContext().getSharedPreferences(
             requireContext().getString(R.string.preference_is_logged_in), Context.MODE_PRIVATE
         )
-        sharedPreferences.getString("authToken", "")?.let { Log.d("feed_screen", it) }
         val tokenStorage = TokenStorageDataSourceImpl(sharedPreferences)
         val networkModule = NetworkModule()
         val interceptor = AuthInterceptor(tokenStorage)
@@ -241,17 +240,14 @@ class MoviesScreen : Fragment(R.layout.movies) {
 
                 progressBar = getProgressBar(currentPosition)
                 progressAnimator = getAnimator(progressBar)
-                Log.e("movies_screen", "$position, $currentPosition")
                 progressAnimator?.addListener(object : AnimatorListenerAdapter() {
                     override fun onAnimationEnd(animation: Animator) {
                         super.onAnimationEnd(animation)
-                        Log.e("movies_screen", currentPosition.toString()+"0")
                         if (viewPager.currentItem == currentPosition)
                             viewPager.setCurrentItem(currentPosition + 1, true)
 
                     }
                 })
-                Log.e("movies_screen", currentPosition.toString()+"1")
                 progressAnimator?.start()
                 changeFilmInfo(currentMovies.movies!![currentPosition])
             }
@@ -297,7 +293,6 @@ class MoviesScreen : Fragment(R.layout.movies) {
                 }
             }
             text.layoutParams = param
-            Log.e("moviesScreen",moviesElement.genres.toString())
             if(moviesElement.genres.size==i+1)
                 break
             text.text = moviesElement.genres[i]?.genreName

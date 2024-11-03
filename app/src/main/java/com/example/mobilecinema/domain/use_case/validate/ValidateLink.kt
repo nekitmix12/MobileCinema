@@ -28,7 +28,8 @@ class ValidateLink {
                 successful = false,
                 errorManager = "Link must be url"
             )
-        try {
+        /*try {
+
             val connection = URL(link).openConnection() as HttpURLConnection
             connection.requestMethod = "GET"
             connection.connectTimeout = 5000
@@ -44,7 +45,7 @@ class ValidateLink {
                     successful = false,
                     errorManager = "Link must be relevant"
                 )
-        }
+        }*/
 
         return ValidationResult(
             successful = true

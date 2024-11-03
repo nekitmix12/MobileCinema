@@ -8,12 +8,15 @@ import kotlinx.coroutines.flow.flow
 
 class PutProfileUseCase(
     private val userRepository: UserRepository,
-    private val configuration: Configuration
-):UseCase<PutProfileUseCase.Request,PutProfileUseCase.Response>(configuration) {
+    configuration: Configuration,
+) : UseCase<PutProfileUseCase.Request, PutProfileUseCase.Response>(configuration) {
+
     override fun process(request: Request): Flow<Response> = flow {
-        userRepository.putProfile(request.userModel)
-        emit(Response())
+        emit(Response((userRepository.putProfile(request.userModel))))
+
     }
-    data class Request(val userModel: ProfileDTO):UseCase.Request
-    class Response:UseCase.Response
+
+
+    data class Request(val userModel: ProfileDTO) : UseCase.Request
+    class Response(putProfile: Unit) : UseCase.Response
 }

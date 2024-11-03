@@ -1,5 +1,6 @@
 package com.example.mobilecinema.presentation.profile
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.LinearGradient
 import android.graphics.Shader
@@ -7,11 +8,14 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.example.mobilecinema.R
 import com.example.mobilecinema.data.datasource.local.TokenStorageDataSourceImpl
 import com.example.mobilecinema.data.datasource.remote.data_source.AuthRemoteDataSourceImpl
@@ -21,6 +25,7 @@ import com.example.mobilecinema.data.network.NetworkModule
 import com.example.mobilecinema.data.repository.AuthRepositoryImpl
 import com.example.mobilecinema.data.repository.UserRepositoryImpl
 import com.example.mobilecinema.databinding.ProfileBinding
+import com.example.mobilecinema.domain.Result
 import com.example.mobilecinema.domain.UseCase
 import com.example.mobilecinema.domain.converters.ProfileConverter
 import com.example.mobilecinema.domain.repository.LocalStorageRepository
@@ -29,13 +34,16 @@ import com.example.mobilecinema.domain.use_case.auth_use_case.LogOutUseCase
 import com.example.mobilecinema.domain.use_case.user_use_case.GetProfileUseCase
 import com.example.mobilecinema.domain.use_case.user_use_case.PutProfileUseCase
 import com.example.mobilecinema.presentation.login.RegistrationFormEvent
+import com.example.mobilecinema.presentation.login.SignUpViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class ProfileScreen : Fragment(R.layout.profile) {
     private var binding: ProfileBinding? = null
     private var viewModel:ProfileViewModel?=null
+    @SuppressLint("UnsafeRepeatOnLifecycleDetector")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = ProfileBinding.bind(view)
@@ -97,10 +105,11 @@ class ProfileScreen : Fragment(R.layout.profile) {
                         binding!!.nameProfile.text = it.data.name
                         binding!!.loginProfile.setText(it.data.nickName, TextView.BufferType.EDITABLE)
                         binding!!.nameProfileEditText.setText(it.data.name, TextView.BufferType.EDITABLE)
+                        binding!!.emailProfile.setText(it.data.email,TextView.BufferType.EDITABLE)
                         binding!!.birthDateProfile.setText(it.data.birthDate, TextView.BufferType.EDITABLE)
                         when(it.data.gender){
-                            1-> binding!!.menButtonProfile.setBackgroundResource(R.drawable.gradient_accent)
-                            2->binding!!.womenButtonProfile.setBackgroundResource(R.drawable.gradient_accent)
+                            0-> binding!!.menButtonProfile.setBackgroundResource(R.drawable.gradient_accent)
+                            1->binding!!.womenButtonProfile.setBackgroundResource(R.drawable.gradient_accent)
                         }
                     }
                 }
@@ -114,12 +123,15 @@ class ProfileScreen : Fragment(R.layout.profile) {
         binding!!.loginProfile.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
             if (!hasFocus) {
                viewModel!!.onEvent(ProfileFormEvent.LoginChanged(binding!!.loginProfile.text.toString()))
+
+                viewModel!!.onEvent(ProfileFormEvent.Submit)
             }
         }
 
         binding!!.nameProfileEditText.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
             if (!hasFocus) {
                 viewModel!!.onEvent(ProfileFormEvent.NameChanged(binding!!.nameProfileEditText.text.toString()))
+                viewModel!!.onEvent(ProfileFormEvent.Submit)
             }
         }
 
@@ -127,12 +139,14 @@ class ProfileScreen : Fragment(R.layout.profile) {
         binding!!.emailProfile.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
             if (!hasFocus) {
                 viewModel!!.onEvent(ProfileFormEvent.EmailChanged(binding!!.emailProfile.text.toString()))
+                viewModel!!.onEvent(ProfileFormEvent.Submit)
             }
         }
 
         binding!!.birthDateProfile.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
             if (!hasFocus) {
                 viewModel!!.onEvent(ProfileFormEvent.BirthDateChanged(binding!!.birthDateProfile.text.toString()))
+                viewModel!!.onEvent(ProfileFormEvent.Submit)
             }
         }
 
@@ -166,6 +180,43 @@ class ProfileScreen : Fragment(R.layout.profile) {
 
             }
         }
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel!!.validationEvents.collectLatest { event ->
+                    when (event) {
+                        is SignUpViewModel.ValidationEvent.Success -> {
+                            Toast.makeText(
+                                requireContext(),
+                                "Validation successful!",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED){
+                viewModel!!.profileUpdateStatus.collect{
+                    when(it){
+                        is Result.Error ->
+                        {
+                            Log.e("profile","error is: ${it.exception}")
+                        }
+                        is Result.Success -> {
+                            Log.e("profile","Success is: ${it.data}")
+
+                        }
+                        null -> {
+                            Log.e("profile","null is: ${it}")
+                        }
+                    }
+                }
+            }
+        }
+
     }
 
     private fun setGradientContext(textView: TextView, vararg colors: Int) {

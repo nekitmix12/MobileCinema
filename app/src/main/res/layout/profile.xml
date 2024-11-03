@@ -61,7 +61,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/manrope_semi_bold"
-                android:text="Васечка Пупкин"
                 android:textColor="@color/white"
                 android:textSize="24sp" />
 
@@ -143,7 +142,6 @@
             android:layout_marginTop="4dp"
             android:layout_marginEnd="24dp"
             android:background="@drawable/sing_in_input_text"
-            android:hint="vasya_pupkin"
             android:paddingStart="16dp"
             android:paddingTop="14dp"
             android:paddingEnd="16dp"
@@ -162,7 +160,6 @@
             android:layout_marginTop="4dp"
             android:layout_marginEnd="24dp"
             android:background="@drawable/sing_in_input_text"
-            android:hint="vasya_pupkin"
             android:paddingStart="16dp"
             android:paddingTop="14dp"
             android:paddingEnd="16dp"
@@ -181,7 +178,6 @@
             android:layout_marginTop="4dp"
             android:layout_marginEnd="24dp"
             android:background="@drawable/sing_in_input_text"
-            android:hint="vasya_pupkin"
             android:paddingStart="16dp"
             android:paddingTop="14dp"
             android:paddingEnd="16dp"
@@ -199,8 +195,9 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="4dp"
             android:layout_marginEnd="24dp"
+            android:autofillHints=""
+            android:inputType="textShortMessage"
             android:background="@drawable/sing_in_input_text"
-            android:hint="vasya_pupkin"
             android:paddingStart="16dp"
             android:paddingTop="14dp"
             android:paddingEnd="16dp"
@@ -245,7 +242,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginTop="16dp"
-            android:text="Дата родения"
+            android:text="@string/birth_date"
             android:textColor="@color/gray"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -276,6 +273,7 @@
                 android:background="@drawable/sing_in_input_text"
                 android:hint="@string/man"
                 android:paddingStart="15dp"
+                android:paddingEnd="15dp"
                 android:textColorHint="@color/white"
                 android:textSize="14sp" />
 
@@ -288,6 +286,7 @@
                 android:background="@drawable/sing_in_input_text"
                 android:hint="@string/women"
                 android:paddingStart="15dp"
+                android:paddingEnd="15dp"
                 android:textColorHint="@color/white"
                 android:textSize="14sp" />
         </LinearLayout>

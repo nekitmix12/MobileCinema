@@ -7,8 +7,4 @@ data class ReviewModifyModel(
     val reviewText:	String,
     val rating:	Int,
     val isAnonymous: Boolean
-){
-    init{
-        require(rating in 1..10)
-    }
-}
+)

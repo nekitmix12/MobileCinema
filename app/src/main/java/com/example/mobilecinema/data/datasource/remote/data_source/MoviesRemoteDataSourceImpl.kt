@@ -1,5 +1,6 @@
 package com.example.mobilecinema.data.datasource.remote.data_source
 
+import android.util.Log
 import com.example.mobilecinema.data.datasource.remote.api_service.ApiServiceMovie
 import com.example.mobilecinema.data.model.favorite_movies.MoviesListModel
 import com.example.mobilecinema.data.model.movie.MovieDetailsModel

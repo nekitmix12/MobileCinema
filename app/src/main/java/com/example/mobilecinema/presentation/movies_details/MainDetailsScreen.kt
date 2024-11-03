@@ -22,18 +22,17 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -67,19 +66,21 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.core.content.ContextCompat
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import com.example.mobilecinema.R
 import com.example.mobilecinema.data.model.auth.UserShortModel
 import com.example.mobilecinema.data.model.review.ReviewModel
+import com.example.mobilecinema.data.model.review.ReviewModifyModel
 import com.google.accompanist.flowlayout.FlowRow
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
-
+@Preview(showSystemUi = true)
 @Composable
-fun MoviesDetailsScreen() {
+fun MoviesDetailsScreen(vm:MoviesDetailViewModel) {
 
     TopView()
     MoviesInfo()
@@ -88,6 +89,8 @@ fun MoviesDetailsScreen() {
 
 @Composable
 fun MoviesInfo() {
+    var showDialog by remember { mutableStateOf(false) }
+
     LazyColumn(
         modifier = Modifier.padding(24.dp, 395.dp, 24.dp)
     ) {
@@ -100,6 +103,15 @@ fun MoviesInfo() {
         item { Finance() }
         item { Reviews() }
     }
+    ReviewsDialog(
+        showDialog = showDialog,
+        onDismiss = {
+            showDialog = false
+        },
+        onSend = {
+
+        }
+    )
 }
 
 @Composable
@@ -596,9 +608,7 @@ fun Info(
                     )
                 )
             }
-            Column(
-
-            ) {
+            Column{
                 Row(
                     modifier = Modifier
                         .padding(16.dp, 48.dp, 16.dp, 8.dp)
@@ -817,26 +827,29 @@ fun Reviews(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-
 @Composable
-fun ReviewsDialog(showDialog: Boolean = true, content: @Composable (() -> Unit)? = null) {
-    if (showDialog) BasicAlertDialog(
-        onDismissRequest = {},
-    ) {
-
-    }
+fun ReviewsDialog(
+    showDialog: Boolean = true,
+    onDismiss: () -> Unit,
+    onSend: (ReviewModifyModel) -> Unit,
+) {
+    if (showDialog)
+        Dialog(onDismissRequest = onDismiss) {
+            DialogContent {
+                onSend(it)
+            }
+        }
 }
 
 @Composable
-@Preview(showSystemUi = true)
-fun DialogContent() {
-    val text = remember {
-        mutableStateOf("")
+fun DialogContent(callback: (ReviewModifyModel) -> Unit) {
+    val review = remember {
+        mutableStateOf(
+            ReviewModifyModel("", 5, true)
+        )
     }
-    val anonymous = remember {
-        mutableStateOf(true)
-    }
+
+
     val startColor = colorResource(id = R.color.gradient_1)
     val endColor = colorResource(id = R.color.gradient_2)
     Column(
@@ -859,10 +872,13 @@ fun DialogContent() {
                 fontFamily = FontFamily(Font(R.font.manrope_medium))
             ), modifier = Modifier.padding(top = 24.dp)
         )
-        CustomSlider()
+        CustomSlider {
+            review.value = review.value.copy(rating = it)
+        }
+
         BasicTextField(
-            value = text.value,
-            onValueChange = { text.value = it },
+            value = review.value.reviewText,
+            onValueChange = { review.value = review.value.copy(reviewText = it) },
             modifier = Modifier
                 .clip(RoundedCornerShape(8.dp))
                 .background(color = colorResource(id = R.color.dark_faded))
@@ -870,7 +886,8 @@ fun DialogContent() {
                 .height(120.dp)
         )
         Row(
-            modifier = Modifier.padding(top = 14.dp), verticalAlignment = Alignment.CenterVertically
+            modifier = Modifier.padding(top = 14.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
                 text = stringResource(id = R.string.anonymous_reviews),
@@ -885,8 +902,8 @@ fun DialogContent() {
             )
 
             Switch(
-                checked = anonymous.value, onCheckedChange = {
-                    anonymous.value = it
+                checked = review.value.isAnonymous, onCheckedChange = {
+                    review.value = review.value.copy(isAnonymous = it)
                 }, colors = SwitchDefaults.colors(
                     checkedThumbColor = colorResource(id = R.color.white),
                     checkedTrackColor = colorResource(id = R.color.gradient_1),
@@ -904,7 +921,7 @@ fun DialogContent() {
                 modifier = Modifier.weight(1f)
             )
             Button(
-                onClick = {}, colors = ButtonDefaults.buttonColors(
+                onClick = { callback(review.value) }, colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Transparent
                 ), modifier = Modifier
                     .clip(RoundedCornerShape(8.dp))
@@ -926,21 +943,20 @@ fun DialogContent() {
 
 
 @Composable
-fun CustomSlider() {
-    var sliderPosition by remember { mutableStateOf(5) }
+fun CustomSlider(setResult: (Int) -> Unit) {
+    var sliderPosition by remember { mutableIntStateOf(5) }
     val thumbRadius = 22.dp
     val trackHeight = 16.dp
     val circleRadius = 2.dp
     val startColor = colorResource(id = R.color.gradient_1)
     val endColor = colorResource(id = R.color.gradient_2)
     val darkFadedColor = colorResource(id = R.color.dark_faded)
-    val green = colorResource(id = R.color.green)
     val points = List(11) { it * 0.1f }
     val thumbCornerRadius = 6.dp
     val cornerRadius = 10.dp
     val thumbPadding = 6.dp
     val sliderStartY = 60.dp
-    val sliderEndY = 80.dp
+    val sliderEndY = trackHeight + sliderStartY
     val sliderCenter = (sliderStartY + sliderEndY) / 2
 
     Box(modifier = Modifier
@@ -957,6 +973,7 @@ fun CustomSlider() {
                     abs(it * 0.1f - newPosition)
                 } ?: 0
                 sliderPosition = closestPoint
+                setResult(sliderPosition)
             }
         }) {
         Canvas(
@@ -977,7 +994,7 @@ fun CustomSlider() {
             )
             var path: Path
 
-            if(sliderPosition!=0) {
+            if (sliderPosition != 0) {
                 path = Path().apply {
                     moveTo(0f, sliderY)
                     quadraticTo(
@@ -1067,12 +1084,12 @@ fun CustomSlider() {
                     color = Color.White,
                     radius = circleRadius.toPx(),
                     center = Offset(
-                        ((i+0.2f) * (trackEnd.x - trackStart.x)) / 10,
+                        ((i + 0.2f) * (trackEnd.x - trackStart.x)) / 10,
                         sliderCenter.toPx()
                     )
                 )
             }
-            if(sliderPosition != 10) {
+            if (sliderPosition != 10) {
                 path = Path().apply {
                     moveTo(size.width, sliderY)
                     quadraticTo(
@@ -1114,7 +1131,7 @@ fun CustomSlider() {
                     style = Fill
                 )
             }
-            for (i in sliderPosition+1..10) {
+            for (i in sliderPosition + 1..10) {
                 drawCircle(
                     brush = gradientBrush,
                     radius = circleRadius.toPx(),

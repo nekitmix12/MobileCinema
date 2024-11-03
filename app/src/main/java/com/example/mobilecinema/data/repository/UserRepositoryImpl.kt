@@ -6,15 +6,13 @@ import com.example.mobilecinema.domain.repository.UserRepository
 import kotlinx.coroutines.flow.Flow
 
 class UserRepositoryImpl(
-    private val userRemoteDataSource: UserRemoteDataSource
+    private val userRemoteDataSource: UserRemoteDataSource,
 ) : UserRepository {
-    override fun getProfile(): Flow<ProfileDTO> {
-        return userRemoteDataSource.getProfile()
-    }
+    override fun getProfile(): Flow<ProfileDTO> =
+        userRemoteDataSource.getProfile()
+
 
     override suspend fun putProfile(profileDTO: ProfileDTO) {
         userRemoteDataSource.putProfile(profileDTO)
     }
-
-
 }

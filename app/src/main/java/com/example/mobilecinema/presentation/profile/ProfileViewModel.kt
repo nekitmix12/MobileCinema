@@ -1,5 +1,6 @@
 package com.example.mobilecinema.presentation.profile
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -13,20 +14,20 @@ import com.example.mobilecinema.domain.use_case.auth_use_case.DataConverter
 import com.example.mobilecinema.domain.use_case.auth_use_case.LogOutUseCase
 import com.example.mobilecinema.domain.use_case.user_use_case.GetProfileUseCase
 import com.example.mobilecinema.domain.use_case.user_use_case.PutProfileUseCase
-import com.example.mobilecinema.domain.use_case.validate.ValidateLink
 import com.example.mobilecinema.domain.use_case.validate.ValidateBirthDate
 import com.example.mobilecinema.domain.use_case.validate.ValidateEmail
 import com.example.mobilecinema.domain.use_case.validate.ValidateGender
+import com.example.mobilecinema.domain.use_case.validate.ValidateLink
 import com.example.mobilecinema.domain.use_case.validate.ValidateLogin
 import com.example.mobilecinema.domain.use_case.validate.ValidateName
 import com.example.mobilecinema.presentation.login.SignUpViewModel.ValidationEvent
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import com.example.mobilecinema.domain.Result
 
 class ProfileViewModel(
     private val validateLogin: ValidateLogin = ValidateLogin(),
@@ -39,13 +40,14 @@ class ProfileViewModel(
     private val getProfileUseCase: GetProfileUseCase,
     private val putProfileUseCase: PutProfileUseCase,
     private val logOutUseCase: LogOutUseCase,
-    private val profileConverter: ProfileConverter
+    private val profileConverter: ProfileConverter,
 ) : ViewModel() {
 
     private var _profile = MutableStateFlow<UiState<ProfileDTO>>(UiState.Loading)
     val profile: StateFlow<UiState<ProfileDTO>> = _profile
 
-
+    private val _profileUpdateStatus = MutableStateFlow<Result<PutProfileUseCase.Response>?>(null)
+    val profileUpdateStatus: StateFlow<Result<PutProfileUseCase.Response>?> = _profileUpdateStatus
 
     var state by mutableStateOf(ProfileModel())
 
@@ -61,21 +63,33 @@ class ProfileViewModel(
                 .collect {
                     _profile.value = it
                 }
-            profile.collect{
-                when(it){
-                    is UiState.Loading->{}
-                    is UiState.Success->{
+            profile.collect {
+                when (it) {
+                    is UiState.Loading -> {}
+                    is UiState.Success -> {
                         state = state.copy(
                             id = it.data.id,
                             gender = it.data.gender,
                             email = it.data.email,
-                            birthDate=it.data.birthDate,
-                            login=it.data.nickName,
-                            avatarLink =it.data.avatarLink,
-                            name =it.data.name
+                            birthDate = it.data.birthDate,
+                            login = it.data.nickName,
+                            avatarLink = it.data.avatarLink,
+                            name = it.data.name
+                        )
+                        Log.e(
+                            "profileVM", state.copy(
+                                id = it.data.id,
+                                gender = it.data.gender,
+                                email = it.data.email,
+                                birthDate = it.data.birthDate,
+                                login = it.data.nickName,
+                                avatarLink = it.data.avatarLink,
+                                name = it.data.name
+                            ).toString()
                         )
                     }
-                    is UiState.Error->{}
+
+                    is UiState.Error -> {}
                 }
             }
         }
@@ -88,6 +102,10 @@ class ProfileViewModel(
                     profileDTO
                 )
             )
+                .collect{
+                    _profileUpdateStatus.value = it
+
+                }
         }
     }
 
@@ -127,13 +145,16 @@ class ProfileViewModel(
             }
 
             is ProfileFormEvent.Submit -> {
+                Log.d("asda", "sub")
                 submitData()
+                Log.d("asda", "sub")
             }
         }
     }
 
 
     private fun submitData() {
+        Log.d("profileVm","startSub")
         val emailResult = validateEmail.execute(state.email)
         val nameResult = validateName.execute(state.name)
         val loginResult = validateLogin.execute(state.login)
@@ -145,10 +166,13 @@ class ProfileViewModel(
             nameResult,
             emailResult,
             loginResult,
-            birthDateResult,
+            //birthDateResult,
             genderResult,
             avatarLinkResult
-        ).any { it.errorManager != null }
+        ).any {
+            it.errorManager != null
+        }
+        Log.d("profileVm","is errors $hasError")
 
         if (hasError) {
             state = state.copy(
@@ -157,15 +181,27 @@ class ProfileViewModel(
                 loginError = loginResult.errorManager,
                 birthDateError = birthDateResult.errorManager,
                 genderError = genderResult.errorManager,
-                avatarLink = avatarLinkResult.errorManager
+                avatarLinkError = avatarLinkResult.errorManager
             )
-
+            Log.d("use_case", state.toString())
             return
         }
 
         viewModelScope.launch {
             validationEventChannel.send(ValidationEvent.Success)
         }
+        Log.d(
+            "profile", ProfileDTO(
+                name = state.name,
+                nickName = state.login,
+                email = state.email,
+                birthDate = state.birthDate,
+                gender = state.gender,
+                id = state.id,
+                avatarLink = state.avatarLink
+            ).toString()
+        )
+        Log.d("profileVm","start request")
         putProfile(
             ProfileDTO(
                 name = state.name,
