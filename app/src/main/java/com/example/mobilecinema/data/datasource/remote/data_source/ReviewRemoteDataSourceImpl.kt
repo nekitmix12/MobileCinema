@@ -7,16 +7,16 @@ import kotlinx.coroutines.flow.Flow
 class ReviewRemoteDataSourceImpl(
     private val apiServiceReview: ApiServiceReview
 ):ReviewRemoteDataSource{
-    override fun addReview(reviewModifyModel: ReviewModifyModel, movieId:String) {
+    override suspend fun addReview(reviewModifyModel: ReviewModifyModel, movieId:String) {
         apiServiceReview.addReview(movieId,reviewModifyModel)
     }
 
-    override fun editReview(moveId:String, reviewId:String, reviewModifyModel: ReviewModifyModel){
-
+    override suspend fun editReview(moveId:String, reviewId:String, reviewModifyModel: ReviewModifyModel){
+        apiServiceReview.editReview(moveId,reviewId,reviewModifyModel)
     }
 
-    override fun deleteReview(moveId:String, reviewId:String){
-
+    override suspend fun deleteReview(moveId:String, reviewId:String){
+        apiServiceReview.deleteReview(moveId,reviewId)
     }
 
 }

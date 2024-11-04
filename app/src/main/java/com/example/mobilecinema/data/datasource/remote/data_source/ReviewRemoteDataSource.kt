@@ -4,10 +4,10 @@ import com.example.mobilecinema.data.model.review.ReviewModifyModel
 import kotlinx.coroutines.flow.Flow
 
 interface ReviewRemoteDataSource {
-    fun addReview(reviewModifyModel: ReviewModifyModel, movieId: String)
+    suspend fun addReview(reviewModifyModel: ReviewModifyModel, movieId: String)
 
-    fun editReview(moveId: String, reviewId: String, reviewModifyModel: ReviewModifyModel)
+    suspend fun editReview(moveId: String, reviewId: String, reviewModifyModel: ReviewModifyModel)
 
-    fun deleteReview(moveId: String, reviewId: String)
+    suspend fun deleteReview(moveId: String, reviewId: String)
 
 }

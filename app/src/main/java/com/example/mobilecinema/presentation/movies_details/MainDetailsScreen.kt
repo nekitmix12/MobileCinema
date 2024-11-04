@@ -1,5 +1,6 @@
 package com.example.mobilecinema.presentation.movies_details
 
+import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -31,6 +32,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -63,7 +65,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -72,46 +73,90 @@ import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import com.example.mobilecinema.R
 import com.example.mobilecinema.data.model.auth.UserShortModel
+import com.example.mobilecinema.data.model.kinopoisk_api.Film
+import com.example.mobilecinema.data.model.movie.GenreModel
 import com.example.mobilecinema.data.model.review.ReviewModel
 import com.example.mobilecinema.data.model.review.ReviewModifyModel
+import com.example.mobilecinema.domain.use_case.UiState
 import com.google.accompanist.flowlayout.FlowRow
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
-@Preview(showSystemUi = true)
 @Composable
-fun MoviesDetailsScreen(vm:MoviesDetailViewModel) {
+fun MoviesDetailsScreen(vm: MoviesDetailViewModel) {
 
     TopView()
-    MoviesInfo()
+    MoviesInfo(vm)
 }
 
 
 @Composable
-fun MoviesInfo() {
+fun MoviesInfo(vm: MoviesDetailViewModel) {
     var showDialog by remember { mutableStateOf(false) }
-
-    LazyColumn(
-        modifier = Modifier.padding(24.dp, 395.dp, 24.dp)
-    ) {
-        item { MoviesYears() }
-        item { Description() }
-        item { Rating() }
-        item { Info() }
-        item { Producer() }
-        item { Genres() }
-        item { Finance() }
-        item { Reviews() }
+    var review by remember {
+        mutableStateOf<ReviewModifyModel?>(null)
     }
-    ReviewsDialog(
-        showDialog = showDialog,
-        onDismiss = {
-            showDialog = false
-        },
-        onSend = {
 
+
+
+    val film by vm.film.collectAsState()
+
+    when (film) {
+        is UiState.Error -> {
+            Log.d("MoviesDetail", (film as UiState.Error<Film>).errorMessage)
         }
-    )
+
+        UiState.Loading -> {
+            CircularProgressIndicator()
+        }
+
+        is UiState.Success -> {
+            LazyColumn(
+                modifier = Modifier.padding(24.dp, 395.dp, 24.dp)
+            ) {
+                item { MoviesYears(vm.detail?.year ?: 0) }
+                item { Description(vm.detail?.description ?: "") }
+                item {
+                    (film as UiState.Success<Film>).data.ratingKinopoisk?.let {
+                        (film as UiState.Success<Film>).data.ratingImdb?.let { it1 ->
+                            Rating(
+                                vm.ratingCinema, it, it1
+                            )
+                        }
+                    }
+                }
+                item {
+                    (film as UiState.Success<Film>).data.year?.let {
+                        (film as UiState.Success<Film>).data.filmLength?.let { it1 ->
+                            (film as UiState.Success<Film>).data.ratingAgeLimits?.let { it2 ->
+                                vm.detail?.country?.let { it3 ->
+                                    Info(
+                                        it3, it2, it1, it
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+                item { vm.detail?.director?.let { Producer(it) } }
+                item {
+                    vm.detail?.let {
+                        Genres(
+                            it.genres
+                        )
+                    }
+                }
+                item { Finance(vm.detail?.budget.toString(), vm.detail?.fees.toString()) }
+                item { vm.detail?.reviews?.let { Reviews(it) } }
+            }
+            ReviewsDialog(showDialog = showDialog, onDismiss = {
+                showDialog = false
+            }, onSend = {
+                review = it
+            })
+        }
+    }
+
 }
 
 @Composable
@@ -190,7 +235,7 @@ fun Description(description: String = "Группа европейских ми�
 }
 
 @Composable
-fun Rating() {
+fun Rating(cinemaRating: Float, kinopoisRating: Float, imdb: Float) {
     val backgroundColor = colorResource(id = R.color.dark_faded)
     Card(
         modifier = Modifier
@@ -251,7 +296,7 @@ fun Rating() {
                                 .height(24.dp)
                         )
                         Text(
-                            text = "9.9", style = TextStyle(
+                            text = cinemaRating.toString(), style = TextStyle(
                                 fontSize = 20.sp,
                                 color = Color.White,
                                 fontFamily = FontFamily(Font(R.font.manrope_bold))
@@ -280,7 +325,7 @@ fun Rating() {
 
                         )
                         Text(
-                            text = "9.9", style = TextStyle(
+                            text = kinopoisRating.toString(), style = TextStyle(
                                 fontSize = 20.sp,
                                 color = Color.White,
                                 fontFamily = FontFamily(Font(R.font.manrope_bold))
@@ -309,7 +354,7 @@ fun Rating() {
                                 .size(24.dp)
                         )
                         Text(
-                            text = "9.9", style = TextStyle(
+                            text = imdb.toString(), style = TextStyle(
                                 fontSize = 20.sp,
                                 color = Color.White,
                                 fontFamily = FontFamily(Font(R.font.manrope_bold))
@@ -327,7 +372,7 @@ fun Rating() {
 
 @Composable
 fun Genres(
-    listName: List<String> = listOf("триллер", "драма", "фантастика"),
+    listName: List<GenreModel?>,
     listFavorite: List<Boolean> = listOf(true, false, false),
 ) {
     val backgroundColor = colorResource(id = R.color.dark_faded)
@@ -377,7 +422,7 @@ fun Genres(
                         .padding(16.dp, 0.dp, 16.dp, 16.dp)
                 ) {
                     listName.forEachIndexed { index, _ ->
-                        GenreElement(listName[index], listFavorite[index])
+                        listName[index]?.genreName?.let { GenreElement(it, listFavorite[index]) }
                     }
                 }
 
@@ -388,7 +433,7 @@ fun Genres(
 }
 
 @Composable
-fun Finance(budget: String = "\$ 15 000 000", feel: String = "\$ 30 000 000") {
+fun Finance(budget: String, feel: String) {
     val backgroundColor = colorResource(id = R.color.dark_faded)
     Card(
         modifier = Modifier
@@ -437,7 +482,7 @@ fun Finance(budget: String = "\$ 15 000 000", feel: String = "\$ 30 000 000") {
                             )
                     ) {
                         InfoElement(
-                            res = R.string.budget, budget
+                            res = R.string.budget, "\$ $budget"
                         )
                     }
                     Spacer(
@@ -452,7 +497,7 @@ fun Finance(budget: String = "\$ 15 000 000", feel: String = "\$ 30 000 000") {
                             )
                     ) {
                         InfoElement(
-                            res = R.string.feel_in_world, feel
+                            res = R.string.feel_in_world, "\$ $feel"
                         )
                     }
                 }
@@ -495,7 +540,7 @@ fun GenreElement(genre: String = "фантастикаasd", isFavorite: Boolean 
 }
 
 @Composable
-fun Producer() {
+fun Producer(name: String) {
     val backgroundColor = colorResource(id = R.color.dark_faded)
     Card(
         modifier = Modifier
@@ -556,7 +601,7 @@ fun Producer() {
                             contentScale = ContentScale.Crop
                         )
                         Text(
-                            text = "Баран бо Одар", style = TextStyle(
+                            text = name, style = TextStyle(
                                 fontSize = 16.sp,
                                 color = colorResource(id = R.color.white),
                                 fontFamily = FontFamily(Font(R.font.manrope_medium))
@@ -608,7 +653,7 @@ fun Info(
                     )
                 )
             }
-            Column{
+            Column {
                 Row(
                     modifier = Modifier
                         .padding(16.dp, 48.dp, 16.dp, 8.dp)
@@ -833,12 +878,11 @@ fun ReviewsDialog(
     onDismiss: () -> Unit,
     onSend: (ReviewModifyModel) -> Unit,
 ) {
-    if (showDialog)
-        Dialog(onDismissRequest = onDismiss) {
-            DialogContent {
-                onSend(it)
-            }
+    if (showDialog) Dialog(onDismissRequest = onDismiss) {
+        DialogContent {
+            onSend(it)
         }
+    }
 }
 
 @Composable
@@ -886,8 +930,7 @@ fun DialogContent(callback: (ReviewModifyModel) -> Unit) {
                 .height(120.dp)
         )
         Row(
-            modifier = Modifier.padding(top = 14.dp),
-            verticalAlignment = Alignment.CenterVertically
+            modifier = Modifier.padding(top = 14.dp), verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
                 text = stringResource(id = R.string.anonymous_reviews),
@@ -977,8 +1020,7 @@ fun CustomSlider(setResult: (Int) -> Unit) {
             }
         }) {
         Canvas(
-            modifier = Modifier
-                .matchParentSize()
+            modifier = Modifier.matchParentSize()
         ) {
             val sliderY = sliderCenter.toPx()
 
@@ -998,8 +1040,7 @@ fun CustomSlider(setResult: (Int) -> Unit) {
                 path = Path().apply {
                     moveTo(0f, sliderY)
                     quadraticTo(
-                        0f, sliderStartY.toPx(), cornerRadius.toPx(),
-                        sliderStartY.toPx()
+                        0f, sliderStartY.toPx(), cornerRadius.toPx(), sliderStartY.toPx()
                     )
                     lineTo(
                         sliderX - thumbPadding.toPx() - thumbCornerRadius.toPx(),
@@ -1012,8 +1053,7 @@ fun CustomSlider(setResult: (Int) -> Unit) {
                         sliderStartY.toPx() + thumbCornerRadius.toPx()
                     )
                     lineTo(
-                        sliderX - thumbPadding.toPx(),
-                        sliderEndY.toPx() - thumbCornerRadius.toPx()
+                        sliderX - thumbPadding.toPx(), sliderEndY.toPx() - thumbCornerRadius.toPx()
                     )
                     quadraticTo(
                         sliderX - thumbPadding.toPx(),
@@ -1033,9 +1073,7 @@ fun CustomSlider(setResult: (Int) -> Unit) {
 
 
                 drawPath(
-                    path = path,
-                    brush = gradientBrush,
-                    style = Fill
+                    path = path, brush = gradientBrush, style = Fill
                 )
 
             }
@@ -1052,11 +1090,8 @@ fun CustomSlider(setResult: (Int) -> Unit) {
 
 
             drawPath(
-                path = path,
-                brush = gradientBrush,
-                style = Stroke(
-                    width = 2.dp.toPx(),
-                    cap = StrokeCap.Round
+                path = path, brush = gradientBrush, style = Stroke(
+                    width = 2.dp.toPx(), cap = StrokeCap.Round
                 )
             )
 
@@ -1081,11 +1116,8 @@ fun CustomSlider(setResult: (Int) -> Unit) {
 
             for (i in 0..<sliderPosition) {
                 drawCircle(
-                    color = Color.White,
-                    radius = circleRadius.toPx(),
-                    center = Offset(
-                        ((i + 0.2f) * (trackEnd.x - trackStart.x)) / 10,
-                        sliderCenter.toPx()
+                    color = Color.White, radius = circleRadius.toPx(), center = Offset(
+                        ((i + 0.2f) * (trackEnd.x - trackStart.x)) / 10, sliderCenter.toPx()
                     )
                 )
             }
@@ -1093,7 +1125,9 @@ fun CustomSlider(setResult: (Int) -> Unit) {
                 path = Path().apply {
                     moveTo(size.width, sliderY)
                     quadraticTo(
-                        size.width, sliderStartY.toPx(), size.width - cornerRadius.toPx(),
+                        size.width,
+                        sliderStartY.toPx(),
+                        size.width - cornerRadius.toPx(),
                         sliderStartY.toPx()
                     )
                     lineTo(
@@ -1107,8 +1141,7 @@ fun CustomSlider(setResult: (Int) -> Unit) {
                         sliderStartY.toPx() + thumbCornerRadius.toPx()
                     )
                     lineTo(
-                        sliderX + thumbPadding.toPx(),
-                        sliderEndY.toPx() - thumbCornerRadius.toPx()
+                        sliderX + thumbPadding.toPx(), sliderEndY.toPx() - thumbCornerRadius.toPx()
                     )
                     quadraticTo(
                         sliderX + thumbPadding.toPx(),
@@ -1120,24 +1153,18 @@ fun CustomSlider(setResult: (Int) -> Unit) {
                         size.width - cornerRadius.toPx(), sliderEndY.toPx()
                     )
                     quadraticTo(
-                        size.width, sliderEndY.toPx(),
-                        size.width, sliderY
+                        size.width, sliderEndY.toPx(), size.width, sliderY
                     )
                     close()
                 }
                 drawPath(
-                    path = path,
-                    color = darkFadedColor,
-                    style = Fill
+                    path = path, color = darkFadedColor, style = Fill
                 )
             }
             for (i in sliderPosition + 1..10) {
                 drawCircle(
-                    brush = gradientBrush,
-                    radius = circleRadius.toPx(),
-                    center = Offset(
-                        (i * (trackEnd.x - trackStart.x)) / 10.3f,
-                        sliderCenter.toPx()
+                    brush = gradientBrush, radius = circleRadius.toPx(), center = Offset(
+                        (i * (trackEnd.x - trackStart.x)) / 10.3f, sliderCenter.toPx()
                     )
                 )
             }

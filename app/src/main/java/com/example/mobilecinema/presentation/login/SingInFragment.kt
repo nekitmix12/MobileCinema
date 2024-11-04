@@ -81,8 +81,7 @@ class SingInFragment : Fragment(R.layout.sing_in) {
 
                     is UiState.Success -> {
                         addStorageUseCase.addStorage(it.data.token)
-                        startActivity(Intent(requireContext(), CinemaActivity::class.java))
-                        Toast.makeText(requireContext(), it.data.token, Toast.LENGTH_SHORT).show()
+                        startActivity(Intent(requireContext(), CinemaActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY))
                     }
                 }
             }

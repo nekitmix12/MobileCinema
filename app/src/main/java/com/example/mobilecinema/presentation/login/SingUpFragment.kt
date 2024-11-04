@@ -328,7 +328,7 @@ class SingUpFragment : Fragment(R.layout.sing_up) {
 
                     is UiState.Success -> {
                         Toast.makeText(requireContext(), it.data.token, Toast.LENGTH_SHORT).show()
-                        startActivity(Intent(requireContext(),CinemaActivity::class.java))
+                        startActivity(Intent(requireContext(),CinemaActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY))
                     }
                 }
             }

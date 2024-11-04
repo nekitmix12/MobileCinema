@@ -12,7 +12,7 @@ class MoviesRepositoryImpl(private val moviesRemoteDataSource: MoviesRemoteDataS
         return moviesRemoteDataSource.getMoviesPage(number)
     }
 
-    override fun getDetails(id: UUID): Flow<MovieDetailsModel> {
+    override fun getDetails(id: String): Flow<MovieDetailsModel> {
         return moviesRemoteDataSource.getDetails(id)
     }
 }

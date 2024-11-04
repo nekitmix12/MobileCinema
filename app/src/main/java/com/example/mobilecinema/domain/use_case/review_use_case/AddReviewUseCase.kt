@@ -5,14 +5,13 @@ import com.example.mobilecinema.domain.UseCase
 import com.example.mobilecinema.domain.repository.ReviewRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
 
 class AddReviewUseCase(
     private val reviewRepository: ReviewRepository,
     private val configuration: Configuration,
 ) : UseCase<AddReviewUseCase.Request, AddReviewUseCase.Response>(configuration) {
 
-    data class Response(val response: String) : UseCase.Response
+    data class Response(val response: Unit) : UseCase.Response
     data class Request(
         val movieId: String,
         val id: String,
@@ -21,13 +20,15 @@ class AddReviewUseCase(
 
     override fun process(request: Request): Flow<Response> {
         return flow {
-            reviewRepository.addReview(
-                request.reviewModifyModel,
-                request.movieId,
-                request.id
-            ).map {
-                Response(it)
-            }
+            emit(
+                Response(
+                    reviewRepository.addReview(
+                        request.reviewModifyModel,
+                        request.movieId,
+                        request.id
+                    )
+                )
+            )
         }
     }
 }

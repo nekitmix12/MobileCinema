@@ -9,5 +9,5 @@ import java.util.UUID
 interface MoviesRemoteDataSource {
     fun getMoviesPage(number: Int): Flow<MoviesPagedListModel>
 
-    fun getDetails(id: UUID): Flow<MovieDetailsModel>
+    fun getDetails(id: String): Flow<MovieDetailsModel>
 }

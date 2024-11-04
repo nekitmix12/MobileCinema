@@ -5,6 +5,7 @@ import com.example.mobilecinema.R
 import com.example.mobilecinema.data.datasource.local.TokenStorageDataSourceImpl
 import com.example.mobilecinema.data.datasource.remote.api_service.ApiServiceAuth
 import com.example.mobilecinema.data.datasource.remote.api_service.ApiServiceFavoriteMovies
+import com.example.mobilecinema.data.datasource.remote.api_service.ApiServiceKinopoisk
 import com.example.mobilecinema.data.datasource.remote.api_service.ApiServiceMovie
 import com.example.mobilecinema.data.datasource.remote.api_service.ApiServiceReview
 import com.example.mobilecinema.data.datasource.remote.api_service.ApiServiceUser
@@ -50,6 +51,10 @@ class NetworkModule {
     fun provideUserService(retrofit: Retrofit):
             ApiServiceUser =
         retrofit.create(ApiServiceUser::class.java)
+
+    fun providerKinopoiskService(retrofit: Retrofit):
+            ApiServiceKinopoisk =
+        retrofit.create(ApiServiceKinopoisk::class.java)
 
     fun provideTokenStorage(context: Context): TokenStorageDataSourceImpl =
         TokenStorageDataSourceImpl(context.getSharedPreferences(context.getString(R.string.preference_is_logged_in), Context.MODE_PRIVATE))

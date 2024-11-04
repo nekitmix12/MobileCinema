@@ -53,4 +53,10 @@
     <string name="evaluation">Оценка</string>
     <string name="anonymous_reviews">Анонимный отзыв</string>
     <string name="send">Отправить</string>
+    <string name="empty">Здесь пока пусто</string>
+    <string name="add_favorite">Добавьте любимые жанры и фильмы, чтобы вернуться к ним позже</string>
+    <string name="find_film">Найти фильм для себя</string>
+    <string name="favorite_genres">Любимые жанры</string>
+    <string name="favorite_films">Любимые фильмы</string>
+    <string name="favorites">Избранное</string>
 </resources>

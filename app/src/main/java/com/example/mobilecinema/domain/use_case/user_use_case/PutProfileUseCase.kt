@@ -13,10 +13,9 @@ class PutProfileUseCase(
 
     override fun process(request: Request): Flow<Response> = flow {
         emit(Response((userRepository.putProfile(request.userModel))))
-
     }
 
 
     data class Request(val userModel: ProfileDTO) : UseCase.Request
-    class Response(putProfile: Unit) : UseCase.Response
+    class Response(val putProfile: Unit) : UseCase.Response
 }

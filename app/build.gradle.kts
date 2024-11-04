@@ -57,6 +57,7 @@ android {
 }
 
 dependencies {
+
     implementation("io.coil-kt:coil-compose:2.3.0")
     implementation("com.google.accompanist:accompanist-flowlayout:0.31.0-alpha")
     implementation (libs.androidx.viewpager2.v100)

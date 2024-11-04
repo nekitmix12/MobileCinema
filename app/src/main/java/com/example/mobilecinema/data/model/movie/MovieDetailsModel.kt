@@ -3,7 +3,6 @@ package com.example.mobilecinema.data.model.movie
 import com.example.mobilecinema.data.model.review.ReviewModel
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import java.util.UUID
 
 @Serializable
 data class MovieDetailsModel (
@@ -12,8 +11,8 @@ data class MovieDetailsModel (
     val poster:	String?,
     val year: Int,
     val country: String?,
-    val genres:	GenreModel?,
-    val reviews: ReviewModel?,
+    val genres:	List<GenreModel?>,
+    val reviews: List<ReviewModel>?,
     @SerialName("time")
     val filmTime: Int,
     val tagline: String?,
@@ -22,13 +21,4 @@ data class MovieDetailsModel (
     val budget: Int?,
     val fees: Int?,
     val ageLimit: Int
-){
-    init{
-        require(try {
-            UUID.fromString(id)
-            true
-        } catch (e: IllegalArgumentException) {
-            false
-        })
-    }
-}
+)

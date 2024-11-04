@@ -9,16 +9,15 @@ import kotlinx.coroutines.flow.flow
 class ReviewRepositoryImpl(
     private val reviewRemoteDataSourceImpl: ReviewRemoteDataSourceImpl,
 ) : ReviewRepository {
-    override fun addReview(
+    override suspend fun addReview(
         reviewModifyModel: ReviewModifyModel,
         movieId: String,
         id: String
-    ): Flow<String> {
+    ) {
         reviewRemoteDataSourceImpl.addReview(reviewModifyModel, movieId)
-        return flow {  }
     }
 
-    override fun editReview(
+    override suspend fun editReview(
         moveId: String,
         reviewId: String,
         reviewModifyModel: ReviewModifyModel
@@ -26,7 +25,7 @@ class ReviewRepositoryImpl(
         reviewRemoteDataSourceImpl.editReview(moveId, reviewId, reviewModifyModel)
     }
 
-    override fun deleteReview(moveId: String, reviewId: String) {
+    override suspend fun deleteReview(moveId: String, reviewId: String) {
         reviewRemoteDataSourceImpl.deleteReview(moveId,reviewId)
     }
 
