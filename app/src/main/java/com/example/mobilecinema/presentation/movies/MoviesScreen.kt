@@ -6,7 +6,6 @@ import android.animation.ObjectAnimator
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.widget.ProgressBar
@@ -18,9 +17,12 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.room.Room
 import androidx.viewpager2.widget.ViewPager2
 import com.example.mobilecinema.R
+import com.example.mobilecinema.data.datasource.local.AppDataBase
 import com.example.mobilecinema.data.datasource.local.TokenStorageDataSourceImpl
+import com.example.mobilecinema.data.datasource.local.data_source.FilmLocalDataSourceImpl
 import com.example.mobilecinema.data.datasource.remote.data_source.FavoritesMoviesRemoteDataSourceImpl
 import com.example.mobilecinema.data.datasource.remote.data_source.MoviesRemoteDataSourceImpl
 import com.example.mobilecinema.data.model.favorite_movies.MoviesListModel
@@ -33,8 +35,8 @@ import com.example.mobilecinema.data.repository.MoviesRepositoryImpl
 import com.example.mobilecinema.databinding.MoviesBinding
 import com.example.mobilecinema.domain.MoviesFilmRatingImpl
 import com.example.mobilecinema.domain.UseCase
-import com.example.mobilecinema.domain.converters.FavoriteMoviesConverter
-import com.example.mobilecinema.domain.converters.MoviesConverter
+import com.example.mobilecinema.domain.converters.film.FavoriteMoviesConverter
+import com.example.mobilecinema.domain.converters.film.MoviesConverter
 import com.example.mobilecinema.domain.converters.MoviesRatingConverter
 import com.example.mobilecinema.domain.use_case.UiState
 import com.example.mobilecinema.domain.use_case.favorite_movies_use_case.GetFavoriteMoviesUseCase
@@ -66,8 +68,13 @@ class MoviesScreen : Fragment(R.layout.movies) {
                 networkModule.provideOkHttpClient(interceptor)
             )
         )
+        val dataBase = Room.databaseBuilder(
+            requireContext(),
+            AppDataBase::class.java, "app_database"
+        ).build()
+        val filmLocalDataSource = FilmLocalDataSourceImpl(dataBase.filmDao())
         val moviesRemoteDataSource = MoviesRemoteDataSourceImpl(apiServiceMovies)
-        val moviesRepository = MoviesRepositoryImpl(moviesRemoteDataSource)
+        val moviesRepository = MoviesRepositoryImpl(moviesRemoteDataSource,filmLocalDataSource)
         val configuration = UseCase.Configuration(Dispatchers.IO)
         val getMoviesPageUseCase = GetMoviesPageUseCase(configuration, moviesRepository)
         val moviesConverter = MoviesConverter()

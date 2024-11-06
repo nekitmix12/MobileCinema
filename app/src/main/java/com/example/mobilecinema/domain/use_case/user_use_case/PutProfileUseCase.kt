@@ -12,7 +12,11 @@ class PutProfileUseCase(
 ) : UseCase<PutProfileUseCase.Request, PutProfileUseCase.Response>(configuration) {
 
     override fun process(request: Request): Flow<Response> = flow {
-        emit(Response((userRepository.putProfile(request.userModel))))
+        emit(
+            Response(
+                (userRepository.putProfile(request.userModel))
+            )
+        )
     }
 
 

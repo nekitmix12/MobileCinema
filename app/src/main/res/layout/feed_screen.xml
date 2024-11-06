@@ -52,6 +52,49 @@
         app:layout_constraintTop_toBottomOf="@+id/cardStackView"
         app:layout_constraintVertical_bias="0.708">
 
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:text="драмма"
+            android:textColor="@color/white"
+            android:background="@drawable/dark_faded_arounded"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"
+            android:gravity="center"
+            android:clickable="true"
+            android:layout_margin="4dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:text="драмма"
+            android:textColor="@color/white"
+            android:background="@drawable/dark_faded_arounded"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"
+            android:gravity="center"
+            android:clickable="true"
+            android:layout_margin="4dp"/><TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:focusable="true"
+        android:text="драмма"
+        android:textColor="@color/white"
+        android:background="@drawable/dark_faded_arounded"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp"
+        android:gravity="center"
+        android:clickable="true"
+        android:layout_margin="4dp"/>
+        
     </LinearLayout>
 
     <LinearLayout
@@ -67,6 +110,7 @@
 
         <TextView
             android:id="@+id/movie_name"
+            android:textColor="@color/white"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:textAlignment="center"
@@ -74,6 +118,7 @@
 
         <TextView
             android:id="@+id/movie_info"
+            android:textColor="@color/gray"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:textAlignment="center" />

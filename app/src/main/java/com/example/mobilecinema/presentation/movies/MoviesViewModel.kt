@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mobilecinema.data.model.favorite_movies.MoviesListModel
 import com.example.mobilecinema.data.model.movie.MoviesPagedListModel
-import com.example.mobilecinema.domain.converters.FavoriteMoviesConverter
-import com.example.mobilecinema.domain.converters.MoviesConverter
+import com.example.mobilecinema.domain.converters.film.FavoriteMoviesConverter
+import com.example.mobilecinema.domain.converters.film.MoviesConverter
 import com.example.mobilecinema.domain.converters.MoviesRatingConverter
 import com.example.mobilecinema.domain.use_case.UiState
 import com.example.mobilecinema.domain.use_case.favorite_movies_use_case.GetFavoriteMoviesUseCase

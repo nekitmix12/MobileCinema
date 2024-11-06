@@ -4,9 +4,13 @@ import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.ViewModelProvider
+import androidx.room.Room
 import com.example.mobilecinema.R
+import com.example.mobilecinema.data.datasource.local.AppDataBase
 import com.example.mobilecinema.data.datasource.local.TokenStorageDataSourceImpl
+import com.example.mobilecinema.data.datasource.local.data_source.FilmLocalDataSourceImpl
 import com.example.mobilecinema.data.datasource.remote.data_source.KinopoiskRemoteDataSourceImpl
 import com.example.mobilecinema.data.datasource.remote.data_source.MoviesRemoteDataSourceImpl
 import com.example.mobilecinema.data.datasource.remote.data_source.ReviewRemoteDataSourceImpl
@@ -61,10 +65,14 @@ class MoviesDetailsActivity : ComponentActivity() {
         val reviewRemoteDataSource = ReviewRemoteDataSourceImpl(apiServiceReview)
         val kinopoiskRemoteDataSource = KinopoiskRemoteDataSourceImpl(apiServiceKinopoisk)
         val moviesRemoteDataSource = MoviesRemoteDataSourceImpl(apiServiceMovies)
-
+        val dataBase = Room.databaseBuilder(
+            this,
+            AppDataBase::class.java, "app_database"
+        ).build()
+        val filmLocalDataSource = FilmLocalDataSourceImpl(dataBase.filmDao())
         val reviewRepository = ReviewRepositoryImpl(reviewRemoteDataSource)
         val kinopoiskRepository = KinopoiskRepositoryImpl(kinopoiskRemoteDataSource)
-        val moviesRepository = MoviesRepositoryImpl(moviesRemoteDataSource)
+        val moviesRepository = MoviesRepositoryImpl(moviesRemoteDataSource,filmLocalDataSource)
 
         val addReviewUseCase = AddReviewUseCase(reviewRepository, configuration)
         val editReviewUseCase = EditReviewUseCase(reviewRepository, configuration)

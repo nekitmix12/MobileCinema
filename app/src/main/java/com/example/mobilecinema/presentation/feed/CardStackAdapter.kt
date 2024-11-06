@@ -30,12 +30,18 @@ class CardStackAdapter(private val items: MoviesPagedListModel) :
         holder.bind(items.movies!![position])
     }
 
+    fun getItemMovies(position: Int): MovieElementModel {
+        return items.movies!![position]
+    }
+
     override fun getItemCount(): Int = items.movies!!.size
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val filmHolder: ImageView = view.findViewById(R.id.movie_card_id)
         val like: ImageView = itemView.findViewById(R.id.like)
         val dislike: ImageView = itemView.findViewById(R.id.dislike)
+
+
         fun bind(item: MovieElementModel) {
             filmHolder.setBackgroundColor(Color.TRANSPARENT)
             Picasso.get().load(item.poster)

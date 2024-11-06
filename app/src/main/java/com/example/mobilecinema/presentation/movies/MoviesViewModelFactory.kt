@@ -2,8 +2,8 @@ package com.example.mobilecinema.presentation.movies
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.mobilecinema.domain.converters.FavoriteMoviesConverter
-import com.example.mobilecinema.domain.converters.MoviesConverter
+import com.example.mobilecinema.domain.converters.film.FavoriteMoviesConverter
+import com.example.mobilecinema.domain.converters.film.MoviesConverter
 import com.example.mobilecinema.domain.converters.MoviesRatingConverter
 import com.example.mobilecinema.domain.use_case.favorite_movies_use_case.GetFavoriteMoviesUseCase
 import com.example.mobilecinema.domain.use_case.movies_use_case.MoviesRatingUseCase

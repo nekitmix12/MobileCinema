@@ -57,9 +57,11 @@ android {
 }
 
 dependencies {
-
-    implementation("io.coil-kt:coil-compose:2.3.0")
-    implementation("com.google.accompanist:accompanist-flowlayout:0.31.0-alpha")
+    implementation (libs.room.ktx)
+    implementation(libs.androidx.room.runtime)
+    kapt (libs.androidx.room.compiler)
+    implementation(libs.coil.compose)
+    implementation(libs.accompanist.flowlayout)
     implementation (libs.androidx.viewpager2.v100)
     implementation (libs.logging.interceptor.v493)
     implementation(libs.picasso)
@@ -72,14 +74,11 @@ dependencies {
     implementation (libs.logging.interceptor)
     implementation (libs.androidx.viewpager2)
     implementation (libs.androidx.recyclerview)
-    // Jetpack Compose Integration
     implementation (libs.androidx.navigation.compose)
     implementation(libs.androidx.fragment.ktx)
-    // Views/Fragments Integration
     implementation (libs.androidx.navigation.fragment)
     implementation (libs.androidx.navigation.ui)
 
-    // Feature module support for Fragments
     implementation (libs.androidx.navigation.dynamic.features.fragment)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -87,7 +86,6 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
-    // Testing Navigation
     androidTestImplementation (libs.androidx.navigation.testing)
     implementation (libs.mail)
     implementation(libs.kotlinx.datetime)

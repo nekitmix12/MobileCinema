@@ -323,6 +323,7 @@ class SingUpFragment : Fragment(R.layout.sing_up) {
                     }
 
                     is UiState.Error -> {
+
                         Toast.makeText(requireContext(), it.errorMessage, Toast.LENGTH_SHORT).show()
                     }
 

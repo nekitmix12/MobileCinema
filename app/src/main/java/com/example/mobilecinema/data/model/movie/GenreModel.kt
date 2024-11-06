@@ -13,13 +13,4 @@ data class GenreModel (
     @SerialName("name")
     val genreName:String?
 
-){
-    init{
-        require(try {
-            UUID.fromString(id)
-            true
-        } catch (e: IllegalArgumentException) {
-            false
-        })
-    }
-}
+)

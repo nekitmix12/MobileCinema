@@ -25,6 +25,7 @@
         </activity>
         <activity android:name=".presentation.CinemaActivity" />
         <activity android:name=".presentation.WelcomeActivity"/>
+        <activity android:name=".presentation.movies_details.MoviesDetailsActivity"/>
     </application>
 
 </manifest>

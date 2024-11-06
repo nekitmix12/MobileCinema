@@ -1,4 +1,4 @@
-package com.example.mobilecinema.domain.converters
+package com.example.mobilecinema.domain.converters.film
 
 import com.example.mobilecinema.data.model.movie.MoviesPagedListModel
 import com.example.mobilecinema.domain.Result

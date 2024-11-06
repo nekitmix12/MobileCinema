@@ -9,12 +9,12 @@ import retrofit2.http.Body
 import retrofit2.http.POST
 
 interface ApiServiceAuth {
-    @POST("api/account/register")
+    @POST("/api/account/register")
     suspend fun postRegister(@Body userRegisterModel:UserRegisterModel): AuthToken
 
-    @POST("api/account/login")
+    @POST("/api/account/login")
     suspend fun postLogin(@Body loginCredentials:LoginCredentials): AuthToken
 
-    @POST("account/logout")
+    @POST("/api/account/logout")
     suspend fun postLogout():LogoutModel
 }

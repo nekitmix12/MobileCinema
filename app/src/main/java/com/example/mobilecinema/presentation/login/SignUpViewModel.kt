@@ -97,6 +97,16 @@ class SignUpViewModel(
     }
 
     private fun load() {
+        Log.d("register",RegisterUseCase.Request(
+            UserRegisterModel(
+                userName = state.name,
+                userLogin = state.login,
+                password = state.password,
+                birthDate = state.birthDate,
+                gender = state.gender
+            )
+        ).toString())
+
         viewModelScope.launch {
             useCase.execute(
                 RegisterUseCase.Request(
@@ -126,11 +136,11 @@ class SignUpViewModel(
                     }
 
                     is UiState.Error -> {
-                        Log.d("login", it.errorMessage)
+                        Log.d("register", it.errorMessage)
                     }
 
                     is UiState.Success -> {
-                        Log.d("login", it.data.token)
+                        Log.d("register", it.data.token)
                         addStorageUseCase.addStorage(it.data.token)
                     }
                 }

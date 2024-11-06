@@ -108,7 +108,7 @@ class MoviesDetailViewModel(
                     }
 
                     UiState.Loading -> {
-
+                        Log.d("movies_details","loading")
                     }
 
                     is UiState.Success -> {
