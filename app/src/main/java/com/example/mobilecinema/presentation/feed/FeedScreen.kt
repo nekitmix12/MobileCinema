@@ -108,7 +108,6 @@ class FeedScreen : Fragment(R.layout.feed_screen) {
         val deleteGenreUseCase = DeleteGenreUseCase(genreRepository, configuration)
         val deleteGenreFromFavoriteConverter = DeleteGenreFromFavoriteConverter()
         val filmToDislikedConverter = FilmToDislikedConverter()
-
         val addFilmToDislikedUseCase = AddFilmToDislikedUseCase(moviesRepository, configuration)
 
         viewModel = ViewModelProvider(

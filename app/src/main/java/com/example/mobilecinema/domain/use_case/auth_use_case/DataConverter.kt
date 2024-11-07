@@ -11,13 +11,13 @@ class DataConverter {
             else if (i == 4)
                 newString += "-"
             else if (i < 7)
-                newString += date[i - 3]
+                newString += date[i - 5]
             else if (i == 7)
                 newString += "-"
             else
                 newString += date[i - 8]
         }
 
-        return newString + "T00:00:00.000Z"
+        return newString + "T00:30:15.778Z"
     }
 }

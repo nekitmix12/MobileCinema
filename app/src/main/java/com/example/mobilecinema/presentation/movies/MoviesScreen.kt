@@ -6,6 +6,7 @@ import android.animation.ObjectAnimator
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.widget.ProgressBar
@@ -105,7 +106,7 @@ class MoviesScreen : Fragment(R.layout.movies) {
             )
         )[MoviesViewModel::class]
 
-        viewPager = binding!!.topScrollView
+        viewPager = binding?.topScrollView!!
 
         viewModel!!.setCommonId()
 
@@ -122,7 +123,8 @@ class MoviesScreen : Fragment(R.layout.movies) {
             viewModel!!.moviesFavorite.collect {
                 when (it) {
                     is UiState.Loading -> {}
-                    is UiState.Error -> {}
+                    is UiState.Error -> {
+                        Log.d("movies",it.errorMessage)}
                     is UiState.Success -> {
                         createFavoritesElementRecycleView(it.data)
                     }
@@ -138,7 +140,6 @@ class MoviesScreen : Fragment(R.layout.movies) {
                     is UiState.Success -> {
                         createViewPager(MoviesListModel(it.data.movies))
                         moviesPagedListModel = it.data
-                        createAllMoviesRecycleView(it.data, listOf(0.2f))
                     }
                 }
             }
@@ -207,11 +208,14 @@ class MoviesScreen : Fragment(R.layout.movies) {
 
     private fun createAllMoviesRecycleView(movies: MoviesPagedListModel, ratings: List<Float>) {
         val recycleView = binding!!.allFilmsRecycle
+
         recycleView.layoutManager = GridLayoutManager(requireContext(), 3)
         allFilmsAdapter = AllMoviesAdapter(movies.movies, ratings)
         recycleView.adapter = allFilmsAdapter
 
     }
+
+
 
     private fun createViewPager(movies: MoviesListModel) {
         val currentMovies = MoviesListModel(movies = movies.movies!!.dropLast(1) + movies.movies[0])
@@ -256,7 +260,7 @@ class MoviesScreen : Fragment(R.layout.movies) {
                     }
                 })
                 progressAnimator?.start()
-                changeFilmInfo(currentMovies.movies!![currentPosition])
+                currentMovies.movies?.let{changeFilmInfo(it[currentPosition])}
             }
         })
     }

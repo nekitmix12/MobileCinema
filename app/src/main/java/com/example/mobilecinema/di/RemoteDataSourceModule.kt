@@ -6,7 +6,8 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-
+//очень бы хотелось использовать di фраемвкри ,потому что приходится писать очень много зависимосте :(
+//оставлю на память...
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class RemoteDataSourceModule {

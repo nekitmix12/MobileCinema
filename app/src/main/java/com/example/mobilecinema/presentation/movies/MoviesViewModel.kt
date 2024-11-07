@@ -3,6 +3,7 @@ package com.example.mobilecinema.presentation.movies
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mobilecinema.data.model.favorite_movies.MoviesListModel
+import com.example.mobilecinema.data.model.movie.MovieElementModel
 import com.example.mobilecinema.data.model.movie.MoviesPagedListModel
 import com.example.mobilecinema.domain.converters.film.FavoriteMoviesConverter
 import com.example.mobilecinema.domain.converters.film.MoviesConverter

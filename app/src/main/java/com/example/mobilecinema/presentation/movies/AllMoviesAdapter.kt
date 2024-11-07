@@ -16,11 +16,10 @@ class AllMoviesAdapter(val moviesMoviesElementModel: List<MovieElementModel>?,va
     RecyclerView.Adapter<AllMoviesAdapter.ViewHolder>() {
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val binding = MoviesElementAllFilmsBinding.bind(view)
-        fun bind(position: Int) = with(binding){
-            Log.e("adapter",ratings.toString() + ", " + position)
 
+        fun bind(position: Int) = with(binding){
           rating.text = ratings[position].toString()
-            val movie = moviesMoviesElementModel!![position].poster
+            val movie = moviesMoviesElementModel?.get(position)?.poster
             Picasso.get().load(movie)
                 .placeholder(R.drawable.icon_background)
                 .error(R.drawable.icon_background)

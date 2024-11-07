@@ -13,6 +13,9 @@ data class UserRegisterModel (
     @SerialName("name")
     val userName: String,
 
+    @SerialName("email")
+    val email: String,
+
     @SerialName("password")
     val password: String,
 

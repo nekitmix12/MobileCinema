@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -23,6 +24,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
@@ -38,97 +40,138 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImagePainter
-import coil.compose.rememberAsyncImagePainter
+import coil.compose.AsyncImage
 import com.example.mobilecinema.R
+import com.example.mobilecinema.data.model.favorite_movies.MoviesListModel
 import com.example.mobilecinema.data.model.movie.GenreModel
+import com.example.mobilecinema.data.model.movie.MovieElementModel
+import com.example.mobilecinema.domain.use_case.UiState
 import kotlin.math.max
 import kotlin.math.min
 
-@Preview(showSystemUi = true)
 @Composable
-fun FavoriteScreen() {
+fun FavoriteScreen(viewModel: FavoriteViewModel) {
     val startColor = colorResource(id = R.color.gradient_1)
     val endColor = colorResource(id = R.color.gradient_2)
-    Box(
-        modifier = Modifier
-            .background(color = colorResource(id = R.color.dark))
-            .fillMaxSize()
-            .padding(24.dp)
-    ) {
-        LazyColumn {
-            item { Text(
-                text = stringResource(id = R.string.favorites),
-                style = TextStyle(
-                    fontSize = 24.sp,
-                    fontFamily = FontFamily(Font(R.font.manrope_bold)),
-                    color = Color.White
-                ),
-            ) }
-            item { Spacer(modifier = Modifier.height(32.dp)) }
-            item {
-                Text(
-                    text = stringResource(id = R.string.favorite_genres),
-                    style = TextStyle(
-                        fontSize = 20.sp,
-                        fontFamily = FontFamily(Font(R.font.manrope_bold)),
-                        brush = Brush.horizontalGradient(
-                            listOf(startColor, endColor)
-                        )
-                    )
-                )
-            }
-            item { Spacer(modifier = Modifier.height(16.dp)) }
+    val genres = viewModel.allFavoriteGenres.collectAsState(initial = UiState.Loading)
+    val films = viewModel.favoriteMovies.collectAsState(initial = UiState.Loading)
+    val rating = viewModel.moviesRating.collectAsState(initial = UiState.Loading)
 
-            //item { Genres(listOf(GenreModel("asd", "genre"))) }
-            item {
-                Text(
-                    text = stringResource(id = R.string.favorite_films),
-                    style = TextStyle(
-                        fontSize = 20.sp,
-                        fontFamily = FontFamily(Font(R.font.manrope_bold)),
-                        brush = Brush.horizontalGradient(
-                            listOf(startColor, endColor)
-                        )
-                    )
-                )
-            }
-            item { Spacer(modifier = Modifier.height(16.dp)) }
+    when (val state = films.value) {
+        is UiState.Error -> {}
+        UiState.Loading -> {}
+        is UiState.Success -> {
+            if (state.data.movies?.isEmpty() == true)
+                Placeholder()
+            else {
+                Box(
+                    modifier = Modifier
+                        .background(color = colorResource(id = R.color.dark))
+                        .fillMaxSize()
+                        .padding(24.dp)
+                ) {
+                    LazyColumn() {
+                        item {
+                            Text(
+                                text = stringResource(id = R.string.favorites),
+                                style = TextStyle(
+                                    fontSize = 24.sp,
+                                    fontFamily = FontFamily(Font(R.font.manrope_bold)),
+                                    color = Color.White
+                                ),
+                            )
+                        }
+                        item { Spacer(modifier = Modifier.height(32.dp)) }
+                        item {
+                            Text(
+                                text = stringResource(id = R.string.favorite_genres),
+                                style = TextStyle(
+                                    fontSize = 20.sp,
+                                    fontFamily = FontFamily(Font(R.font.manrope_bold)),
+                                    brush = Brush.horizontalGradient(
+                                        listOf(startColor, endColor)
+                                    )
+                                )
+                            )
+                        }
+                        item { Spacer(modifier = Modifier.height(16.dp)) }
+                        when (val state1 = genres.value) {
+                            is UiState.Error -> {}
+                            UiState.Loading -> {}
+                            is UiState.Success -> {
+                                item { Genres(state1.data) }
+                            }
+                        }
 
-            //item{Films()}
+                        item {
+                            Text(
+                                text = stringResource(id = R.string.favorite_films),
+                                style = TextStyle(
+                                    fontSize = 20.sp,
+                                    fontFamily = FontFamily(Font(R.font.manrope_bold)),
+                                    brush = Brush.horizontalGradient(
+                                        listOf(startColor, endColor)
+                                    )
+                                )
+                            )
+                        }
+                        item { Spacer(modifier = Modifier.height(16.dp)) }
+
+                        when (val state3 = films.value) {
+                            is UiState.Error -> {}
+                            UiState.Loading -> {}
+                            is UiState.Success -> {
+                                when (val state2 = rating.value) {
+                                    is UiState.Error -> {}
+                                    UiState.Loading -> {}
+                                    is UiState.Success -> {
+                                        item { Box { Films(state3.data, state2.data) } }
+                                    }
+                                }
+
+                            }
+                        }
+
+                    }
+                }
+            }
         }
     }
+
+
 }
 
 @Composable
-fun Films() {
+fun Films(films: MoviesListModel, data: List<Float>) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
         modifier = Modifier
             .fillMaxWidth()
+            .height(400.dp)
     ) {
-        item { FilmCard() }
-        item { FilmCard() }
-        item { FilmCard() }
-        item { FilmCard() }
-        item { FilmCard() }
-        item { FilmCard() }
-        item { FilmCard() }
-        item { FilmCard() }
+        itemsIndexed(films.movies ?: emptyList()) { index, film ->
+            // Use the index if needed, otherwise just use `film`
+            FilmCard(data[index], film)
+        }
+
     }
 }
 
 @Composable
 fun Genres(genres: List<GenreModel>) {
 
-    LazyColumn {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(400.dp)
+    ) {
         items(genres.size) {
             if (it >= 3 || genres.size == it)
                 return@items
-            genres[it].genreName?.let { it1 -> GenreElement(it1) }
+            genres[it].genreName?.let { it1 -> GenreElement(it1)
+            Spacer(modifier = Modifier.height(8.dp))}
         }
 
 
@@ -136,58 +179,50 @@ fun Genres(genres: List<GenreModel>) {
 }
 
 @Composable
-fun FilmCard(rating: Float = 0.9f, url: String = "") {
+fun FilmCard(rating: Float, movie: MovieElementModel) {
     val startColor = colorResource(id = R.color.gradient_1)
     val endColor = colorResource(id = R.color.green)
     val normalizedValue = max(0f, min(rating, 10f)) / 10f
     val currentColor = interpolateColor(startColor, endColor, normalizedValue)
 
 
-    val painter = rememberAsyncImagePainter(url)
 
-    when (painter.state) {
-        is AsyncImagePainter.State.Empty,
-        is AsyncImagePainter.State.Loading,
-        -> {
-            CircularProgressIndicator()
-        }
 
-        is AsyncImagePainter.State.Success -> {
-            Card(
-                onClick = {},
+
+
+
+    Card(
+        onClick = {},
+        modifier = Modifier
+            .padding(4.dp)
+    ) {
+        Box(modifier = Modifier) {
+            AsyncImage(
+                model = movie.poster,
+                contentDescription = ""
+            )
+            Text(
+                text = rating.toString(),
                 modifier = Modifier
-                    .padding(4.dp)
-            ) {
-                Box(modifier = Modifier) {
-                    Image(
-                        painter = painter,
-                        contentDescription = ""
-                    )
-                    Text(
-                        text = rating.toString(),
-                        modifier = Modifier
-                            .padding(8.dp)
-                            .clip(RoundedCornerShape(4.dp))
-                            .background(color = currentColor)
-                            .padding(8.dp, 4.dp, 8.dp, 4.dp),
-                        style = TextStyle(
-                            fontSize = 12.sp,
-                            color = colorResource(id = R.color.white),
-                            fontFamily = FontFamily(Font(R.font.manrope_bold))
-                        ),
-                    )
-                }
-            }
-        }
-
-        is AsyncImagePainter.State.Error -> {
-            Log.e("favoriteScreen", "Ошибка загрузки")
-            CircularProgressIndicator()
+                    .padding(8.dp)
+                    .clip(RoundedCornerShape(4.dp))
+                    .background(color = currentColor)
+                    .padding(8.dp, 4.dp, 8.dp, 4.dp),
+                style = TextStyle(
+                    fontSize = 12.sp,
+                    color = colorResource(id = R.color.white),
+                    fontFamily = FontFamily(Font(R.font.manrope_bold))
+                ),
+            )
         }
     }
-
-
 }
+
+
+
+
+
+
 
 
 fun interpolateColor(start: Color, end: Color, fraction: Float): Color {
@@ -207,7 +242,7 @@ fun interpolateColor(start: Color, end: Color, fraction: Float): Color {
 }
 
 @Composable
-fun GenreElement(string: String = "Триллер") {
+fun GenreElement(string: String) {
     Card(
         modifier = Modifier
             .fillMaxWidth()

@@ -13,12 +13,11 @@ class GetMoviesDetailsUseCase(
 ) : UseCase<GetMoviesDetailsUseCase.Request, GetMoviesDetailsUseCase.Response>(configuration) {
 
     override fun process(request: Request): Flow<Response> =
-        flow {
             moviesRepository.getDetails(request.id)
                 .map {
-                    it
+                    Response(it)
                 }
-        }
+
 
     data class Request(val id: String) : UseCase.Request
     data class Response(val review: MovieDetailsModel) : UseCase.Response

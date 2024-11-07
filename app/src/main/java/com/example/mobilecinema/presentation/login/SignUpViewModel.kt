@@ -8,6 +8,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mobilecinema.data.model.auth.AuthToken
 import com.example.mobilecinema.data.model.auth.UserRegisterModel
+import com.example.mobilecinema.domain.model.RegisterModel
+import com.example.mobilecinema.domain.use_case.UiState
 import com.example.mobilecinema.domain.use_case.auth_use_case.AddStorageUseCase
 import com.example.mobilecinema.domain.use_case.auth_use_case.DataConverter
 import com.example.mobilecinema.domain.use_case.auth_use_case.RegisterUseCase
@@ -18,8 +20,6 @@ import com.example.mobilecinema.domain.use_case.validate.ValidateGender
 import com.example.mobilecinema.domain.use_case.validate.ValidateLogin
 import com.example.mobilecinema.domain.use_case.validate.ValidateName
 import com.example.mobilecinema.domain.use_case.validate.ValidatePassword
-import com.example.mobilecinema.domain.model.RegisterModel
-import com.example.mobilecinema.domain.use_case.UiState
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -39,7 +39,7 @@ class SignUpViewModel(
     private val dataConverter: DataConverter = DataConverter(),
     private val addStorageUseCase: AddStorageUseCase,
     private val useCase: RegisterUseCase,
-    private val converter: RegisterConverter
+    private val converter: RegisterConverter,
 ) : ViewModel() {
     private val _usersFlow = MutableStateFlow<UiState<AuthToken>>(UiState.Loading)
 
@@ -78,9 +78,14 @@ class SignUpViewModel(
 
             is RegistrationFormEvent.BirthDateChanged -> {
                 state = state.copy(
-                    birthDate = if (event.birthDate.length > 10) dataConverter.convertDateFormat(
-                        event.birthDate
-                    ) else event.birthDate
+                    birthDate = if (event.birthDate.length == 10) {
+                        val a = dataConverter.convertDateFormat(
+                            event.birthDate
+                        )
+                        Log.d("sig_up_Vm",a)
+                        a
+
+                    } else event.birthDate
                 )
 
             }
@@ -97,15 +102,18 @@ class SignUpViewModel(
     }
 
     private fun load() {
-        Log.d("register",RegisterUseCase.Request(
-            UserRegisterModel(
-                userName = state.name,
-                userLogin = state.login,
-                password = state.password,
-                birthDate = state.birthDate,
-                gender = state.gender
-            )
-        ).toString())
+        Log.d(
+            "register", RegisterUseCase.Request(
+                UserRegisterModel(
+                    userName = state.name,
+                    userLogin = state.login,
+                    email = state.email,
+                    password = state.password,
+                    birthDate = state.birthDate,
+                    gender = state.gender
+                )
+            ).toString()
+        )
 
         viewModelScope.launch {
             useCase.execute(
@@ -113,14 +121,15 @@ class SignUpViewModel(
                     UserRegisterModel(
                         userName = state.name,
                         userLogin = state.login,
+                        email = state.email,
                         password = state.password,
                         birthDate = state.birthDate,
                         gender = state.gender
                     )
                 )
             ).map {
-                    converter.convert(it)
-                }
+                converter.convert(it)
+            }
 
                 .collect {
                     _usersFlow.value = it
