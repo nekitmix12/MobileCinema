@@ -1,108 +1,131 @@
 package com.example.mobilecinema.presentation.login
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
-import android.text.TextWatcher
 import android.text.method.PasswordTransformationMethod
-import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.example.mobilecinema.R
-import com.example.mobilecinema.data.repository.AuthRepositoryImpl
-import com.example.mobilecinema.data.datasource.local.TokenStorageDataSourceImpl
-import com.example.mobilecinema.data.datasource.remote.data_source.AuthRemoteDataSourceImpl
-import com.example.mobilecinema.data.network.AuthInterceptor
-import com.example.mobilecinema.data.network.NetworkModule
 import com.example.mobilecinema.databinding.SingInBinding
-import com.example.mobilecinema.domain.UseCase
-import com.example.mobilecinema.domain.use_case.auth_use_case.AddStorageUseCase
-import com.example.mobilecinema.domain.use_case.auth_use_case.LoginUserUseCase
 import com.example.mobilecinema.presentation.CinemaActivity
-import com.example.mobilecinema.domain.use_case.UiState
-import kotlinx.coroutines.Dispatchers
+import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.launch
 
 class SingInFragment : Fragment(R.layout.sing_in) {
-    private var binding: SingInBinding? = null
-    private lateinit var viewModel: LoginViewModel
+    private lateinit var binding: SingInBinding
+    private lateinit var viewModel: SignInViewModel
 
-    @SuppressLint("UseCompatLoadingForDrawables", "ClickableViewAccessibility")
+
+    @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = SingInBinding.bind(view)
-        binding?.singInBackButton?.setOnClickListener { close() }
+        binding.singInBackButton.setOnClickListener { close() }
 
-        val sharedPreferences = requireContext().getSharedPreferences(
-            requireContext().getString(R.string.preference_is_logged_in), Context.MODE_PRIVATE
-        )
-        val tokenStorage = TokenStorageDataSourceImpl(sharedPreferences)
-        val authInterceptor = AuthInterceptor(tokenStorage)
-        val networkModule = NetworkModule()
-        val apiServiceAuth = networkModule.provideAuthService(
-            networkModule.provideRetrofit(
-                networkModule.provideOkHttpClient(authInterceptor)
-            )
-        )
-        val authRemoteDataSource = AuthRemoteDataSourceImpl(apiServiceAuth)
-        val userRepository = AuthRepositoryImpl(authRemoteDataSource, tokenStorage)
-        val configuration = UseCase.Configuration(Dispatchers.IO)
-        val loginUserUseCase = LoginUserUseCase(configuration, userRepository)
-        val authConverter = AuthConverter()
-        val addStorageUseCase = AddStorageUseCase(userRepository)
 
         viewModel = ViewModelProvider(
-            this, LoginViewModelFactory(loginUserUseCase, authConverter, addStorageUseCase)
-        )[LoginViewModel::class]
+            this, SignInViewModelFactory()
+        )[SignInViewModel::class]
 
-        binding!!.singInInButton.setOnClickListener {
+        val inButton = binding.singInInButton
+
+        val loginText = binding.loginSingIn
+        val passwordText = binding.passwordSingIn
+
+
+        val deleteLogin = binding.loginCloseSingIn
+        val watchPassword = binding.passwordWatchSingIn
+
+        inButton.setOnClickListener {
             viewModel.load()
-        }
-
+        }/*        val loadingScreen = binding.loadingScreen
+                val bob1 = binding.bobLeft
+                val bob2 = binding.bobRight*/
         lifecycleScope.launch {
-            viewModel.usersFlow.collect {
-                when (it) {
-                    is UiState.Loading -> {
+/*            launch {
+                viewModel.usersFlow.collect{
+                    when(it){
+                        is UiState.Loading->{
+                            loadingScreen.visibility = View.VISIBLE
+                            val animation = AnimationUtils.loadAnimation(requireContext(),R.anim.rotate_bobin)
+                            bob1.startAnimation(animation)
+                            bob2.startAnimation(animation)
+                        }
+                        is UiState.Success->{
+                            bob1.clearAnimation()
+                            bob2.clearAnimation()
+                            loadingScreen.visibility = View.GONE
+                        }
+                        is UiState.Error ->{
+                            bob1.clearAnimation()
+                            bob2.clearAnimation()
+                            loadingScreen.visibility = View.GONE
+                        }
                     }
+                }
+            }*/
+            launch {
+                viewModel.isConfirmed.collect {
+                    if (it) startActivity(
+                        Intent(
+                            requireContext(), CinemaActivity::class.java
+                        )
+                    )
+                    (requireContext() as Activity).finish()
+                }
+            }
 
-                    is UiState.Error -> {
-                        Toast.makeText(
-                            requireContext(),
-                            "Возникла неизвестная ошибка, попробуйте войти позднее" + it.errorMessage,
-                            Toast.LENGTH_LONG
+            launch {
+                viewModel.error.collect {
+                    inButton.isEnabled = it == null
+                }
+            }
+
+            launch {
+                viewModel.userLogin.collect {
+                    if (it == "") deleteLogin.visibility = View.INVISIBLE
+                    else deleteLogin.visibility = View.VISIBLE
+                }
+            }
+
+            launch {
+                viewModel.userPassword.collect {
+                    if (it == "") watchPassword.visibility = View.INVISIBLE
+                    else watchPassword.visibility = View.VISIBLE
+                }
+            }
+
+            launch {
+                viewModel.error.collect {
+                    if (viewModel.error.value != null && viewModel.error.value != "") {
+                        Toasty.error(
+                            requireContext(), viewModel.error.value!!, Toast.LENGTH_SHORT, true
                         ).show()
-                    }
 
-                    is UiState.Success -> {
-                        addStorageUseCase.addStorage(it.data.token)
-                        startActivity(Intent(requireContext(), CinemaActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY))
                     }
                 }
             }
         }
-        val loginText = binding!!.loginSingIn
-        val deleteLogin = binding!!.loginCloseSingIn
-        val watchPassword = binding!!.passwordWatchSingIn
-        val passwordText = binding!!.passwordSingIn
+
 
         var show = false
         watchPassword.setOnClickListener {
             if (show) {
-                watchPassword.setImageDrawable(
-                    requireContext().getDrawable(R.drawable.title_eye)
-                )
-                passwordText.transformationMethod = null
+                watchPassword.isSelected = true
+                passwordText.transformationMethod = PasswordTransformationMethod.getInstance()
                 show = false
             } else {
-                watchPassword.setImageDrawable(requireContext().getDrawable(R.drawable.title_eye_off))
-                passwordText.transformationMethod = PasswordTransformationMethod.getInstance()
-
+                watchPassword.isSelected = false
+                passwordText.transformationMethod = null
                 show = true
             }
         }
@@ -112,63 +135,30 @@ class SingInFragment : Fragment(R.layout.sing_in) {
             loginText.text = Editable.Factory.getInstance().newEditable("")
         }
 
-        loginText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                if (s.toString() == "") deleteLogin.visibility = View.VISIBLE
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-                viewModel.setLogin(s.toString())
-                if (s.toString() == "") deleteLogin.visibility = View.INVISIBLE
-
-            }
-
-        })
-
-        passwordText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                if (s.toString() == "") watchPassword.visibility = View.VISIBLE
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-                if (s.toString() == "") watchPassword.visibility = View.INVISIBLE
-                viewModel.setPassword(s.toString())
-            }
-
-        })
-
-        binding!!.rootSignInLayout.setOnTouchListener { _, event ->
-            if (event.action == MotionEvent.ACTION_DOWN) {
-                hideKeyboard()
-            }
-            false
+        loginText.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) loginText.addTextChangedListener(afterTextChanged = {
+                viewModel.setLogin(it.toString())
+            })
+            else viewModel.checkErrors()
         }
-    }
+        passwordText.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) passwordText.addTextChangedListener(afterTextChanged = {
+                viewModel.setPassword(it.toString())
+            })
+            else viewModel.checkErrors()
+        }
 
-    private fun hideKeyboard() {
-        val activity = activity ?: return
-        val view = activity.currentFocus
-        if (view != null) {
-            val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.hideSoftInputFromWindow(view.windowToken, 0)
+        binding.rootSignInLayout.setOnTouchListener { _, _ ->
+            viewModel.checkErrors()
+            val imm =
+                requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(requireActivity().currentFocus?.windowToken, 0)
+            requireActivity().currentFocus?.clearFocus()
+            true
         }
     }
 
     private fun close() {
         parentFragmentManager.popBackStack()
     }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        binding = null
-    }
-
-
 }

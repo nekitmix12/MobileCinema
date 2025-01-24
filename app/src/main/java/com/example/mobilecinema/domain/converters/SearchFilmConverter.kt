@@ -7,6 +7,7 @@ import com.example.mobilecinema.domain.Result
 import com.example.mobilecinema.domain.use_case.UiState
 import com.example.mobilecinema.domain.use_case.favorite_movies_use_case.GetFavoriteMoviesUseCase
 import com.example.mobilecinema.domain.use_case.kinopoisk_use_case.SearchFilmUseCase
+import kotlinx.coroutines.flow.Flow
 
 class SearchFilmConverter {
     fun convert(
@@ -14,7 +15,7 @@ class SearchFilmConverter {
     ): UiState<SearchFilmResponse> {
         return when (searchFilmResult) {
             is Result.Error -> UiState.Error(
-                searchFilmResult.exception.localizedMessage.orEmpty()
+                searchFilmResult.exception
             )
 
             is Result.Success -> UiState.Success(

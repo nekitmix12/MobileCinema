@@ -1,10 +1,13 @@
 package com.example.mobilecinema.presentation.movies_details
 
 import android.app.Activity
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,12 +30,12 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -66,109 +69,161 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.core.content.ContextCompat
 import coil.compose.AsyncImage
-import coil.compose.AsyncImagePainter
-import coil.compose.rememberAsyncImagePainter
 import com.example.mobilecinema.R
 import com.example.mobilecinema.data.model.auth.UserShortModel
 import com.example.mobilecinema.data.model.movie.GenreModel
 import com.example.mobilecinema.data.model.review.ReviewModel
 import com.example.mobilecinema.data.model.review.ReviewModifyModel
 import com.example.mobilecinema.domain.use_case.UiState
+import com.example.mobilecinema.presentation.favorite.LoaderMain
 import com.google.accompanist.flowlayout.FlowRow
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
 @Composable
 fun MoviesDetailsScreen(vm: MoviesDetailViewModel) {
+    val isLoaded = vm.isLoaded.collectAsState()
+    when (isLoaded.value) {
+        false -> {
+            LoaderMain()
+        }
 
-    TopView(vm)
-    MoviesInfo(vm)
+        true -> {
+            TopView(vm)
+            MoviesInfo(vm)
+        }
+    }
+
 }
 
 
 @Composable
 fun MoviesInfo(vm: MoviesDetailViewModel) {
+
     var showDialog by remember { mutableStateOf(false) }
-    var review by remember {
-        mutableStateOf<ReviewModifyModel?>(null)
-    }
-    val details = vm.details.collectAsState(initial = UiState.Loading)
-
-    val film = vm.film.collectAsState(initial = UiState.Loading)
-
-
-    LazyColumn(
-        modifier = Modifier.padding(24.dp, 300.dp, 24.dp)
-    ) {
-
-        when (val state = details.value) {
-            is UiState.Error -> {}
-            UiState.Loading -> {}
-            is UiState.Success -> {
-                item { MoviesYears(state.data.year, state.data.tagline) }
-                item { Description(state.data.description ?: "") }
-            }
+    var reviewId by remember { mutableStateOf<String?>(null) }
+    val review = vm.hasComment.collectAsState()
+    when(review.value){
+        is UiState.Success ->{
+            Log.d("Movies_int","sucsees"+review.value.toString())}
+        is UiState.Error ->{
+            Log.d("Movies_int","error"+review.value.toString())
         }
-        when (val stateFilm = film.value) {
-            is UiState.Error -> {
-            }
+        else ->{}
+    }
+    val error = vm.error.collectAsState()
+    if (error.value != null) {
+        mToast(error.value.toString(), LocalContext.current)
+        vm.setErrorNull()
+    }
+    val rating = vm.rating.collectAsState()
+    val details = vm.details.collectAsState()
+    val film = vm.film.collectAsState()
+    val genre = vm.genres.collectAsState()
+    val reviews = vm.reviews.collectAsState()
+    if (details.value != null && film.value != null) {
+        LazyColumn(
+            modifier = Modifier.padding(24.dp, 150.dp, 24.dp)
+        ) {
+            item { Spacer(Modifier.height(175.dp)) }
 
-            UiState.Loading -> {}
-            is UiState.Success -> {
-                item {
+            item { MoviesYears(details.value!!.year, details.value!!.tagline) }
+            item { Description(details.value!!.description ?: "") }
+
+            item {
+                rating.value?.let {
                     Rating(
-                        vm.ratingCinema,
-                        stateFilm.data.ratingKinopoisk,
-                        stateFilm.data.ratingImdb
-                    )
-                }
-                item {
-                    Info(
-                        stateFilm.data.countries?.country,
-                        stateFilm.data.filmLength,
-                        stateFilm.data.ratingAgeLimits,
-                        stateFilm.data.year
+                        it, film.value!!.ratingKinopoisk, film.value!!.ratingImdb
                     )
                 }
             }
-        }
-        when (val state = details.value) {
-            is UiState.Error -> {}
-            UiState.Loading -> {}
-            is UiState.Success -> {
-                item { Producer(name = state.data.director) }
-                when (val genresState = vm.allFavoriteGenres.value) {
-                    is UiState.Error -> {}
-                    UiState.Loading -> {}
-                    is UiState.Success -> {
-                        item {
-                            Genres(
-                                listName = state.data.genres,
-                                genresState.data
-                            )
+            item {
+                Info(
+                    country = vm.toStingCountry(film.value!!.countries),
+                    time = vm.timeConvert(film.value!!.filmLength),
+                    age = details.value!!.ageLimit.toString(),
+                    year = film.value!!.year
+                )
+            }
+
+
+
+            item { Producer(name = details.value!!.director) }
+
+            item {
+                if (genre.value != null) {
+                    Genres(genre.value!!, onClick = {
+                        if (it.first) vm.deleteFavoriteGenre(it.second)
+                        else vm.addGenre(it.second)
+                        vm.loadDetails()
+                    })
+                }
+            }
+
+
+            item { Finance(details.value!!.budget.toString(), details.value!!.fees.toString()) }
+            item {
+                reviews.value?.let {
+                    Reviews(
+                        { showDialog = true },
+                        it,
+                        review,
+                        editReview = { movieId->
+                            reviewId = movieId
+                            showDialog = true
+                        },
+                        deleteReview = {
+                            vm.deleteReview(reviewId!!)
+                            reviewId = null
+
                         }
-                    }
+                    )
                 }
-
-                item { Finance(state.data.budget.toString(), state.data.fees.toString()) }
-                item { state.data.reviews?.let { Reviews(it) } }
             }
         }
+
+
+
+
+
+        ReviewsDialog(showDialog = showDialog, onDismiss = {
+            showDialog = false
+        }, onSend = {
+            if(reviewId==null) {
+                vm.addReview(it, details.value!!.id)
+            }
+            else
+                vm.editReview(it)
+            showDialog = false
+        })
+
+
     }
-
-
-
-    ReviewsDialog(showDialog = showDialog, onDismiss = {
-        showDialog = false
-    }, onSend = {
-        review = it
-    })
 }
+
+fun interpolateColor(start: Color, end: Color, fraction: Float): Color {
+    val startRed = start.red * 255
+    val startGreen = start.green * 255
+    val startBlue = start.blue * 255
+
+    val endRed = end.red * 255
+    val endGreen = end.green * 255
+    val endBlue = end.blue * 255
+
+    val red = (startRed + (endRed - startRed) * fraction).toInt()
+    val green = (startGreen + (endGreen - startGreen) * fraction).toInt()
+    val blue = (startBlue + (endBlue - startBlue) * fraction).toInt()
+
+
+    return Color(red, green, blue)
+}
+
 
 @Composable
 fun MoviesYears(year: Int = 1899, slogan: String?) {
@@ -200,16 +255,15 @@ fun MoviesYears(year: Int = 1899, slogan: String?) {
                         fontFamily = FontFamily(Font(R.font.manrope_bold))
                     )
                 )
-                if (slogan != null)
-                    Text(
-                        text = slogan,
-                        modifier = Modifier.padding(16.dp, 16.dp, 0.dp, 16.dp),
-                        style = TextStyle(
-                            fontSize = 20.sp,
-                            color = Color.White,
-                            fontFamily = FontFamily(Font(R.font.manrope_medium))
-                        )
+                if (slogan != null) Text(
+                    text = slogan,
+                    modifier = Modifier.padding(16.dp, 16.dp, 0.dp, 16.dp),
+                    style = TextStyle(
+                        fontSize = 20.sp,
+                        color = Color.White,
+                        fontFamily = FontFamily(Font(R.font.manrope_medium))
                     )
+                )
             }
         }
     }
@@ -348,35 +402,34 @@ fun Rating(cinemaRating: Float, kinopoisRating: Float?, imdb: Float?) {
                     }
                 }
                 Spacer(modifier = Modifier.width(8.dp))
-                if (imdb != null)
-                    Box(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(8.dp))
-                            .weight(1f)
-                            .background(
-                                color = colorResource(id = R.color.dark)
-                            )
+                if (imdb != null) Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(8.dp))
+                        .weight(1f)
+                        .background(
+                            color = colorResource(id = R.color.dark)
+                        )
+                ) {
+                    Row(
+                        modifier = Modifier, verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Row(
-                            modifier = Modifier, verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Image(
-                                imageVector = ImageVector.vectorResource(id = R.drawable.imdb_logo_square),
-                                contentDescription = "",
-                                modifier = Modifier
-                                    .padding(12.dp, 9.46.dp, 8.dp, 9.46.dp)
-                                    .size(24.dp)
+                        Image(
+                            imageVector = ImageVector.vectorResource(id = R.drawable.imdb_logo_square),
+                            contentDescription = "",
+                            modifier = Modifier
+                                .padding(12.dp, 9.46.dp, 8.dp, 9.46.dp)
+                                .size(24.dp)
+                        )
+                        Text(
+                            text = imdb.toString(), style = TextStyle(
+                                fontSize = 20.sp,
+                                color = Color.White,
+                                fontFamily = FontFamily(Font(R.font.manrope_bold))
                             )
-                            Text(
-                                text = imdb.toString(), style = TextStyle(
-                                    fontSize = 20.sp,
-                                    color = Color.White,
-                                    fontFamily = FontFamily(Font(R.font.manrope_bold))
-                                )
-                            )
+                        )
 
-                        }
                     }
+                }
             }
         }
 
@@ -386,8 +439,8 @@ fun Rating(cinemaRating: Float, kinopoisRating: Float?, imdb: Float?) {
 
 @Composable
 fun Genres(
-    listName: List<GenreModel?>,
-    listFavorite: List<GenreModel>,
+    listGenre: List<Pair<GenreModel, Boolean>>,
+    onClick: (Pair<Boolean, GenreModel>) -> Unit,
 ) {
     val backgroundColor = colorResource(id = R.color.dark_faded)
 
@@ -435,12 +488,8 @@ fun Genres(
                         .fillMaxWidth()
                         .padding(16.dp, 0.dp, 16.dp, 16.dp)
                 ) {
-                    listName.forEachIndexed { index, _ ->
-                        listName[index]?.genreName?.let {
-                            GenreElement(it, listFavorite.any { el ->
-                                it == el.genreName
-                            })
-                        }
+                    listGenre.forEach {
+                        GenreElement(it.first, it.second, onClick)
                     }
                 }
 
@@ -524,13 +573,21 @@ fun Finance(budget: String, feel: String) {
     }
 }
 
+private fun mToast(text: String, context: Context) {
+    Toast.makeText(context, text, Toast.LENGTH_LONG).show()
+}
+
 @Composable
-fun GenreElement(genre: String = "фантастикаasd", isFavorite: Boolean = false) {
+fun GenreElement(
+    genre: GenreModel = GenreModel("id", "фантастикаasd"),
+    isFavorite: Boolean,
+    onClick: (Pair<Boolean, GenreModel>) -> Unit,
+) {
     val startColor = colorResource(id = R.color.gradient_1)
     val endColor = colorResource(id = R.color.gradient_2)
     val commonColor = colorResource(id = R.color.dark)
-    Box(
-        modifier = if (isFavorite) Modifier
+    genre.genreName?.let {
+        Box(modifier = if (isFavorite) Modifier
             .clip(RoundedCornerShape(8.dp))
             .background(
                 Brush.horizontalGradient(
@@ -539,21 +596,24 @@ fun GenreElement(genre: String = "фантастикаasd", isFavorite: Boolean 
             )
             .padding(12.dp, 8.dp, 12.dp, 8.dp)
             .wrapContentSize()
+            .clickable { onClick(Pair(isFavorite, genre)) }
         else Modifier
             .clip(RoundedCornerShape(8.dp))
             .background(commonColor)
             .padding(12.dp, 8.dp, 12.dp, 8.dp)
             .clip(RoundedCornerShape(8.dp))
             .wrapContentSize()
+            .clickable { onClick(Pair(isFavorite, genre)) }
 
-    ) {
-        Text(
-            text = genre, style = TextStyle(
-                fontSize = 16.sp,
-                color = colorResource(id = R.color.white),
-                fontFamily = FontFamily(Font(R.font.manrope_medium))
+        ) {
+            Text(
+                text = genre.genreName, style = TextStyle(
+                    fontSize = 16.sp,
+                    color = colorResource(id = R.color.white),
+                    fontFamily = FontFamily(Font(R.font.manrope_medium))
+                )
             )
-        )
+        }
     }
 }
 
@@ -679,30 +739,28 @@ fun Info(
                     horizontalArrangement = Arrangement.SpaceBetween
 
                 ) {
-                    if (country != null)
-                        Box(
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(8.dp))
-                                .weight(3f)
-                                .background(
-                                    color = colorResource(id = R.color.dark)
-                                )
-                        ) {
-                            InfoElement(R.string.country, country)
-                        }
+                    if (country != null) Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(8.dp))
+                            .weight(3f)
+                            .background(
+                                color = colorResource(id = R.color.dark)
+                            )
+                    ) {
+                        InfoElement(R.string.country, country)
+                    }
 
                     Spacer(modifier = Modifier.width(8.dp))
-                    if (age != null)
-                        Box(
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(8.dp))
-                                .weight(1f)
-                                .background(
-                                    color = colorResource(id = R.color.dark)
-                                )
-                        ) {
-                            InfoElement(R.string.age, age)
-                        }
+                    if (age != null) Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(8.dp))
+                            .weight(1f)
+                            .background(
+                                color = colorResource(id = R.color.dark)
+                            )
+                    ) {
+                        InfoElement(R.string.age, age)
+                    }
                 }
 
                 Row(
@@ -726,17 +784,16 @@ fun Info(
                     }
 
                     Spacer(modifier = Modifier.width(8.dp))
-                    if (year != null)
-                        Box(
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(8.dp))
-                                .weight(1f)
-                                .background(
-                                    color = colorResource(id = R.color.dark)
-                                )
-                        ) {
-                            InfoElement(R.string.years, year.toString())
-                        }
+                    if (year != null) Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(8.dp))
+                            .weight(1f)
+                            .background(
+                                color = colorResource(id = R.color.dark)
+                            )
+                    ) {
+                        InfoElement(R.string.years, year.toString())
+                    }
                 }
             }
         }
@@ -746,6 +803,7 @@ fun Info(
 
 @Composable
 fun Reviews(
+    addReview: () -> Unit = {},
     reviews: List<ReviewModel> = listOf(
         ReviewModel(
             id = "1",
@@ -774,6 +832,9 @@ fun Reviews(
 
         ),
     ),
+    review: State<UiState<ReviewModel>>,
+    editReview: (String) -> Unit = {},
+    deleteReview: () -> Unit = {},
 ) {
     val coroutineScope = rememberCoroutineScope()
     val pagerState = rememberPagerState(pageCount = {
@@ -824,8 +885,8 @@ fun Reviews(
                     .fillMaxWidth()
                     .padding(16.dp, 0.dp, 16.dp, 16.dp)
             ) {
-                Button(
-                    onClick = {},
+                if (review.value is UiState.Error) Button(
+                    onClick = { addReview() },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.Transparent
                     ),
@@ -840,49 +901,101 @@ fun Reviews(
                 ) {
                     Text(text = stringResource(id = R.string.add_review))
                 }
+                else if (review.value is UiState.Success<ReviewModel>) {
+                    Button(
+                        onClick = { editReview((review.value as UiState.Success<ReviewModel>).data.id) },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.Transparent
+                        ),
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(
+                                brush = Brush.horizontalGradient(
+                                    colors = listOf(startColor, endColor)
+                                )
+                            )
+                            .weight(1f),
+                    ) {
+                        Text(text = stringResource(id = R.string.change_review))
+                    }
+                    IconButton(
+                        onClick = deleteReview,
+                        modifier = Modifier
+                            .padding(horizontal = 4.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(
+                                color = colorResource(id = R.color.dark)
+                            ),
+                    ) {
+                        Image(
+                            imageVector = ImageVector.vectorResource(id = R.drawable.trash),
+                            contentDescription = ""
+                        )
+
+                    }
+                }
                 Spacer(
                     modifier = Modifier.width(24.dp)
                 )
                 IconButton(
-                    onClick = {
-                        if (pagerState.currentPage > 0) {
+                    onClick =
+                    if (pagerState.currentPage > 0) {
+                        {
                             coroutineScope.launch {
                                 pagerState.scrollToPage(pagerState.currentPage - 1)
                             }
                         }
+                    } else {
+                        {}
                     },
+                    enabled = pagerState.currentPage == 0,
                     modifier = Modifier
+                        .padding(horizontal = 2.dp)
                         .clip(RoundedCornerShape(8.dp))
                         .background(
-                            color = colorResource(id = R.color.dark_faded)
+                            color = colorResource(
+                                id = if (pagerState.currentPage == 0) R.color.dark_faded else R.color.dark
+                            )
                         ),
                 ) {
                     Image(
-                        imageVector = ImageVector.vectorResource(id = R.drawable.shape_6),
-                        contentDescription = ""
+                        ImageVector.vectorResource(
+                            id = if (pagerState.currentPage == 0) R.drawable.shape_6_clicable
+                            else R.drawable.shape_6_not_clickable
+                        ), contentDescription = ""
                     )
                 }
 
 
                 IconButton(
-                    onClick = {
-                        if (pagerState.currentPage + 1 < reviews.size) {
+                    onClick = if (pagerState.currentPage + 1 < reviews.size) {
+                        {
                             coroutineScope.launch {
                                 pagerState.scrollToPage(pagerState.currentPage + 1)
                             }
                         }
+                    } else {
+                        {}
                     },
+                    enabled = (pagerState.currentPage + 1 >= reviews.size),
                     modifier = Modifier
+                        .padding(horizontal = 2.dp)
                         .clip(RoundedCornerShape(8.dp))
                         .background(
-                            color = colorResource(id = R.color.dark)
+                            color = colorResource(
+                                id = if (pagerState.currentPage + 1 < reviews.size) R.color.dark else R.color.dark_faded
+                            )
+
                         )
                         .wrapContentSize()
-                        .padding(0.dp),
+                        .padding(0.dp)
+                    ,
                 ) {
                     Image(
-                        imageVector = ImageVector.vectorResource(id = R.drawable.shape_5),
-                        contentDescription = ""
+                        imageVector = ImageVector.vectorResource(
+                            id = if (pagerState.currentPage + 1 < reviews.size) R.drawable.shape_5
+                            else R.drawable.shape_5_not_clickable
+                        ), contentDescription = ""
                     )
                 }
             }
@@ -896,19 +1009,18 @@ fun ReviewsDialog(
     showDialog: Boolean = true,
     onDismiss: () -> Unit,
     onSend: (ReviewModifyModel) -> Unit,
+    myReview: ReviewModifyModel =  ReviewModifyModel("", 5, true)
 ) {
     if (showDialog) Dialog(onDismissRequest = onDismiss) {
-        DialogContent {
-            onSend(it)
-        }
+        DialogContent(onSend,myReview)
     }
 }
 
 @Composable
-fun DialogContent(callback: (ReviewModifyModel) -> Unit) {
+fun DialogContent(callback: (ReviewModifyModel) -> Unit = {},myReview: ReviewModifyModel = ReviewModifyModel("q",1,true,)) {
     val review = remember {
         mutableStateOf(
-            ReviewModifyModel("", 5, true)
+            myReview
         )
     }
 
@@ -933,20 +1045,27 @@ fun DialogContent(callback: (ReviewModifyModel) -> Unit) {
                 fontSize = 14.sp,
                 color = colorResource(id = R.color.gray),
                 fontFamily = FontFamily(Font(R.font.manrope_medium))
-            ), modifier = Modifier.padding(top = 24.dp)
+            ), modifier = Modifier.padding(top=24.dp)
         )
         CustomSlider {
             review.value = review.value.copy(rating = it)
         }
 
-        BasicTextField(
-            value = review.value.reviewText,
-            onValueChange = { review.value = review.value.copy(reviewText = it) },
+        BasicTextFieldWithHint(
+            text = review.value.reviewText,
+            onTextChange = { review.value = review.value.copy(reviewText = it) },
+            hint= stringResource(R.string.review_text),
             modifier = Modifier
                 .clip(RoundedCornerShape(8.dp))
                 .background(color = colorResource(id = R.color.dark_faded))
                 .fillMaxWidth()
                 .height(120.dp)
+                .padding(16.dp),
+            textStyle = TextStyle(
+                fontSize = 14.sp,
+                color = colorResource(id = R.color.white),
+                fontFamily = FontFamily(Font(R.font.manrope_medium))
+            ),
         )
         Row(
             modifier = Modifier.padding(top = 14.dp), verticalAlignment = Alignment.CenterVertically
@@ -1003,6 +1122,31 @@ fun DialogContent(callback: (ReviewModifyModel) -> Unit) {
     }
 }
 
+
+@Composable
+fun BasicTextFieldWithHint(
+    text: String,
+    onTextChange: (String) -> Unit,
+    hint: String,
+    modifier: Modifier = Modifier,
+    textStyle: TextStyle = TextStyle.Default,
+    hintStyle: TextStyle = textStyle.copy(color = Color.Gray)
+) {
+    Box(modifier = modifier) {
+        if (text.isEmpty()) {
+            Text(
+                text = hint,
+                style = hintStyle
+            )
+        }
+        BasicTextField(
+            value = text,
+            onValueChange = onTextChange,
+            textStyle = textStyle,
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
+}
 
 @Composable
 fun CustomSlider(setResult: (Int) -> Unit) {
@@ -1213,7 +1357,7 @@ fun ReviewElement(reviewModel: ReviewModel) {
                 )
                 else {
                     AsyncImage(
-                        model = reviewModel.author.avatar,
+                        model = reviewModel.author?.avatar,
                         contentDescription = "",
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
@@ -1227,7 +1371,7 @@ fun ReviewElement(reviewModel: ReviewModel) {
                 ) {
                     Text(
                         text = if (reviewModel.isAnonymous) stringResource(id = R.string.anonymous)
-                        else reviewModel.author.nickName ?: "", style = TextStyle(
+                        else reviewModel.author?.nickName ?: "", style = TextStyle(
                             fontSize = 12.sp,
                             color = colorResource(id = R.color.white),
                             fontFamily = FontFamily(Font(R.font.manrope_medium))
@@ -1246,8 +1390,13 @@ fun ReviewElement(reviewModel: ReviewModel) {
                 Row(
                     modifier = Modifier
                         .clip(RoundedCornerShape(8.dp))
-                        .background(color = colorResource(id = R.color.green)),
-                    verticalAlignment = Alignment.CenterVertically
+                        .background(
+                            color = interpolateColor(
+                                colorResource(R.color.gradient_1),
+                                colorResource(R.color.green),
+                                reviewModel.rating.toFloat()
+                            )
+                        ), verticalAlignment = Alignment.CenterVertically
                 ) {
 
                     Image(
@@ -1308,12 +1457,11 @@ fun InfoElement(res: Int, value: String = "16+") {
 
 @Composable
 fun TopView(vm: MoviesDetailViewModel) {
-    val details = vm.details.collectAsState(initial = UiState.Loading)
-    val films = vm.favoriteMovies.collectAsState(initial = UiState.Loading)
+    val details = vm.details.collectAsState()
+    val isFavorite = vm.isFavorite.collectAsState()
     val context = LocalContext.current
     Box(
-        modifier = Modifier.wrapContentSize(),
-        contentAlignment = Alignment.Center
+        modifier = Modifier.wrapContentSize(), contentAlignment = Alignment.Center
     ) {
 
         Image(
@@ -1327,65 +1475,41 @@ fun TopView(vm: MoviesDetailViewModel) {
             ),
             contentDescription = "movies",
         )
-        when (val state = details.value) {
-            is UiState.Error -> {
-                Log.e("movies_details", state.errorMessage)
-            }
 
-            UiState.Loading -> {
-
-            }
-
-            is UiState.Success -> {
-                AsyncImage(
-                    model = state.data.poster,
-                    contentDescription = "",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .align(Alignment.TopCenter)
-                        .fillMaxWidth()
-                        .height(400.dp)
-                        .clip(RoundedCornerShape(bottomEnd = 16.dp, bottomStart = 16.dp)),
-                )
-            }
-        }
+        AsyncImage(
+            model = details.value?.poster,
+            contentDescription = "",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .fillMaxWidth()
+                .height(400.dp)
+                .clip(RoundedCornerShape(bottomEnd = 16.dp, bottomStart = 16.dp)),
+        )
 
 
-        when (val state = films.value) {
-            is UiState.Error -> {Log.e("main_details_screen",state.errorMessage)}
-            UiState.Loading -> {}
-            is UiState.Success -> {
-                var isFavorite by remember { mutableStateOf(state.data.movies?.any { it.id == vm.id } == true) }
 
-                IconButton(
-                    onClick = {
-                        if (isFavorite){
-                            vm.deleteFromFavorite()
-                        }
-                        else
-                            vm.addFilmToFavorites()
+        IconButton(
+            onClick = {
+                if (isFavorite.value == true) {
+                    vm.deleteFromFavorite()
+                } else vm.addFilmToFavorites()
+                vm.getFavoritesFilms()
+            },
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(0.dp, 60.dp, 24.dp, 0.dp)
+                .size(50.dp)
 
-                        isFavorite =!isFavorite
+        ) {
+            Image(
+                painter = if (isFavorite.value == true) painterResource(id = R.drawable.frame_174)
+                else painterResource(id = R.drawable.button_2),
+                contentDescription = "asd",
+                modifier = Modifier.size(40.dp, 40.dp)
 
-                              },
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .padding(0.dp, 60.dp, 24.dp, 0.dp)
-                        .size(50.dp)
+            )
 
-                ) {
-                    Image(
-
-                        painter = if (isFavorite)
-                            painterResource(id = R.drawable.frame_174)
-                        else
-                            painterResource(id = R.drawable.button_2),
-                        contentDescription = "asd",
-                        modifier = Modifier.size(40.dp, 40.dp)
-
-                    )
-                }
-            }
         }
 
 

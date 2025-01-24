@@ -7,7 +7,15 @@ import okhttp3.Response
 class LoginInterceptor:Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
+        Log.d("RequestLogger", "URL: ${request.url}")
+        Log.d("RequestLogger", "Headers: ${request.headers}")
+        Log.d("RequestLogger", "Method: ${request.method}")
 
+        request.body?.let { body ->
+            val buffer = okio.Buffer()
+            body.writeTo(buffer)
+            Log.d("RequestLogger", "Body: ${buffer.readUtf8()}")
+        }
         val startTime = System.nanoTime()
         Log.d("log_interceptor",("Sending request ${request.url} on ${chain.connection()}\n${request.headers}"))
 

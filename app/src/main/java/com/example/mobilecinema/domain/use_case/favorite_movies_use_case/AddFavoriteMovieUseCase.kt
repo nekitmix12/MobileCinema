@@ -1,12 +1,15 @@
 package com.example.mobilecinema.domain.use_case.favorite_movies_use_case
 
+import com.example.mobilecinema.data.repository.FavoriteMoviesRepositoryImpl
 import com.example.mobilecinema.domain.UseCase
 import com.example.mobilecinema.domain.repository.FavoriteMoviesRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class AddFavoriteMovieUseCase(
-    configuration: Configuration, private val favoriteMoviesRepository: FavoriteMoviesRepository,
+    configuration: Configuration = Configuration(Dispatchers.IO),
+    private val favoriteMoviesRepository: FavoriteMoviesRepository = FavoriteMoviesRepositoryImpl(),
 ) : UseCase<AddFavoriteMovieUseCase.Request, AddFavoriteMovieUseCase.Response>(configuration) {
     override fun process(request: Request): Flow<Response> {
         return flow {

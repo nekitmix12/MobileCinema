@@ -13,7 +13,7 @@ class MovieDetailsConverter {
     ): UiState<MovieDetailsModel> {
         return when (getMovieDetailsResult) {
             is Result.Error -> UiState.Error(
-                getMovieDetailsResult.exception.localizedMessage.orEmpty()
+                getMovieDetailsResult.exception
             )
 
             is Result.Success -> UiState.Success(

@@ -4,7 +4,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class SearchFilmResponse (
-    val keyword:String,
-    val pageCount:Int,
-    val film: List<SearchFilmDto>,
+    val keyword: String?,
+    val pagesCount: Int?,
+    val searchFilmsCountResult: Int?,
+    val films: List<SearchFilmDto>,
 )

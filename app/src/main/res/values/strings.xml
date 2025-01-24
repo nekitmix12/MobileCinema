@@ -7,7 +7,7 @@
     <string name="welcome">"Welcome!"</string>
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Password must be >5 characters</string>
-    <string name="login_failed">"Login failed"</string>
+    <string name="login_failed">Пользователя с таким паролем не найдено, попробуйте изменить пароль или логин</string>
     <string name="movie_catalog">Добро пожаловать в MovieCatalog</string>
     <string name="sign_up">Войти в аккаунт</string>
     <string name="sign_in">Зарегистрироваться</string>
@@ -59,4 +59,24 @@
     <string name="favorite_genres">Любимые жанры</string>
     <string name="favorite_films">Любимые фильмы</string>
     <string name="favorites">Избранное</string>
+    <string name="login_error_null">логин не может быть пустым</string>
+    <string name="password_error_null">пароль не может быть пустым</string>
+    <string name="and">и</string>
+    <string name="strange_request_error">неопознанная ошибка</string>
+    <string name="name_validation_error">Имя %1$s! невалидно, в имени должны быть только буквы или числа на латинице</string>
+    <string name="invalid_login">Username  is already taken.</string>
+    <string name="unauthorized">Unauthorized</string>
+    <string name="login_empty">логин не может быть пустым</string>
+    <string name="date_empty">дата пустая</string>
+    <string name="name_empty">пустое имя</string>
+    <string name="passwor_validate_error">в пароле должны быть только буквы или числа на латинице</string>
+    <string name="password_small">пароль дожен быть более чем 6 символов</string>
+    <string name="password_not_same">Пароли не совпадают</string>
+    <string name="api_key">dc768ecc-f877-4755-98dd-5f95dd30e835</string>
+    <string name="hours">ч</string>
+    <string name="minutes">м</string>
+    <string name="not_time">неизвестно</string>
+    <string name="review_alreadyAdded">Вы уже добавили отзыв</string>
+    <string name="change_review">Изменить отзыв</string>
+    <string name="review_text">Текст отзыва</string>
 </resources>

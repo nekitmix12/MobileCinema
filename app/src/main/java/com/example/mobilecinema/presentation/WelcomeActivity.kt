@@ -7,14 +7,11 @@ import androidx.navigation.NavController
 import com.example.mobilecinema.R
 import com.example.mobilecinema.presentation.login.WelcomeScreen
 
-class WelcomeActivity: AppCompatActivity(R.layout.activity_welcome) {
-
-    private lateinit var navController: NavController
+class WelcomeActivity : AppCompatActivity(R.layout.activity_welcome) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.e("welcome","+")
-        if (savedInstanceState==null) {
+        if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
                 .replace(R.id.welcomeFragmentContainerView, WelcomeScreen())
                 .commit()

@@ -14,14 +14,14 @@ import com.example.mobilecinema.domain.use_case.movies_use_case.MoviesRatingUseC
 import com.example.mobilecinema.domain.use_case.movies_use_case.GetMoviesPageUseCase
 
 class FavoriteMoviesViewModelFactory(
-    private val getGenreUseCase: GetGenreUseCase,
-    private val getGenresFromFavoriteConverter: GetGenresFromFavoriteConverter,
-    private val deleteGenreUseCase: DeleteGenreUseCase,
-    private val deleteGenreFromFavoriteConverter: DeleteGenreFromFavoriteConverter,
-    private val getFavoriteMoviesUseCase: GetFavoriteMoviesUseCase,
-    private val favoriteMoviesConverter: FavoriteMoviesConverter,
-    private val moviesRatingUseCase: MoviesRatingUseCase,
-    private val moviesRatingConverter: MoviesRatingConverter
+    private val getGenreUseCase: GetGenreUseCase = GetGenreUseCase(),
+    private val getGenresFromFavoriteConverter: GetGenresFromFavoriteConverter = GetGenresFromFavoriteConverter(),
+    private val deleteGenreUseCase: DeleteGenreUseCase = DeleteGenreUseCase(),
+    private val deleteGenreFromFavoriteConverter: DeleteGenreFromFavoriteConverter = DeleteGenreFromFavoriteConverter(),
+    private val getFavoriteMoviesUseCase: GetFavoriteMoviesUseCase = GetFavoriteMoviesUseCase(),
+    private val favoriteMoviesConverter: FavoriteMoviesConverter = FavoriteMoviesConverter(),
+    private val moviesRatingUseCase: MoviesRatingUseCase = MoviesRatingUseCase(),
+    private val moviesRatingConverter: MoviesRatingConverter = MoviesRatingConverter()
 ) : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

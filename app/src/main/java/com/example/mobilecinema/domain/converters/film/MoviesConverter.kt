@@ -14,7 +14,7 @@ class MoviesConverter {
         return when (getMoviesResult) {
             is Result.Error -> {
                 UiState.Error(
-                    getMoviesResult.exception.localizedMessage.orEmpty()
+                    getMoviesResult.exception
                 )
             }
 

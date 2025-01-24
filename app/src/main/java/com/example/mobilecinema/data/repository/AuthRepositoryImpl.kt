@@ -1,7 +1,8 @@
 package com.example.mobilecinema.data.repository
 
-import android.util.Log
-import com.example.mobilecinema.data.datasource.remote.data_source.AuthRemoteDataSource
+import com.example.mobilecinema.data.datasource.local.TokenStorageDataSourceImpl
+import com.example.mobilecinema.data.datasource.remote.data_source.implementation.AuthRemoteDataSourceImpl
+import com.example.mobilecinema.data.datasource.remote.data_source.inteface.AuthRemoteDataSource
 import com.example.mobilecinema.data.model.auth.AuthToken
 import com.example.mobilecinema.data.model.auth.LoginCredentials
 import com.example.mobilecinema.data.model.auth.LogoutModel
@@ -12,13 +13,12 @@ import kotlinx.coroutines.flow.Flow
 
 class AuthRepositoryImpl(
     private val authRemoteDataSource:
-    AuthRemoteDataSource,
+    AuthRemoteDataSource = AuthRemoteDataSourceImpl(),
     private val localStorageRepository:
-    LocalStorageRepository
+    LocalStorageRepository = TokenStorageDataSourceImpl()
 ) : AuthRepository {
 
     override fun loginUser(loginCredentials: LoginCredentials): Flow<AuthToken> {
-        Log.d("",authRemoteDataSource.loginUser(loginCredentials).toString())
         return authRemoteDataSource.loginUser(loginCredentials)
     }
 

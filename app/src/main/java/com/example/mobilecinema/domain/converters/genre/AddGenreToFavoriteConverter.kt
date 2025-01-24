@@ -10,7 +10,7 @@ class AddGenreToFavoriteConverter {
     ): UiState<Unit> {
         return when (addGenreResult) {
             is Result.Error -> UiState.Error(
-                addGenreResult.exception.localizedMessage.orEmpty()
+                addGenreResult.exception
             )
 
             is Result.Success -> UiState.Success(

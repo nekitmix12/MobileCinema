@@ -1,13 +1,21 @@
 package com.example.mobilecinema.data.datasource.local.data_source
 
+import androidx.room.Room
+import com.example.mobilecinema.data.datasource.local.AppDataBase
 import com.example.mobilecinema.data.datasource.local.dao.GenreDao
+import com.example.mobilecinema.data.datasource.local.dao.GenreDao_Impl
 import com.example.mobilecinema.data.datasource.local.entity.GenreEntity
 import com.example.mobilecinema.data.model.movie.GenreModel
+import com.example.mobilecinema.di.MainContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 class GenreLocalDataSourceImpl(
-    private val genreDao: GenreDao
+    private val genreDao: GenreDao = GenreDao_Impl(
+        Room.databaseBuilder(
+        MainContext.provideInstance().provideContext(),
+        AppDataBase::class.java, "app_database"
+    ).build())
 ):GenreLocalDataSource{
     override suspend fun addGenres(genreModel: GenreModel) {
         genreDao.insertGenre(GenreEntity(

@@ -2,7 +2,7 @@ package com.example.mobilecinema.presentation.feed
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.mobilecinema.domain.converters.FilmToDislikedConverter
+import com.example.mobilecinema.domain.converters.AddFilmToDislikedConverter
 import com.example.mobilecinema.domain.converters.film.AddFilmToFavoriteConverter
 import com.example.mobilecinema.domain.converters.film.MoviesConverter
 import com.example.mobilecinema.domain.converters.genre.AddGenreToFavoriteConverter
@@ -19,7 +19,7 @@ import com.example.mobilecinema.domain.use_case.movies_use_case.GetMoviesPageUse
 class FeedViewModelFactory(private val getMoviesPageUseCase: GetMoviesPageUseCase,
                            private val moviesConverter: MoviesConverter,
                            private val addFilmToDislikedUseCase: AddFilmToDislikedUseCase,
-                           private val filmConverter: FilmToDislikedConverter,
+                           private val filmConverter: AddFilmToDislikedConverter,
                            private val addFilmToFavoriteUseCase: AddFavoriteMovieUseCase,
                            private val addFavoriteMovieConverter: AddFilmToFavoriteConverter,
                            private val addGenreUseCase: AddGenreUseCase,

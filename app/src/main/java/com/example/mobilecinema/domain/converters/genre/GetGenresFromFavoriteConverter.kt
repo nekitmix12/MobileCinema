@@ -12,7 +12,7 @@ class GetGenresFromFavoriteConverter {
     ): UiState<List<GenreModel>> {
         return when (getGenresResult) {
             is Result.Error -> UiState.Error(
-                getGenresResult.exception.localizedMessage.orEmpty()
+                getGenresResult.exception
             )
 
             is Result.Success -> UiState.Success(

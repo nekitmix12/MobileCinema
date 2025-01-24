@@ -10,7 +10,6 @@ import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
@@ -18,8 +17,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.mobilecinema.R
 import com.example.mobilecinema.data.datasource.local.TokenStorageDataSourceImpl
-import com.example.mobilecinema.data.datasource.remote.data_source.AuthRemoteDataSourceImpl
-import com.example.mobilecinema.data.datasource.remote.data_source.UserRemoteDataSourceImpl
+import com.example.mobilecinema.data.datasource.remote.data_source.implementation.AuthRemoteDataSourceImpl
+import com.example.mobilecinema.data.datasource.remote.data_source.implementation.UserRemoteDataSourceImpl
 import com.example.mobilecinema.data.network.AuthInterceptor
 import com.example.mobilecinema.data.network.NetworkModule
 import com.example.mobilecinema.data.repository.AuthRepositoryImpl
@@ -28,15 +27,12 @@ import com.example.mobilecinema.databinding.ProfileBinding
 import com.example.mobilecinema.domain.Result
 import com.example.mobilecinema.domain.UseCase
 import com.example.mobilecinema.domain.converters.ProfileConverter
-import com.example.mobilecinema.domain.repository.LocalStorageRepository
 import com.example.mobilecinema.domain.use_case.UiState
 import com.example.mobilecinema.domain.use_case.auth_use_case.LogOutUseCase
 import com.example.mobilecinema.domain.use_case.user_use_case.GetProfileUseCase
 import com.example.mobilecinema.domain.use_case.user_use_case.PutProfileUseCase
-import com.example.mobilecinema.presentation.login.RegistrationFormEvent
-import com.example.mobilecinema.presentation.login.SignUpViewModel
+import com.example.mobilecinema.presentation.sign_up.SignUpViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -46,7 +42,7 @@ class ProfileScreen : Fragment(R.layout.profile) {
     @SuppressLint("UnsafeRepeatOnLifecycleDetector")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding = ProfileBinding.bind(view)
+        /*binding = ProfileBinding.bind(view)
 
         setGradientContext(
             binding!!.informationProfile,
@@ -231,6 +227,6 @@ class ProfileScreen : Fragment(R.layout.profile) {
 
     override fun onDestroy() {
         super.onDestroy()
-        binding = null
+        binding = null*/
     }
 }

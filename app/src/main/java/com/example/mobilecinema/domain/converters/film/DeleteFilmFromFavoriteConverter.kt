@@ -11,7 +11,7 @@ class DeleteFilmFromFavoriteConverter {
     ): UiState<Unit> {
         return when (deleteFavoriteResult) {
             is Result.Error -> UiState.Error(
-                deleteFavoriteResult.exception.localizedMessage.orEmpty()
+                deleteFavoriteResult.exception
             )
 
             is Result.Success -> UiState.Success(

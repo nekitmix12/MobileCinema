@@ -15,15 +15,11 @@
         android:scaleType="centerCrop"
         android:src="@drawable/icon_background" />
 
-    <com.example.mobilecinema.presentation.custom_class.TopCropImageView
-        app:cornerRadius="0dp"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:src="@drawable/background"/>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/background"
+            android:scaleType="matrix" />
 
     <TextView
         android:id="@+id/editText"

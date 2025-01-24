@@ -1,14 +1,16 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose)
     kotlin("plugin.serialization") version "1.9.0"
-    id("kotlin-kapt")
+    kotlin("kapt") version "2.1.0"
+    id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
 }
 
 android {
     namespace = "com.example.mobilecinema"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.mobilecinema"
@@ -33,11 +35,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
     }
     buildFeatures {
         compose = true
@@ -54,12 +56,17 @@ android {
     viewBinding{
         enable = true
     }
+    buildToolsVersion = "34.0.0"
 }
 
 dependencies {
+    implementation ("com.squareup.okhttp3:logging-interceptor:3.8.0")
+    implementation ("com.google.android.flexbox:flexbox:3.0.0")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.9.10")
+    implementation (libs.toasty)
     implementation (libs.room.ktx)
+    ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.runtime)
-    kapt (libs.androidx.room.compiler)
     implementation(libs.coil.compose)
     implementation(libs.accompanist.flowlayout)
     implementation (libs.androidx.viewpager2.v100)
@@ -105,8 +112,4 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-}
-
-kapt {
-    correctErrorTypes = true
 }

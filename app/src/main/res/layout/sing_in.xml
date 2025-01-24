@@ -1,158 +1,175 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/rootSignInLayout"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rootSignInLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="@string/cinema_background"
+        android:scaleType="centerCrop"
+        android:src="@drawable/icon_background" />
+
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/sign_in_background_image"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+
+        app:cardBackgroundColor="@color/dark"
+        app:cardPreventCornerOverlap="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.7"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:shapeAppearanceOverlay="@style/RoundedBottomCorners">
+
         <ImageView
-            android:id="@+id/imageView3"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:contentDescription="@string/cinema_background"
-            android:scaleType="centerCrop"
-            android:src="@drawable/icon_background"
-            tools:layout_editor_absoluteX="0dp"
-            tools:layout_editor_absoluteY="-16dp" />
+            android:contentDescription="TODO"
+            android:scaleType="matrix"
+            android:src="@drawable/background" />
 
 
-        <com.example.mobilecinema.presentation.custom_class.TopCropImageView
-            android:id="@+id/topCropImageView"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:cornerRadius="32dp"
-            app:layout_constraintBottom_toTopOf="@+id/linearLayout"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginBottom="30dp"
-            app:src="@drawable/background" />
+    </com.google.android.material.card.MaterialCardView>
 
 
+    <EditText
+        android:id="@+id/loginSingIn"
+        style="@style/EditTextLoginMenu"
+        android:autofillHints="name"
+        android:hint="@string/login"
+        android:inputType="textPersonName"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/sign_in_background_image"
+        app:layout_constraintVertical_bias="0.12" />
 
-        <LinearLayout
-            android:id="@+id/linearLayout"
-            android:layout_width="345dp"
-            android:layout_height="112dp"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView3"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/imageView3"
-            app:layout_constraintVertical_bias="0.75">
 
-                <EditText
-                    android:id="@+id/loginSingIn"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_marginBottom="4dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/sing_in_input_text"
-                    android:hint="@string/login"
-                    android:paddingStart="15dp"
-                    android:paddingEnd="15dp"
-                    android:textColor="@color/gray_faded"
-                    android:textColorHint="@color/gray_faded"
-                    android:textSize="14sp">
-                </EditText>
+    <EditText
+        android:id="@+id/passwordSingIn"
+        style="@style/EditTextLoginMenu"
+        android:autofillHints="password"
+        android:hint="@string/password"
+        android:inputType="textPassword"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/loginSingIn"
+        app:layout_constraintVertical_bias="0.05" />
 
-                <EditText
-                    android:id="@+id/passwordSingIn"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/sing_in_input_text"
-                    android:hint="@string/password"
-                    android:paddingStart="15dp"
-                    android:paddingEnd="15dp"
-                    android:textColor="@color/gray_faded"
-                    android:textColorHint="@color/gray_faded"
-                    android:textSize="14sp"
-                    />
 
-        </LinearLayout>
+    <Button
+        android:id="@+id/singInInButton"
+        style="@style/ButtonLoginMenu"
+        android:enabled="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/passwordSingIn"
+        app:layout_constraintVertical_bias="0.4" />
 
-        <Button
-            android:id="@+id/singInInButton"
-            android:layout_width="match_parent"
-            android:layout_marginStart="24dp"
-            android:layout_marginEnd="24dp"
-            android:layout_height="45dp"
-            android:background="@drawable/sing_in_input_text"
-            android:hint="@string/sing_in"
-            android:textColorHint="@color/gray_faded"
-            android:textSize="14sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.957" />
 
-        <LinearLayout
-            android:id="@+id/linearLayout3"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintWidth_percent="0.90"
-            app:layout_constraintHeight_percent="0.05"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.05"
-            android:gravity="center_vertical">
+    <ImageView
+        android:id="@+id/loginCloseSingIn"
+        style="@style/IconLoginMenu"
+        android:contentDescription="@string/close"
+        android:src="@drawable/title_close"
+        app:layout_constraintBottom_toBottomOf="@+id/loginSingIn"
+        app:layout_constraintEnd_toEndOf="@+id/loginSingIn"
+        app:layout_constraintStart_toStartOf="@+id/loginSingIn"
+        app:layout_constraintTop_toTopOf="@+id/loginSingIn" />
 
-                <Button
-                    android:id="@+id/singInBackButton"
-                    android:layout_width="45dp"
-                    android:layout_height="45dp"
-                    android:background="@drawable/button"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHeight_percent="0.90"
-                    app:layout_constraintHorizontal_bias="0.9"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.9" />
+    <ImageView
+        android:id="@+id/passwordWatchSingIn"
+        style="@style/IconLoginMenu"
+        android:contentDescription="@string/close"
+        android:src="@drawable/login_selector_look_img"
+        app:layout_constraintBottom_toBottomOf="@+id/passwordSingIn"
+        app:layout_constraintEnd_toEndOf="@+id/passwordSingIn"
+        app:layout_constraintStart_toStartOf="@+id/passwordSingIn"
+        app:layout_constraintTop_toTopOf="@+id/passwordSingIn" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingStart="22dp"
-                    android:text="@string/sign_in_account"
-                    android:textAlignment="center"
-                    android:textColor="@color/white"
-                    android:textSize="24sp"
-                    />
-        </LinearLayout>
-        <ImageView
-            android:id="@+id/loginCloseSingIn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/close"
-            android:src="@drawable/title_close"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
-            app:layout_constraintEnd_toEndOf="@+id/linearLayout"
-            app:layout_constraintStart_toStartOf="@+id/linearLayout"
-            app:layout_constraintTop_toTopOf="@+id/linearLayout"
-            app:layout_constraintVertical_bias="0.2"
-            app:layout_constraintHorizontal_bias="0.95"/>
+
+    <Button
+        android:id="@+id/singInBackButton"
+        style="@style/ButtonBackLoginMenu"
+        android:background="@drawable/button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        style="@style/HelpfulScreen"
+        app:layout_constraintBottom_toBottomOf="@+id/singInBackButton"
+        app:layout_constraintEnd_toEndOf="@+id/imageView3"
+        app:layout_constraintStart_toEndOf="@+id/singInBackButton"
+        app:layout_constraintTop_toTopOf="@+id/singInBackButton" />
+
+<!--    <RelativeLayout
+        android:visibility="gone"
+        android:id="@+id/loading_screen"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#554CAF50"
+        android:elevation="1dp">
 
         <ImageView
-            android:id="@+id/passwordWatchSingIn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="invisible"
-            android:contentDescription="@string/close"
-            android:src="@drawable/title_eye"
-            app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
-            app:layout_constraintEnd_toEndOf="@+id/linearLayout"
-            app:layout_constraintStart_toStartOf="@+id/linearLayout"
-            app:layout_constraintTop_toTopOf="@+id/linearLayout"
-            app:layout_constraintVertical_bias="0.8"
-            app:layout_constraintHorizontal_bias="0.95"/>
+            android:id="@+id/camera"
+            android:layout_width="145.6dp"
+            android:layout_height="207.2dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/camera" />
 
+        <ImageView
+            android:id="@+id/light"
+            android:layout_width="55dp"
+            android:layout_height="38dp"
+            android:layout_alignTop="@+id/camera"
+            android:layout_alignBottom="@+id/camera"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="88dp"
+            android:layout_marginTop="98dp"
+            android:layout_marginEnd="-10dp"
+            android:layout_marginBottom="71dp"
+            android:layout_toStartOf="@+id/camera"
+            android:src="@drawable/light" />
+
+        <ImageView
+            android:id="@+id/bob_left"
+            android:layout_width="85.2dp"
+            android:layout_height="84.8dp"
+            android:layout_alignStart="@+id/camera"
+            android:layout_alignTop="@+id/camera"
+            android:layout_alignEnd="@+id/camera"
+            android:layout_alignBottom="@+id/camera"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="43dp"
+            android:layout_marginEnd="68.6dp"
+            android:layout_marginBottom="97dp"
+            android:src="@drawable/bob2" />
+
+        <ImageView
+            android:id="@+id/bob_right"
+            android:layout_width="86dp"
+            android:layout_height="84.8dp"
+            android:layout_alignStart="@+id/camera"
+            android:layout_alignTop="@+id/camera"
+            android:layout_alignEnd="@+id/camera"
+            android:layout_alignBottom="@+id/camera"
+            android:layout_marginStart="82.6dp"
+            android:layout_marginTop="47dp"
+            android:layout_marginEnd="-4dp"
+            android:layout_marginBottom="93dp"
+            android:src="@drawable/bob1" />
+
+    </RelativeLayout>-->
 </androidx.constraintlayout.widget.ConstraintLayout>

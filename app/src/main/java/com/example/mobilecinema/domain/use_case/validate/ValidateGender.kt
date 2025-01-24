@@ -4,12 +4,12 @@ import android.util.Patterns
 
 class ValidateGender {
     fun execute(gender: Int): ValidationResult {
-        if (gender==-1) {
+        /*if (gender==-1) {
             return ValidationResult(
                 successful = false,
                 errorManager = " The gender can't be blank"
             )
-        }
+        }*/
         return ValidationResult(
             successful = true
         )

@@ -11,7 +11,7 @@ class DeleteGenreFromFavoriteConverter {
     ): UiState<Unit> {
         return when (deleteGenreResult) {
             is Result.Error -> UiState.Error(
-                deleteGenreResult.exception.localizedMessage.orEmpty()
+                deleteGenreResult.exception
             )
 
             is Result.Success -> UiState.Success(

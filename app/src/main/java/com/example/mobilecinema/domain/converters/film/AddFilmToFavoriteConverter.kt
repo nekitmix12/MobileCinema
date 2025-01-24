@@ -10,7 +10,7 @@ class AddFilmToFavoriteConverter {
     ): UiState<Unit> {
         return when (addFavoriteResult) {
             is Result.Error -> UiState.Error(
-                addFavoriteResult.exception.localizedMessage.orEmpty()
+                addFavoriteResult.exception
             )
 
             is Result.Success -> UiState.Success(

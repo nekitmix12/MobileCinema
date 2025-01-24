@@ -7,8 +7,8 @@ import com.example.mobilecinema.domain.use_case.user_use_case.GetProfileUseCase
 import com.example.mobilecinema.presentation.movies.MoviesViewModel
 
 class MainViewModelFactory(
-    private val getProfileUseCase: GetProfileUseCase,
-    private val profileConverter: ProfileConverter
+    private val getProfileUseCase: GetProfileUseCase = GetProfileUseCase(),
+    private val profileConverter: ProfileConverter = ProfileConverter()
 ): ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

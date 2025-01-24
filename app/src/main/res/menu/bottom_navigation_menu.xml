@@ -2,18 +2,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/navigation_feedScreen"
-        android:icon="@drawable/title_feed"
+        android:icon="@drawable/bottom_bar_feed"
         android:title="@string/feed" />
     <item
         android:id="@+id/navigation_moviesScreen"
-        android:icon="@drawable/title_movies"
+        android:icon="@drawable/bottom_bar_films"
         android:title="@string/movies" />
     <item
         android:id="@+id/navigation_favoritesScreen"
-        android:icon="@drawable/title_library"
+        android:icon="@drawable/bottom_bar_favorite"
         android:title="@string/favorite" />
     <item
         android:id="@+id/navigation_profileScreen"
-        android:icon="@drawable/title_person"
+        android:icon="@drawable/bottom_bar_profile"
         android:title="@string/person" />
 </menu>

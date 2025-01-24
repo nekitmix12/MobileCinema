@@ -18,8 +18,7 @@ Response>(private val configuration: Configuration) {
         }
         .flowOn(configuration.dispatcher)
         .catch {
-            emit(Result.Error(UseCaseException.
-            extractException(it)))
+            emit(Result.Error(it.message.toString()))
         }
 
     protected open fun defaultRequest(): I {

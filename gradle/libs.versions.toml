@@ -1,21 +1,21 @@
 [versions]
 accompanistFlowlayout = "0.31.0-alpha"
-agp = "8.5.2"
+agp = "8.7.3"
 androidxNavigationCompose = "2.8.2"
 cardstackview = "v2.3.4"
 coilCompose = "2.4.0"
 converterGson = "2.9.0"
 fragmentKtx = "1.8.4"
 hiltAndroid = "2.51.1"
-kotlin = "1.9.0"
-coreKtx = "1.13.1"
+kotlin = "2.0.0"
+coreKtx = "1.15.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 kotlinxDatetime = "0.4.0"
 kotlinxSerializationJson = "1.6.0"
 lifecycleRuntimeKtx = "2.8.6"
-activityCompose = "1.9.2"
+activityCompose = "1.9.3"
 composeBom = "2024.04.01"
 lifecycleRuntimeKtxVersion = "2.6.0"
 loggingInterceptor = "4.9.0"
@@ -33,6 +33,7 @@ retrofit = "2.9.0"
 retrofit2KotlinxSerializationConverter = "0.8.0"
 roomCompiler = "2.6.1"
 roomKtx = "2.6.1"
+toasty = "1.5.2"
 viewpager2 = "1.1.0"
 viewpager2Version = "1.0.0"
 
@@ -84,8 +85,10 @@ picasso = { module = "com.squareup.picasso:picasso", version.ref = "picasso" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 retrofit2-kotlinx-serialization-converter = { module = "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter", version.ref = "retrofit2KotlinxSerializationConverter" }
 room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomKtx" }
+toasty = { module = "com.github.GrenderG:Toasty", version.ref = "toasty" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 

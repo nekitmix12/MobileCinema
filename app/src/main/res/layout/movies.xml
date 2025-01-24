@@ -20,7 +20,7 @@
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/topScrollView"
             android:layout_width="match_parent"
-            android:layout_height="500dp"
+            android:layout_height="464dp"
             android:backgroundTint="@color/dark"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -131,99 +131,75 @@
             app:layout_constraintTop_toTopOf="@+id/topScrollView"
             app:layout_constraintVertical_bias="0.77" />
 
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@+id/topScrollView"
+            app:layout_constraintEnd_toStartOf="@+id/button"
+            app:layout_constraintStart_toStartOf="@+id/movies_name"
+            app:layout_constraintTop_toTopOf="parent"
+            >
+
+        </com.google.android.flexbox.FlexboxLayout>
+
         <Button
             android:id="@+id/button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/MoviesScreenLabelButton"
             android:background="@drawable/gradient_accent"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp"
             android:text="@string/watch"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="@+id/topScrollView"
             app:layout_constraintEnd_toEndOf="@+id/topScrollView"
-            app:layout_constraintHorizontal_bias="0.9"
+            app:layout_constraintHorizontal_bias="1"
             app:layout_constraintStart_toStartOf="@+id/topScrollView"
             app:layout_constraintTop_toTopOf="@+id/topScrollView"
             app:layout_constraintVertical_bias="0.93" />
 
-        <RelativeLayout
-            android:id="@+id/genre_movies_relative_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@+id/topScrollView"
-            app:layout_constraintEnd_toEndOf="@+id/topScrollView"
-            app:layout_constraintHorizontal_bias="0.05"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/movies_name"
-            app:layout_constraintVertical_bias="0.1">
-        </RelativeLayout>
 
         <Button
-            android:id="@+id/button2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginEnd="24dp"
+            android:id="@+id/random_film_button"
+            style="@style/MoviesScreenScrollButton"
             android:background="@drawable/gradient_accent"
-            android:drawableStart="@drawable/game_die"
-            android:drawablePadding="10dp"
-            android:fontFamily="@font/manrope_semi_bold"
-            android:paddingStart="15dp"
-            android:paddingEnd="15dp"
+            android:drawableLeft="@drawable/game_die"
             android:text="@string/rand_film"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textSize="20sp"
             app:layout_constraintBottom_toTopOf="@+id/favoriteMoviesRecyclerView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/topScrollView"
-            app:layout_constraintVertical_bias="0.327" />
+            app:layout_constraintVertical_bias="0.0" />
 
         <LinearLayout
             android:id="@+id/linearLayoutMovies"
-            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toTopOf="@+id/favoriteMoviesRecyclerView"
+            style="@style/CommonLayout"
+            android:layout_marginBottom="16dp"
+            app:layout_constraintVertical_bias="0"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="24dp"
-            android:layout_marginEnd="24dp"
-            android:layout_marginTop="32dp"
-            android:layout_marginBottom="16dp"
-            app:layout_constraintTop_toBottomOf="@+id/button2">
-
+            app:layout_constraintTop_toBottomOf="@+id/random_film_button">
             <TextView
                 android:id="@+id/textView"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="@string/my_favorite"
-                android:textSize="20sp"
-                android:textColor="@color/white"/>
+                style="@style/MoviesScreenText"
+                android:text="@string/my_favorite" />
 
             <TextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:id="@+id/textView2"
+                style="@style/MoviesScreenText"
                 android:gravity="end"
-                android:textSize="20sp"
 
-                android:text="@string/all"
-                android:textColor="@color/white"/>
+                android:text="@string/all" />
         </LinearLayout>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/favoriteMoviesRecyclerView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="32dp"
             app:layout_constraintBottom_toTopOf="@id/all_films"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginBottom="32dp"
             app:layout_constraintTop_toBottomOf="@id/linearLayoutMovies"
             app:layout_constraintVertical_bias="1.0" />
 
@@ -231,26 +207,26 @@
             android:id="@+id/all_films"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/favoriteMoviesRecyclerView"
+            style="@style/MoviesScreenText"
             android:layout_marginStart="24dp"
-            android:layout_marginEnd="24dp"
             android:layout_marginTop="32dp"
+            android:layout_marginEnd="24dp"
             android:text="@string/all_film"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/favoriteMoviesRecyclerView" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/all_films_recycle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            style="@style/CommonLayout"
+            android:layout_marginTop="16dp"
+
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="24dp"
             app:layout_constraintTop_toBottomOf="@id/all_films" />
-
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -19,8 +19,8 @@ import com.example.mobilecinema.data.datasource.local.AppDataBase
 import com.example.mobilecinema.data.datasource.local.TokenStorageDataSourceImpl
 import com.example.mobilecinema.data.datasource.local.data_source.FilmLocalDataSourceImpl
 import com.example.mobilecinema.data.datasource.local.data_source.GenreLocalDataSourceImpl
-import com.example.mobilecinema.data.datasource.remote.data_source.FavoritesMoviesRemoteDataSourceImpl
-import com.example.mobilecinema.data.datasource.remote.data_source.MoviesRemoteDataSourceImpl
+import com.example.mobilecinema.data.datasource.remote.data_source.implementation.FavoritesMoviesRemoteDataSourceImpl
+import com.example.mobilecinema.data.datasource.remote.data_source.implementation.MoviesRemoteDataSourceImpl
 import com.example.mobilecinema.data.model.movie.GenreModel
 import com.example.mobilecinema.data.model.movie.MovieElementModel
 import com.example.mobilecinema.data.model.movie.MoviesPagedListModel
@@ -31,7 +31,7 @@ import com.example.mobilecinema.data.repository.GenreRepositoryImpl
 import com.example.mobilecinema.data.repository.MoviesRepositoryImpl
 import com.example.mobilecinema.databinding.FeedScreenBinding
 import com.example.mobilecinema.domain.UseCase
-import com.example.mobilecinema.domain.converters.FilmToDislikedConverter
+import com.example.mobilecinema.domain.converters.AddFilmToDislikedConverter
 import com.example.mobilecinema.domain.converters.film.AddFilmToFavoriteConverter
 import com.example.mobilecinema.domain.converters.film.MoviesConverter
 import com.example.mobilecinema.domain.converters.genre.AddGenreToFavoriteConverter
@@ -107,7 +107,7 @@ class FeedScreen : Fragment(R.layout.feed_screen) {
         val getGenresFromFavoriteConverter = GetGenresFromFavoriteConverter()
         val deleteGenreUseCase = DeleteGenreUseCase(genreRepository, configuration)
         val deleteGenreFromFavoriteConverter = DeleteGenreFromFavoriteConverter()
-        val filmToDislikedConverter = FilmToDislikedConverter()
+        val addFilmToDislikedConverter = AddFilmToDislikedConverter()
         val addFilmToDislikedUseCase = AddFilmToDislikedUseCase(moviesRepository, configuration)
 
         viewModel = ViewModelProvider(
@@ -115,7 +115,7 @@ class FeedScreen : Fragment(R.layout.feed_screen) {
                 getMoviesPageUseCase = getMoviesPageUseCase,
                 moviesConverter = moviesConverter,
                 addFilmToDislikedUseCase = addFilmToDislikedUseCase,
-                filmConverter = filmToDislikedConverter,
+                filmConverter = addFilmToDislikedConverter,
                 addFilmToFavoriteUseCase = addFilmToFavoriteUseCase,
                 addFavoriteMovieConverter = addFavoriteMovieConverter,
                 addGenreUseCase = addGenreUseCase,
@@ -264,7 +264,7 @@ class FeedScreen : Fragment(R.layout.feed_screen) {
                 view?.setOnClickListener {
                     val intent = Intent(requireContext(), MoviesDetailsActivity::class.java)
                     val movie = adapter.getItemMovies(position)
-                    intent.putExtra("FILM_NAME", movie.id)
+                    intent.putExtra("filmId", movie.id)
                     startActivity(intent)
                 }
             }

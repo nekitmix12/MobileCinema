@@ -15,7 +15,7 @@ class FilmConverter {
     ): UiState<Film> {
         return when (getFilmResult) {
             is Result.Error -> UiState.Error(
-                getFilmResult.exception.localizedMessage.orEmpty()
+                getFilmResult.exception
             )
 
             is Result.Success -> UiState.Success(

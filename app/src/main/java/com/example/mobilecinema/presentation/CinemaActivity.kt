@@ -45,7 +45,7 @@ class CinemaActivity : AppCompatActivity() {
 
 
         if (savedInstanceState == null) {
-            navController.navigate(R.id.moviesScreen)
+            navController.navigate(R.id.feedScreen)
         }
     }
 

@@ -6,17 +6,18 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import com.example.mobilecinema.R
 import com.example.mobilecinema.databinding.FragmentWelcomeBinding
+import com.example.mobilecinema.presentation.sign_up.SignUpFragment
 
 class WelcomeScreen: Fragment(R.layout.fragment_welcome) {
 
-    private var binding : FragmentWelcomeBinding? = null
+    private lateinit var binding : FragmentWelcomeBinding
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentWelcomeBinding.bind(view)
-        Log.e("welcome","start")
-        binding?.signInButton?.setOnClickListener{navigateToSignIn()}
-        binding?.signUpButton?.setOnClickListener{navigateToSignUp()}
+
+        binding.signInButton.setOnClickListener{navigateToSignIn()}
+        binding.signUpButton.setOnClickListener{navigateToSignUp()}
     }
 
 
@@ -30,14 +31,10 @@ class WelcomeScreen: Fragment(R.layout.fragment_welcome) {
 
     private fun navigateToSignUp(){
         parentFragmentManager.beginTransaction()
-            .replace(R.id.welcomeFragmentContainerView, SingUpFragment())
+            .replace(R.id.welcomeFragmentContainerView, SignUpFragment())
             .addToBackStack(null)
             .commit()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        binding = null
-    }
 
 }

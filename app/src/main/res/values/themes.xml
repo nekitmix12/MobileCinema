@@ -1,6 +1,157 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.MobileCinema" parent="Theme.AppCompat.DayNight.NoActionBar" >
 
+    <style name="Theme.MobileCinema" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <item name="materialButtonStyle">@style/ButtonLoginMenu</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="iconTintMode">add</item>
+    </style>
+
+    <style name="RoundedBottomCorners" parent="ShapeAppearance.MaterialComponents.MediumComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopLeft">0dp</item>
+        <item name="cornerSizeTopRight">0dp</item>
+        <item name="cornerSizeBottomLeft">16dp</item>
+        <item name="cornerSizeBottomRight">16dp</item>
+    </style>
+
+    <style name="RoundedEndCorners" parent="ShapeAppearance.MaterialComponents.MediumComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopLeft">0dp</item>
+        <item name="cornerSizeTopRight">16dp</item>
+        <item name="cornerSizeBottomLeft">0dp</item>
+        <item name="cornerSizeBottomRight">16dp</item>
+    </style>
+
+    <style name="RoundedStartCorners" parent="ShapeAppearance.MaterialComponents.MediumComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopLeft">16dp</item>
+        <item name="cornerSizeTopRight">0dp</item>
+        <item name="cornerSizeBottomLeft">16dp</item>
+        <item name="cornerSizeBottomRight">0dp</item>
+    </style>
+
+    <style name="EditTextLoginMenu">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">24dp</item>
+        <item name="android:layout_marginEnd">24dp</item>
+        <item name="android:background">@drawable/sing_in_input_text</item>
+        <item name="android:padding">14dp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textColorHint">@color/gray_faded</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="ButtonLoginMenu" parent="EditTextLoginMenu">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:fontFamily">@font/manrope_semi_bold</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:background">@drawable/registration_selector_button</item>
+        <item name="android:hint">@string/sing_in</item>
+        <item name="android:textColorHint">@drawable/login_selector_text_color</item>
+    </style>
+
+    <style name="IconLoginMenu">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:visibility">invisible</item>
+        <item name="layout_constraintHorizontal_bias">0.95</item>
+        <item name="layout_constraintVertical_bias">0.5</item>
+    </style>
+
+    <style name="LabelLoginMenu">
+        <item name="android:text">@string/sign_in_account</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">24sp</item>
+    </style>
+
+    <style name="ButtonBackLoginMenu">
+        <item name="android:layout_width">40dp</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:elevation">1dp</item>
+        <item name="layout_constraintBottom_toBottomOf">parent</item>
+        <item name="layout_constraintStart_toStartOf">parent</item>
+        <item name="layout_constraintTop_toTopOf">parent</item>
+        <item name="layout_constraintEnd_toEndOf">parent</item>
+        <item name="layout_constraintVertical_bias">0.1</item>
+        <item name="layout_constraintHorizontal_bias">0.08</item>
+    </style>
+
+    <style name="HelpfulScreen" parent="LabelLoginMenu">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:elevation">1dp</item>
+        <item name="android:layout_marginStart">16dp</item>
+        <item name="layout_constraintHorizontal_bias">0</item>
+    </style>
+
+    <style name="MoviesScreenLabelButton" parent="ButtonLoginMenu">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:paddingStart">24dp</item>
+        <item name="android:paddingEnd">24dp</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+    
+    <style name="MoviesScreenScrollButton" parent="MoviesScreenLabelButton">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:paddingStart">15dp</item>
+        <item name="android:paddingEnd">15dp</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:padding">0dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_marginTop">32dp</item>
+    </style>
+
+    <style name="MoviesScreenText" >
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:textColor">@color/gray</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+    <style name="CommonLayout">
+        <item name="android:layout_marginBottom">24dp</item>
+        <item name="android:layout_marginEnd">24dp</item>
+        <item name="android:layout_marginTop">32dp</item>
+    </style>
+    <style name="CarouselLayout" >
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:elevation">1dp</item>
+        <item name="android:layout_marginBottom">24dp</item>
+        <item name="android:layout_marginStart">24dp</item>
+        <item name="layout_constraintWidth_percent">0.44</item>
+        <item name="flexWrap">wrap</item>
+        <item name="layout_constraintHorizontal_bias">0</item>
+        <item name="layout_constraintVertical_bias">1</item>
+    </style>
+    <style name="Genre">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingBottom">4dp</item>
+        <item name="android:paddingEnd">12dp</item>
+        <item name="android:paddingStart">12dp</item>
+        <item name="android:layout_margin">2dp</item>
+        <item name="android:background">@drawable/registration_selector_button</item>
+        <item name="fontFamily">@font/manrope_bold</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+    <style name="CarouselText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:elevation">1dp</item>
+        <item name="fontFamily">@font/manrope_bold</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">36sp</item>
+        <item name="android:layout_marginStart">24dp</item>
+        <item name="android:layout_marginBottom">8dp</item>
+        <item name="layout_constraintHorizontal_bias">0</item>
+        <item name="layout_constraintVertical_bias">1</item>
     </style>
 </resources>

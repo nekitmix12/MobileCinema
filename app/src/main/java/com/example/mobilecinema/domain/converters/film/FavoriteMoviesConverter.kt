@@ -12,7 +12,7 @@ class FavoriteMoviesConverter {
     ): UiState<MoviesListModel> {
         return when (getFavoriteMovieResult) {
             is Result.Error -> UiState.Error(
-                getFavoriteMovieResult.exception.localizedMessage.orEmpty()
+                getFavoriteMovieResult.exception
             )
 
             is Result.Success -> UiState.Success(

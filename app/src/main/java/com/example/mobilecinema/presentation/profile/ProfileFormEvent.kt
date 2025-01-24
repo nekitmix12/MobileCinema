@@ -1,7 +1,5 @@
 package com.example.mobilecinema.presentation.profile
 
-import com.example.mobilecinema.presentation.login.RegistrationFormEvent
-
 sealed class ProfileFormEvent {
     data class EmailChanged(val email: String) : ProfileFormEvent()
     data class BirthDateChanged(val birthDate: String) : ProfileFormEvent()

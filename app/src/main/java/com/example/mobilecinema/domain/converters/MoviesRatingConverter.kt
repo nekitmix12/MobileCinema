@@ -12,13 +12,13 @@ class MoviesRatingConverter {
         return when (moviesRatingResult) {
             is Result.Error -> {
                 UiState.Error(
-                    moviesRatingResult.exception.localizedMessage.orEmpty()
+                    moviesRatingResult.exception
                 )
             }
 
             is Result.Success -> {
                 UiState.Success(
-                    moviesRatingResult.data.ratings
+                    moviesRatingResult.data.newRatings
                 )
             }
         }

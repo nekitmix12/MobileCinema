@@ -4,9 +4,9 @@ import com.example.mobilecinema.data.model.review.ReviewModifyModel
 import kotlinx.coroutines.flow.Flow
 
 interface ReviewRepository{
-    suspend fun addReview(reviewModifyModel: ReviewModifyModel, movieId:String,id: String)
+    fun addReview(reviewModifyModel: ReviewModifyModel, movieId:String):Flow<Unit>
 
-    suspend fun editReview(moveId:String,reviewId:String,reviewModifyModel: ReviewModifyModel)
+    fun editReview(moveId:String,reviewId:String,reviewModifyModel: ReviewModifyModel):Flow<Unit>
 
-    suspend fun deleteReview(moveId:String,reviewId:String)
+    fun deleteReview(moveId:String,reviewId:String):Flow<Unit>
 }

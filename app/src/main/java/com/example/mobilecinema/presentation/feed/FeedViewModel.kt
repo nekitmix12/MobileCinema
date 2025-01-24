@@ -7,7 +7,7 @@ import com.example.mobilecinema.data.model.movie.GenreModel
 import com.example.mobilecinema.data.model.movie.MovieElementModel
 import com.example.mobilecinema.data.model.movie.MoviesPagedListModel
 import com.example.mobilecinema.data.model.movie.ShortMovieModel
-import com.example.mobilecinema.domain.converters.FilmToDislikedConverter
+import com.example.mobilecinema.domain.converters.AddFilmToDislikedConverter
 import com.example.mobilecinema.domain.converters.film.AddFilmToFavoriteConverter
 import com.example.mobilecinema.domain.converters.film.MoviesConverter
 import com.example.mobilecinema.domain.converters.genre.AddGenreToFavoriteConverter
@@ -29,7 +29,7 @@ class FeedViewModel(
     private val useCase: GetMoviesPageUseCase,
     private val converter: MoviesConverter,
     private val addFilmToDislikedUseCase: AddFilmToDislikedUseCase,
-    private val filmConverter: FilmToDislikedConverter,
+    private val filmConverter: AddFilmToDislikedConverter,
     private val addFilmToFavoriteUseCase: AddFavoriteMovieUseCase,
     private val addFavoriteMovieConverter: AddFilmToFavoriteConverter,
     private val addGenreUseCase: AddGenreUseCase,

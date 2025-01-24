@@ -27,7 +27,7 @@
     </fragment>
     <fragment
         android:id="@+id/singUpFragment"
-        android:name="com.example.mobilecinema.presentation.login.SingUpFragment"
+        android:name="com.example.mobilecinema.presentation.sign_up.SignUpFragment"
         android:label="SingUpFragment" >
         <action
             android:id="@+id/action_singUpFragment_to_welcomeFragment"

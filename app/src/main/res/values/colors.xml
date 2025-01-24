@@ -15,5 +15,6 @@
     <color name="gradient_1">#DF2800</color>
     <color name="gradient_2">#FF6633</color>
     <color name="green">#00991A</color>
+    <color name="splash_green">#7a8a80</color>
 
 </resources>

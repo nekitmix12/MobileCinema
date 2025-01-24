@@ -17,9 +17,9 @@ class ProfileConverter {
                 )
             }
             is Result.Error -> {
-                Log.d("convert", profileResult.exception.localizedMessage.orEmpty())
+                Log.d("convert", profileResult.exception)
                 UiState.Error(
-                    profileResult.exception.localizedMessage.orEmpty()
+                    profileResult.exception
                 )
             }
         }
