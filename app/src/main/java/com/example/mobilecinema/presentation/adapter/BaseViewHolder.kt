@@ -6,5 +6,11 @@ import androidx.viewbinding.ViewBinding
 abstract class BaseViewHolder<out V:ViewBinding,in I:Item>(
     val binding: V
 ):RecyclerView.ViewHolder(binding.root) {
-    abstract fun onBinding(item: I)
+    lateinit var item: @UnsafeVariance I
+    open fun onBinding(item: I){
+        this.item = item
+    }
+    open fun onBinding(item: I,payloads: MutableList<Any>){
+        this.item = item
+    }
 }

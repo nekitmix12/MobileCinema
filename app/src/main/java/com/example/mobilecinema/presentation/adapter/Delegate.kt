@@ -3,6 +3,7 @@ package com.example.mobilecinema.presentation.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
+import androidx.recyclerview.widget.DiffUtil
 import androidx.viewbinding.ViewBinding
 
 
@@ -15,4 +16,6 @@ interface Delegate<V : ViewBinding, I : Item> {
         layoutInflater: LayoutInflater,
         parent: ViewGroup,
     ): BaseViewHolder<V, I>
+
+    fun getDiffUtil(): DiffUtil.ItemCallback<I>
 }

@@ -1,16 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:layout_height="match_parent">
+    <!--android:fillViewport="true"-->
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+<!--
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fitsSystemWindows="true">
+-->
 
-        <ImageView
+        <!--<ImageView
             android:id="@+id/imageView5"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -29,9 +35,9 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0">
 
-        </androidx.viewpager2.widget.ViewPager2>
+        </androidx.viewpager2.widget.ViewPager2>-->
 
-        <LinearLayout
+       <!-- <LinearLayout
             android:id="@+id/linearLayout6"
             android:layout_width="match_parent"
             android:layout_height="4dp"
@@ -113,10 +119,10 @@
                 android:progress="0"
                 android:progressDrawable="@drawable/progress_bar"
                 app:layout_constraintTop_toTopOf="@+id/topScrollView" />
-        </LinearLayout>
+        </LinearLayout>-->
 
 
-        <TextView
+<!--        <TextView
             android:id="@+id/movies_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -129,9 +135,9 @@
             app:layout_constraintHorizontal_bias="0.05"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/topScrollView"
-            app:layout_constraintVertical_bias="0.77" />
+            app:layout_constraintVertical_bias="0.77" />-->
 
-        <Button
+<!--        <Button
             android:id="@+id/random_film_button"
             style="@style/MoviesScreenScrollButton"
             android:background="@drawable/gradient_accent"
@@ -142,68 +148,19 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/topScrollView"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintVertical_bias="0.0" />-->
 
-        <LinearLayout
-            android:id="@+id/linearLayoutMovies"
+
+        <FrameLayout
+            android:id="@+id/loading_screen"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/CommonLayout"
-            android:layout_marginBottom="16dp"
-            app:layout_constraintVertical_bias="0"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/random_film_button">
-            <TextView
-                android:id="@+id/textView"
-                style="@style/MoviesScreenText"
-                android:text="@string/my_favorite" />
-
-            <TextView
-                android:id="@+id/textView2"
-                style="@style/MoviesScreenText"
-                android:gravity="end"
-
-                android:text="@string/all" />
-        </LinearLayout>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/favoriteMoviesRecyclerView"
+            android:layout_height="match_parent"
+            android:background="@drawable/icon_background">
+        <ProgressBar
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="32dp"
-            app:layout_constraintBottom_toTopOf="@id/all_films"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/linearLayoutMovies"
-            app:layout_constraintVertical_bias="1.0" />
-
-        <TextView
-            android:id="@+id/all_films"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/MoviesScreenText"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="32dp"
-            android:layout_marginEnd="24dp"
-            android:text="@string/all_film"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/favoriteMoviesRecyclerView" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/all_films_recycle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/CommonLayout"
-            android:layout_marginTop="16dp"
-
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/all_films" />
-
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+            android:layout_gravity="center"
+            />
+        </FrameLayout>
+<!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
+</FrameLayout>

@@ -1,5 +1,7 @@
 package com.example.mobilecinema.presentation.movies
 
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -17,7 +19,15 @@ import com.example.mobilecinema.domain.use_case.favorite_movies_use_case.GetFavo
 import com.example.mobilecinema.domain.use_case.genre.GetGenreUseCase
 import com.example.mobilecinema.domain.use_case.movies_use_case.GetMoviesPageUseCase
 import com.example.mobilecinema.domain.use_case.movies_use_case.MoviesRatingUseCase
+import com.example.mobilecinema.presentation.adapter.Item
+import com.example.mobilecinema.presentation.adapter.delegates.CarouselDelegate
+import com.example.mobilecinema.presentation.adapter.delegates.FavoriteDelegate
+import com.example.mobilecinema.presentation.adapter.delegates.HorizontalItemDelegates
 import com.example.mobilecinema.presentation.adapter.model.CarouselModel
+import com.example.mobilecinema.presentation.adapter.model.FavoriteModel
+import com.example.mobilecinema.presentation.adapter.model.HorizontalItem
+import com.squareup.picasso.Picasso
+import com.squareup.picasso.Target
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -27,6 +37,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+
 
 class MoviesViewModel(
     private val getMoviesPageUseCase: GetMoviesPageUseCase,
@@ -44,38 +55,122 @@ class MoviesViewModel(
     private var _genreRaw = MutableStateFlow<UiState<List<GenreModel>>>(UiState.Loading)
     private val _moviesRaw = MutableStateFlow<UiState<MoviesPagedListModel>>(UiState.Loading)
     private val _moviesFavorite = MutableStateFlow<UiState<MoviesListModel>>(UiState.Loading)
-    val moviesFavorite: StateFlow<UiState<MoviesListModel>> = _moviesFavorite
 
     private val _movies = MutableStateFlow<List<MovieElementModel>?>(null)
 
 
-    private var genreSet = setOf<String>()
     private var favoriteSet = setOf<String>()
-
+    private var genreSet = setOf<GenreModel>()
 
     private val _scrollAction = MutableSharedFlow<Unit>()
     val scrollAction: SharedFlow<Unit> = _scrollAction
 
-
+    private var _error = MutableStateFlow<String?>(null)
     private var _allMoviesListLocal = MutableStateFlow(listOf<MovieElementModel>())
 
-    private var _carouselList = MutableStateFlow(listOf<CarouselModel>())
-    val carouselList: StateFlow<List<CarouselModel>> = _carouselList
+    private var _carouselList = MutableStateFlow<List<CarouselModel>>(listOf())
 
-    private var _allMoviesListFinish = MutableStateFlow(listOf<AllFilmModel>())
-    val allMoviesList: StateFlow<List<AllFilmModel>> = _allMoviesListFinish
-
-
+    private var _allMoviesList = MutableStateFlow<List<AllFilmModel>?>(null)
+   // private var _favorite = MutableStateFlow<List<FavoriteModel>?>(null)
+    private var _favorite = MutableStateFlow<List<FavoriteModel>>(listOf())
     private val _moviesRating = MutableStateFlow<UiState<List<Float>>>(UiState.Loading)
-    val moviesRating: StateFlow<UiState<List<Float>>> = _moviesRating
+    private val _show = MutableStateFlow(false)
+    private val _feed = MutableStateFlow<List<Item>>(listOf())
 
     private var id = 0
 
-    private var isGetCarouselItem = false
+    //отслеживаемые
+    /*val carouselList: StateFlow<List<CarouselModel>> = _carouselList
+    val favorite: StateFlow<List<FavoriteModel>?> = _favorite
+    val allMoviesList: StateFlow<List<AllFilmModel>?> = _allMoviesList*/
+    val error: StateFlow<String?> = _error
+    val feed: StateFlow<List<Item>> =  _feed
+
+    fun init() {
+        viewModelScope.launch {
+            launch { loadMovies() }
+            launch { getGenre() }
+            launch { loadFavoritesMovies() }
+            launch { collectMovies() }
+            launch { setMovieObserver() }
+            launch { mainCollector() }
+        }
+    }
+
+    private fun mainCollector() {
+        viewModelScope.launch {
+            launch {
+                combine(_carouselList, _favorite, _allMoviesList) { carousel, favorite, all ->
+
+                    listOf(
+                        carousel.isNotEmpty(), favorite.isNotEmpty(), all != null
+                    )
+                }.collect { list ->
+                    Log.d("main_collector",list.toString())
+                    if (list.all { it }) {
+                        val tempFeed = mutableListOf<Item>()
+                        listOf(
+                            CarouselDelegate(genreOnClick = ::genreOnClick,
+                                buttonOnClick = ::buttonOnClick),
+                            HorizontalItemDelegates(
+                                listOf(
+                                    FavoriteDelegate()
+                                ),
+                                70
+                            ),
+                            HorizontalItemDelegates(
+                                listOf(
+                                    CarouselDelegate(::genreOnClick,::buttonOnClick)
+                                ),
+                                70
+                            )
+                        ).forEach {
+                            Log.d("loggerrer",it.isRelativeItem(HorizontalItem(_carouselList.value)).toString())
+                        }
+                        Log.d("main_collector","${HorizontalItem(_carouselList.value) }")
+                        tempFeed.add(HorizontalItem(_carouselList.value))
+                        tempFeed.add(HorizontalItem(_favorite.value))
+
+                        //tempFeed.add(_allMoviesList.value)
+                        _feed.value = tempFeed
+                    }
+                }
+            }
+            launch {
+                viewModelScope.launch {
+                    _moviesRating.collect {
+                        if (it is UiState.Success && _movies.value != null) {
+                            val list = mutableListOf<AllFilmModel>()
+                            it.data.forEachIndexed { index, rating ->
+                                list.add(
+                                    AllFilmModel(
+                                        url = urlToBitmap(_movies.value!![index].poster),
+                                        rating = rating,
+                                        isLiked = favoriteSet.contains(_movies.value!![index].id),
+                                    )
+                                )
+                            }
+                            Log.d("update", "rating")
+                            _allMoviesList.value = list
+                        }
+                    }
+                }
+            }
+        }
+    }
+    private fun genreOnClick(genre:GenreModel){
+        Log.d("genre",genre.toString())
+    }
+
+    private fun buttonOnClick(movieId:String){
+        Log.d("genre",movieId.toString())
+
+    }
+
     private var haveElse = true
 
     //загрузили фильмы
-    fun loadMovies() {
+    private fun loadMovies() {
         if (!haveElse) return
         updateId()
         Log.d("send", "films")
@@ -87,19 +182,15 @@ class MoviesViewModel(
                     )
                 ).map {
                     moviesConverter.convert(it)
+                }.collect {
+                    _moviesRaw.value = it
                 }
-
-                    .collect {
-                        _moviesRaw.value = it
-                    }
             }
         }
     }
 
     //загрузили жанры
-    fun getGenre() {
-        Log.d("send", "genre")
-
+    private fun getGenre() {
         viewModelScope.launch {
             getGenreUseCase.execute(
                 GetGenreUseCase.Request(
@@ -107,46 +198,67 @@ class MoviesViewModel(
             ).map {
                 getGenresFromFavoriteConverter.convert(it)
             }.collect {
-                _genreRaw.value = it
+                if (it is UiState.Success) genreSet = it.data.toSet()
+                if (it is UiState.Error) _error.value = it.errorMessage
             }
         }
     }
 
     //загрузили любимые
-    fun loadFavoritesMovies() {
+    private fun loadFavoritesMovies() {
         Log.d("send", "favorite")
         viewModelScope.launch {
             getFavoriteMoviesUseCase.execute().map {
                 favoriteMoviesConverter.convert(it)
             }.collect {
-                _moviesFavorite.value = it
+                if (it is UiState.Success) {
+                    val temp = mutableSetOf<String>()
+                    val urls = mutableListOf<String>()
+
+                    it.data.movies?.forEach { movie ->
+                        temp.add(movie.id)
+                        movie.poster?.let { it1 -> urls.add(it1) }
+                    }
+
+                    favoriteSet = temp
+
+                    _favorite.value = urlToBitmap(urls)
+                }
+                if (it is UiState.Error) _error.value = it.errorMessage
             }
         }
     }
 
-    //собрали фильмы и установили слушатель скролла и изменения фильмов
-    fun collectAllFilms() {
-        viewModelScope.launch {
-            launch {
-                combine(_moviesFavorite, _genreRaw) { first, second ->
-                    first to second
-                }.collect { (first, second) ->
-                    Log.d(
-                        "has error",
-                        "favorite: ${first is UiState.Error} \n genre: ${if (second is UiState.Error) second.errorMessage else ""}"
-                    )
-                    if (first is UiState.Success && second is UiState.Success) {
-                        Log.d("send", "collect")
-                        genreToSet(second)
-                        favoriteToSet(first)
-                        collectMovies()
-                        setMovieObserver()
-                        ratingObserver()
-                    }
+    private fun urlToBitmap(urls: List<String>): List<FavoriteModel> {
+        val result = mutableListOf<FavoriteModel>()
+        urls.forEach {
+            Picasso.get().load(it).into(object : Target {
+                override fun onBitmapLoaded(bitmap: Bitmap, from: Picasso.LoadedFrom) {
+                    result.add(FavoriteModel(bitmap))
                 }
+
+                override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {}
+
+                override fun onPrepareLoad(placeHolderDrawable: Drawable?) {}
+            })
+        }
+        return result
+    }
+
+    private fun urlToBitmap(urls: String?): Bitmap? {
+        var result: Bitmap? = null
+
+        Picasso.get().load(urls).into(object : Target {
+            override fun onBitmapLoaded(bitmap: Bitmap, from: Picasso.LoadedFrom) {
+                result = bitmap
             }
 
-        }
+            override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {}
+
+            override fun onPrepareLoad(placeHolderDrawable: Drawable?) {}
+        })
+
+        return result
     }
 
     private fun collectMovies() {
@@ -154,7 +266,7 @@ class MoviesViewModel(
             _moviesRaw.collect {
                 when (it) {
                     is UiState.Success -> {
-                        if (_carouselList.value.size < 6) {
+                        if (_carouselList.value.size<6) {
 
                             Log.d("send", "movies raw")
 
@@ -167,15 +279,17 @@ class MoviesViewModel(
                                     val tempCarouseModel = CarouselModel(
                                         movie.id,
                                         movie.moveName,
-                                        movie.poster,
-                                        mutableListOf<Pair<String, Boolean>>()
+                                        urlToBitmap(movie.poster),
+                                        mutableListOf()
                                     )
+
                                     movie.genres.forEach { genre ->
-                                        tempCarouseModel.genres = tempCarouseModel.genres.plus(
-                                            Pair(
-                                                genre?.genreName ?: "", genreSet.contains(genre?.id)
+                                        if (genre != null) tempCarouseModel.genres =
+                                            tempCarouseModel.genres.plus(
+                                                Pair(
+                                                    genre, genreSet.contains(genre)
+                                                )
                                             )
-                                        )
                                     }
                                     Log.d("iter", "$listPairs")
                                     listPairs.add(tempCarouseModel)
@@ -185,8 +299,10 @@ class MoviesViewModel(
                                     else _movies.value = listOf(movie)
                                 }
                             }
-                            Log.d("iter", "$listPairs")
+                            Log.d("iter", "is iter: $listPairs")
                             _carouselList.value = listPairs
+                            Log.d("iter", "is iter: ${_carouselList.value}")
+
                         }
                     }
 
@@ -200,31 +316,15 @@ class MoviesViewModel(
         }
     }
 
-    private fun genreToSet(genreResult: UiState.Success<List<GenreModel>>) {
-        Log.d("send", "genre to set")
-        val setGenres = mutableSetOf<String>()
-        genreResult.data.forEach { genre ->
-            setGenres.add(genre.id)
-        }
-        genreSet = setGenres
-    }
 
-    private fun favoriteToSet(favoriteResult: UiState.Success<MoviesListModel>) {
-        Log.d("send", "favorite to set")
-        val setFavorites = mutableSetOf<String>()
-        favoriteResult.data.movies?.forEach { favorite ->
-            setFavorites.add(favorite.id)
-        }
-        favoriteSet = setFavorites
-    }
 
     private fun setMovieObserver() {
         viewModelScope.launch {
             _movies.collect {
                 if (it == null) return@collect
                 Log.d("update", "movies")
-                val tempList = listOf<MovieElementModel>()
-                for (i in 0..<it.size / 3 * 3) tempList.plus(it[i])
+                var tempList = listOf<MovieElementModel>()
+                for (i in 0..<it.size / 3 * 3) tempList = tempList.plus(it[i])
                 loadRatings(tempList)
             }
         }
@@ -250,24 +350,7 @@ class MoviesViewModel(
     }
 
     private fun ratingObserver() {
-        viewModelScope.launch {
-            _moviesRating.collect {
-                if (it is UiState.Success && _movies.value != null) {
-                    val list = mutableListOf<AllFilmModel>()
-                    it.data.forEachIndexed { index, rating ->
-                        list.add(
-                            AllFilmModel(
-                                url = _movies.value!![index].poster,
-                                rating = rating,
-                                isLiked = favoriteSet.contains(_movies.value!![index].id),
-                            )
-                        )
-                    }
-                    Log.d("update", "rating")
-                    _allMoviesListFinish.value = list
-                }
-            }
-        }
+
     }
 
     private fun updateId() {

@@ -28,10 +28,10 @@
     <com.google.android.flexbox.FlexboxLayout
         android:id="@+id/flexboxLayout"
         style="@style/CarouselLayout"
-        app:layout_constraintBottom_toBottomOf="@+id/button"
-        app:layout_constraintEnd_toStartOf="@+id/button"
+        app:layout_constraintBottom_toBottomOf="@+id/carousel_button"
+        app:layout_constraintEnd_toStartOf="@+id/carousel_button"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/button">
+        app:layout_constraintTop_toTopOf="@+id/carousel_button">
 
         <TextView
             style="@style/Genre"
@@ -47,7 +47,7 @@
     </com.google.android.flexbox.FlexboxLayout>
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/carousel_button"
         style="@style/MoviesScreenLabelButton"
         android:background="@drawable/gradient_accent"
         android:elevation="1dp"

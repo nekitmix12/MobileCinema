@@ -36,6 +36,7 @@ roomKtx = "2.6.1"
 toasty = "1.5.2"
 viewpager2 = "1.1.0"
 viewpager2Version = "1.0.0"
+firebaseComponents = "18.0.1"
 
 [libraries]
 accompanist-flowlayout = { module = "com.google.accompanist:accompanist-flowlayout", version.ref = "accompanistFlowlayout" }
@@ -86,6 +87,7 @@ retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit
 retrofit2-kotlinx-serialization-converter = { module = "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter", version.ref = "retrofit2KotlinxSerializationConverter" }
 room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomKtx" }
 toasty = { module = "com.github.GrenderG:Toasty", version.ref = "toasty" }
+firebase-components = { group = "com.google.firebase", name = "firebase-components", version.ref = "firebaseComponents" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

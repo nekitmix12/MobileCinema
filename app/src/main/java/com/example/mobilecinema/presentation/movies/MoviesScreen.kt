@@ -1,42 +1,57 @@
 package com.example.mobilecinema.presentation.movies
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
-import android.animation.ObjectAnimator
+import android.graphics.Bitmap
 import android.graphics.Color
-import android.graphics.pdf.models.ListItem
 import android.os.Bundle
 import android.util.Log
-import android.util.TypedValue
 import android.view.View
+import android.widget.Button
 import android.widget.ProgressBar
-import android.widget.RelativeLayout
-import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.example.mobilecinema.R
-import com.example.mobilecinema.data.model.favorite_movies.MoviesListModel
-import com.example.mobilecinema.data.model.movie.MovieElementModel
+import com.example.mobilecinema.data.model.movie.GenreModel
 import com.example.mobilecinema.data.model.movie.MoviesPagedListModel
 import com.example.mobilecinema.databinding.MoviesBinding
-import com.example.mobilecinema.domain.use_case.UiState
 import com.example.mobilecinema.presentation.adapter.AdapterWithDelegates
+import com.example.mobilecinema.presentation.adapter.EventHandler
+import com.example.mobilecinema.presentation.adapter.UiEvent
+import com.example.mobilecinema.presentation.adapter.delegates.CarouselDelegate
+import com.example.mobilecinema.presentation.adapter.delegates.FavoriteDelegate
+import com.example.mobilecinema.presentation.adapter.delegates.HorizontalItemDelegates
 import com.example.mobilecinema.presentation.adapter.model.CarouselModel
+import com.example.mobilecinema.presentation.adapter.model.HorizontalItem
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class MoviesScreen : Fragment(R.layout.movies) {
     private lateinit var binding: MoviesBinding
     private lateinit var viewModel: MoviesViewModel
-    private lateinit var viewPager: ViewPager2
-    private lateinit var adapter: AdapterWithDelegates
-    private lateinit var allFilmsAdapter: AllMoviesAdapter
+
+    private var adapterAllElement = AdapterWithDelegates(
+        listOf(
+            CarouselDelegate(genreOnClick = ::genreOnClick,
+                buttonOnClick = ::buttonOnClick),
+            HorizontalItemDelegates(
+                listOf(
+                    FavoriteDelegate(),CarouselDelegate(genreOnClick = ::genreOnClick,
+                        buttonOnClick = ::buttonOnClick)
+                ),
+                70
+            ),
+
+
+        )
+    )
+
+/*    private lateinit var allFilmsAdapter: AllMoviesAdapter
     private lateinit var favoritesMoviesAdapter: FavoriteMoviesAdapter
-    private lateinit var moviesPagedListModel: MoviesPagedListModel
+    private lateinit var moviesPagedListModel: MoviesPagedListModel*/
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -46,50 +61,61 @@ class MoviesScreen : Fragment(R.layout.movies) {
             this, MoviesViewModelFactory()
         )[MoviesViewModel::class]
 
-        viewPager = binding.topScrollView
-
-
+        /*listOf(
+            CarouselDelegate(genreOnClick = ::genreOnClick,
+                buttonOnClick = ::buttonOnClick),
+            HorizontalItemDelegates(
+                listOf(
+                    FavoriteDelegate()
+                ),
+                70
+            ),
+            HorizontalItemDelegates(
+                listOf(
+                    CarouselDelegate(::genreOnClick,::buttonOnClick)
+                ),
+                70
+            )
+        ).forEach {
+            Log.d("loggerrer",it.isRelativeItem( CarouselModel("","", null, listOf())).toString())
+        }*/
         lifecycleScope.launch {
             launch {
-                viewModel.loadMovies()
+                viewModel.init()
             }
             launch {
-                viewModel.loadFavoritesMovies()
-            }
-            launch {
-                viewModel.getGenre()
-            }
-            launch {
-                viewModel.collectAllFilms()
-            }
-            launch {
-                viewModel.carouselList.collect {
-                    Log.d("result",it.toString())
-                    createViewPager(it)
-                    //moviesPagedListModel = it.data
-                    //createAllMoviesRecycleView(it.data, listOf(0.2f))
-
-
-                }
-
-            }
-            launch {
-                viewModel.moviesRating.collect {
-                    when (it) {
-                        is UiState.Loading -> {Log.d("log","loading")}
-                        is UiState.Error -> {Log.d("log", it.errorMessage)}
-                        is UiState.Success -> {
-                            //createAllMoviesRecycleView(moviesPagedListModel, it.data)
-                        }
+                viewModel.feed.collect{
+                    if(it.isNotEmpty()) {
+                        binding.loadingScreen.visibility = View.GONE
+                        adapterAllElement.submitList(it)
                     }
+                    else
+                        binding.loadingScreen.visibility = View.VISIBLE
                 }
             }
+            /*launch { adapterAllElement.submitList(viewModel.carouselList.value) }
+            launch { adapterAllElement.submitList(viewModel.favorite.value) }
+            launch {  }*/
+        }
+
+        with(binding.recyclerView){
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = adapterAllElement
         }
 
     }
 
-    /*    private fun*/
-    /*
+
+    private fun genreOnClick(genre:GenreModel){
+        Log.d("genre",genre.toString())
+    }
+
+    private fun buttonOnClick(movieId:String){
+        Log.d("genre",movieId.toString())
+
+    }
+
+    /*    private fun*//*
         private fun createFavoritesElementRecycleView(movies: MoviesListModel) {
             val recyclerView = binding.favoriteMoviesRecyclerView
             recyclerView.layoutManager =
@@ -142,52 +168,72 @@ class MoviesScreen : Fragment(R.layout.movies) {
             recycleView.adapter = allFilmsAdapter
 
         }*/
-
-    private fun createViewPager(movies: List<CarouselModel>) {
-        adapter = AdapterWithDelegates()
-        viewPager.adapter = adapter
-        adapter.setItem(movies)
-
-        /*var progressAnimator: ObjectAnimator? = null
-        var progressBar: ProgressBar? = null
-        var lastPosition = 0
-        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                super.onPageSelected(position)
-
-                val currentPosition = if (position == 5) 0
-                else position
-                progressAnimator?.cancel()
-                if (lastPosition == currentPosition + 1) progressBar?.progress = 0
-                else {
-                    progressBar?.progress = 100
-                }
-                lastPosition = currentPosition
-
-                if (viewPager.currentItem == 5) {
-                    viewPager.setCurrentItem(0, true)
-                    for (progressBarPos in 0..4) {
-                        getProgressBar(progressBarPos)?.progress = 0
-
-                    }
+/*    private fun getCarouselUiEvent(): EventHandler<UiEvent> = object : EventHandler<UiEvent> {
+        override fun handle(event: UiEvent) {
+            when (event) {
+                is UiEvent.GenreClicked -> {
+                    Toast.makeText(
+                        requireContext(),
+                        "Image clicked: ${event.genre.genreName}",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
 
-                progressBar = getProgressBar(currentPosition)
-                progressAnimator = getAnimator(progressBar)
-                progressAnimator?.addListener(object : AnimatorListenerAdapter() {
-                    override fun onAnimationEnd(animation: Animator) {
-                        super.onAnimationEnd(animation)
-                        if (viewPager.currentItem == currentPosition) viewPager.setCurrentItem(
-                            currentPosition + 1, true
-                        )
-
-                    }
-                })
-                progressAnimator?.start()
-                currentMovies.movies?.let { changeFilmInfo(it[currentPosition]) }
+                is UiEvent.CarouselButtonClicked -> {
+                    Toast.makeText(
+                        requireContext(), "Name clicked: ${event.moviesId}", Toast.LENGTH_SHORT
+                    ).show()
+                }
+                else->{}
             }
-        })*/
-    }
+        }
+
+    }*/
+
+/*    private fun createViewPager(movies: List<CarouselModel>) {
+        adapter = AdapterWithDelegates(eventHandler = getCarouselUiEvent())
+        viewPager.adapter = adapter
+        adapter.setItem(movies)*/
+    }/*var progressAnimator: ObjectAnimator? = null
+    var progressBar: ProgressBar? = null
+    var lastPosition = 0
+    viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+        override fun onPageSelected(position: Int) {
+            super.onPageSelected(position)
+
+            val currentPosition = if (position == 5) 0
+            else position
+            progressAnimator?.cancel()
+            if (lastPosition == currentPosition + 1) progressBar?.progress = 0
+            else {
+                progressBar?.progress = 100
+            }
+            lastPosition = currentPosition
+
+            if (viewPager.currentItem == 5) {
+                viewPager.setCurrentItem(0, true)
+                for (progressBarPos in 0..4) {
+                    getProgressBar(progressBarPos)?.progress = 0
+
+                }
+            }
+
+            progressBar = getProgressBar(currentPosition)
+            progressAnimator = getAnimator(progressBar)
+            progressAnimator?.addListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator) {
+                    super.onAnimationEnd(animation)
+                    if (viewPager.currentItem == currentPosition) viewPager.setCurrentItem(
+                        currentPosition + 1, true
+                    )
+
+                }
+            })
+            progressAnimator?.start()
+            currentMovies.movies?.let { changeFilmInfo(it[currentPosition]) }
+        }
+    })*/
+
 
     /*    fun changeFilmInfo(moviesElement: MovieElementModel) {
             val relativeLayout = binding.genreMoviesRelativeLayout
@@ -247,6 +293,7 @@ class MoviesScreen : Fragment(R.layout.movies) {
             }
             return null
         }*/
+/*
 
     fun getProgressBar(number: Int): ProgressBar? {
         var progressBar: ProgressBar? = null
@@ -271,4 +318,6 @@ class MoviesScreen : Fragment(R.layout.movies) {
         }
         return progressBar
     }
-}
+
+
+}*/

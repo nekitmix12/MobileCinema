@@ -60,11 +60,15 @@ android {
 }
 
 dependencies {
+/*    implementation ("com.hannesdorfmann:adapterdelegates4-kotlin-dsl:4.3.2")
+    implementation ("com.hannesdorfmann:adapterdelegates4-kotlin-dsl-layoutcontainer:4.3.2")
+    implementation ("com.hannesdorfmann:adapterdelegates4-kotlin-dsl-viewbinding:4.3.2")*/
     implementation ("com.squareup.okhttp3:logging-interceptor:3.8.0")
     implementation ("com.google.android.flexbox:flexbox:3.0.0")
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.9.10")
     implementation (libs.toasty)
     implementation (libs.room.ktx)
+    implementation(libs.firebase.components)
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.runtime)
     implementation(libs.coil.compose)

@@ -1,8 +1,7 @@
-package com.example.mobilecinema.presentation.adapter.delegates
+package com.example.mobilecinema.presentation.adapter.holders
 
 import android.content.Context
 import android.util.TypedValue
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
@@ -12,22 +11,20 @@ import com.example.mobilecinema.databinding.CarouselElementBinding
 import com.example.mobilecinema.presentation.adapter.BaseViewHolder
 import com.example.mobilecinema.presentation.adapter.model.CarouselModel
 import com.google.android.flexbox.FlexboxLayout
-import com.squareup.picasso.Picasso
 
 class CarouselHolder(
     binding: CarouselElementBinding,
-    //itemClickedListener:(GenreModel)->Unit
+    private val genreOnClick: (GenreModel) -> Unit,
+    private val buttonOnClick: (String) -> Unit,
 ) : BaseViewHolder<CarouselElementBinding, CarouselModel>(binding) {
-    override fun onBinding(item: CarouselModel,) = with(binding) {
+
+    override fun onBinding(item: CarouselModel) = with(binding) {
         item.addGenre(flexboxLayout)
-        item.loadImg(carouselImage)
+        carouselImage.setImageBitmap(item.poster)
         CarouselCardName.text = item.name
+        carouselButton.setOnClickListener { buttonOnClick(item.id) }
     }
 
-    private fun CarouselModel.loadImg(img: ImageView) {
-        Picasso.get().load(this.poster).error(R.drawable.icon_background)
-            .into(img)
-    }
 
     private fun CarouselModel.addGenre(layout: FlexboxLayout) {
         while (layout.childCount > this.genres.size) {
@@ -45,7 +42,7 @@ class CarouselHolder(
                 }
             }
 
-            textView.text = genre.first
+            textView.text = genre.first.genreName
             textView.isSelected = genre.second
 
             textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
@@ -69,14 +66,15 @@ class CarouselHolder(
             layoutParams.topMargin = 2.dpToPx(layout.context)
             textView.layoutParams = layoutParams
             textView.elevation = 1f.dpToPx(layout.context)
+            textView.setOnClickListener { genreOnClick(genre.first) }
         }
     }
-}
 
-private fun Int.dpToPx(context: Context): Int {
-    return (this * context.resources.displayMetrics.density).toInt()
-}
+    private fun Int.dpToPx(context: Context): Int {
+        return (this * context.resources.displayMetrics.density).toInt()
+    }
 
-private fun Float.dpToPx(context: Context): Float {
-    return (this * context.resources.displayMetrics.density)
+    private fun Float.dpToPx(context: Context): Float {
+        return (this * context.resources.displayMetrics.density)
+    }
 }
