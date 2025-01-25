@@ -1,44 +1,41 @@
-<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/sign_in_background_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
         app:cardBackgroundColor="@color/dark"
         app:cardPreventCornerOverlap="false"
         app:layout_constraintEnd_toEndOf="parent"
-
-
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:shapeAppearanceOverlay="@style/RoundedBottomCorners"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:clipToPadding="false">
+        app:shapeAppearanceOverlay="@style/RoundedBottomCorners">
 
         <ImageView
             android:id="@+id/carouselImage"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:contentDescription="@string/film_image_description"
-            android:scaleType="matrix"
+            android:scaleType="centerCrop"
             tools:src="@drawable/img" />
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.flexbox.FlexboxLayout
         android:id="@+id/flexboxLayout"
         style="@style/CarouselLayout"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/button"
+        app:layout_constraintEnd_toStartOf="@+id/button"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="@+id/button">
 
         <TextView
             style="@style/Genre"
-            tools:text="фэнтези" />
+            tools:text="мультфильм" />
 
         <TextView
             style="@style/Genre"
@@ -49,14 +46,27 @@
             tools:text="драма" />
     </com.google.android.flexbox.FlexboxLayout>
 
+    <Button
+        android:id="@+id/button"
+        style="@style/MoviesScreenLabelButton"
+        android:background="@drawable/gradient_accent"
+        android:elevation="1dp"
+        android:text="@string/watch"
+        app:layout_constraintBottom_toBottomOf="@+id/sign_in_background_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintStart_toStartOf="@+id/sign_in_background_image"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.93" />
+
     <TextView
         android:id="@+id/CarouselCardName"
         style="@style/CarouselText"
-        tools:text="Волшебники"
         app:layout_constraintBottom_toTopOf="@+id/flexboxLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Волшебники">
 
     </TextView>
 </androidx.constraintlayout.widget.ConstraintLayout>

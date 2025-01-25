@@ -75,12 +75,15 @@ class SingInFragment : Fragment(R.layout.sing_in) {
             }*/
             launch {
                 viewModel.isConfirmed.collect {
-                    if (it) startActivity(
-                        Intent(
-                            requireContext(), CinemaActivity::class.java
+                    if (it) {
+                        startActivity(
+                            Intent(
+                                requireContext(), CinemaActivity::class.java
+                            )
+
                         )
-                    )
-                    (requireContext() as Activity).finish()
+                        (requireContext() as Activity).finish()
+                    }
                 }
             }
 
