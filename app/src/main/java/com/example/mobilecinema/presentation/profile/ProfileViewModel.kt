@@ -3,6 +3,7 @@ package com.example.mobilecinema.presentation.profile
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -29,9 +30,13 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import java.time.LocalTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
 
 class ProfileViewModel(
     private val validateLogin: ValidateLogin = ValidateLogin(),
@@ -119,6 +124,45 @@ class ProfileViewModel(
                 if (it is UiState.Error) _error.value = it.errorMessage
             }
         }
+    }
+
+    fun setDate(day: String, month: String, year: String) {
+        var data = ""
+        data += "$year-"
+
+        if (month.length == 1)
+            data += 0
+        data += "$month-"
+
+        if (day.length == 1)
+            data += "0"
+        data += day
+
+
+        _profile.value = _profile.value?.copy(birthDate = data)
+
+    }
+
+    fun isoToReadableDate(isoTime: String): String {
+        val isoFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
+        isoFormat.timeZone = TimeZone.getTimeZone("UTC")
+
+        val isoFormatWithZ = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
+        isoFormatWithZ.timeZone = TimeZone.getTimeZone("UTC")
+
+        val readableFormat = SimpleDateFormat("d MMMM yyyy", Locale("ru"))
+        val date: Date = try {
+            isoFormat.parse(isoTime)!!
+        } catch (e: Exception) {
+            try {
+                isoFormatWithZ.parse(isoTime)!!
+            } catch (e: Exception) {
+                Log.e("exception", e.message.toString())
+                return "Некорректная дата"
+            }
+        }
+
+        return date.let { readableFormat.format(it) } ?: "Некорректная дата"
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

@@ -101,14 +101,9 @@
                 android:id="@+id/image_profile_main"
                 android:layout_width="96dp"
                 android:layout_height="96dp"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="120dp"
-                android:contentDescription="@string/film_image_description"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ellipse_22" />
+                android:scaleType="centerCrop"
+                android:src="@drawable/ellipse_22"
+                android:contentDescription="@string/film_image_description" />
         </androidx.cardview.widget.CardView>
         <View
             android:id="@+id/friends_profile"
@@ -252,6 +247,7 @@
             android:paddingTop="14dp"
             android:paddingEnd="16dp"
             android:paddingBottom="14dp"
+            android:inputType="none"
             android:textColorHint="@color/gray"
             android:textColor="@color/gray"
             android:textSize="14sp"
@@ -378,25 +374,13 @@
 
         <Space
             android:layout_width="match_parent"
-            android:layout_height="32dp"
+            android:layout_height="80dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/linearLayout5" />
 
-        <FrameLayout
-            android:id="@+id/loading_screen"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:elevation="10dp"
-            tools:visibility="gone"
-            android:background="@color/black"
-           >
-            <ProgressBar
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"/>
-        </FrameLayout>
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

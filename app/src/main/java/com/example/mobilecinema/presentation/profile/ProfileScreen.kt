@@ -1,9 +1,11 @@
 package com.example.mobilecinema.presentation.profile
 
 import android.annotation.SuppressLint
+import android.app.DatePickerDialog
 import android.content.Intent
 import android.graphics.LinearGradient
 import android.graphics.Shader
+import android.icu.util.Calendar
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
@@ -26,7 +28,7 @@ class ProfileScreen : Fragment(R.layout.profile) {
     private var viewModel: ProfileViewModel? = null
 
     @RequiresApi(Build.VERSION_CODES.O)
-    @SuppressLint("UnsafeRepeatOnLifecycleDetector")
+    @SuppressLint("UnsafeRepeatOnLifecycleDetector", "ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = ProfileBinding.bind(view)
@@ -60,13 +62,15 @@ class ProfileScreen : Fragment(R.layout.profile) {
             viewModel!!.profile.collect {
                 when (it) {
                     null -> {
-                        binding!!.loadingScreen.visibility = View.VISIBLE
+                        //binding!!.loadingScreen.visibility = View.VISIBLE
                     }
 
                     else -> {
                         Picasso.get().load(it.avatarLink)
-                            .into(binding!!.imageProfileMain )
-                        binding!!.loadingScreen.visibility = View.GONE
+                            .error(R.drawable.ellipse_22)
+                            .into(binding!!.imageProfileMain)
+
+                        //binding!!.loadingScreen.visibility = View.GONE
                         binding!!.nameProfile.text = it.name
                         binding!!.loginProfile.text =
                             Editable.Factory.getInstance().newEditable(it.nickName.toString())
@@ -75,8 +79,8 @@ class ProfileScreen : Fragment(R.layout.profile) {
                         binding!!.emailProfile.text =
                             Editable.Factory.getInstance().newEditable(it.email)
                         binding!!.birthDateProfile.text =
-                            Editable.Factory.getInstance().newEditable(it.birthDate)
-
+                            Editable.Factory.getInstance()
+                                .newEditable(viewModel!!.isoToReadableDate(it.birthDate))
                         when (it.gender) {
                             0 -> binding!!.menButtonProfile.isSelected = true
                             1 -> binding!!.womenButtonProfile.isSelected = true
@@ -96,6 +100,35 @@ class ProfileScreen : Fragment(R.layout.profile) {
                     ?.let { viewModel!!.putProfile(profileDTO = it) }
             }
         }
+
+
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+        binding!!.birthDateProfile.setOnClickListener {
+            val datePickerDialog = DatePickerDialog(
+                requireContext(),
+                { _, selectedYear, selectedMonth, selectedDay ->
+                    val selectedDate = "$selectedDay.${selectedMonth + 1}.$selectedYear"
+                    binding!!.birthDateProfile.text =
+                        Editable.Factory.getInstance().newEditable(selectedDate)
+                    viewModel?.profile?.value?.copy(birthDate = binding!!.loginProfile.text.toString())
+                        ?.let { viewModel!!.putProfile(profileDTO = it) }
+
+                    viewModel!!.setDate(
+                        selectedDay.toString(),
+                        (selectedMonth + 1).toString(),
+                        selectedYear.toString()
+                    )
+                },
+                year, month, day
+            )
+            datePickerDialog.show()
+        }
+
+
 
         binding!!.nameProfileEditText.onFocusChangeListener =
             View.OnFocusChangeListener { _, hasFocus ->
@@ -141,8 +174,6 @@ class ProfileScreen : Fragment(R.layout.profile) {
                 ?.let { viewModel!!.putProfile(profileDTO = it) }
 
         }
-
-
     }
 
     private fun setGradientContext(textView: TextView, vararg colors: Int) {
