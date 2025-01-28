@@ -3,8 +3,5 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     style="@style/MoviesScreenText"
-    android:layout_marginStart="24dp"
-    android:layout_marginTop="32dp"
-    android:layout_marginEnd="24dp"
     android:text="@string/all_film"
     xmlns:android="http://schemas.android.com/apk/res/android" />

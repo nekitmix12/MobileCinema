@@ -1,5 +1,6 @@
 package com.example.mobilecinema.presentation.adapter.holders
 
+import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mobilecinema.databinding.HorizontalRecycleViewBinding
@@ -7,6 +8,7 @@ import com.example.mobilecinema.presentation.adapter.AdapterWithDelegates
 import com.example.mobilecinema.presentation.adapter.BaseViewHolder
 import com.example.mobilecinema.presentation.adapter.Delegate
 import com.example.mobilecinema.presentation.adapter.model.HorizontalItem
+import com.example.mobilecinema.presentation.adapter.scroll_lesteners.ScaleScrollListener
 
 class HorizontalItemHolder(
     binding: HorizontalRecycleViewBinding,
@@ -19,6 +21,7 @@ class HorizontalItemHolder(
         with(binding.favoriteMoviesRecyclerView) {
             adapter = delegateAdapter
             layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
+
         }
     }
 

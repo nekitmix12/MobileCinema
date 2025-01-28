@@ -2,6 +2,7 @@ package com.example.mobilecinema.presentation.adapter.holders
 
 import android.content.Context
 import android.util.TypedValue
+import android.view.View
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
@@ -14,7 +15,7 @@ import com.google.android.flexbox.FlexboxLayout
 
 class CarouselHolder(
     binding: CarouselElementBinding,
-    private val genreOnClick: (GenreModel) -> Unit,
+    private val genreOnClick: (Boolean,GenreModel) -> Unit,
     private val buttonOnClick: (String) -> Unit,
 ) : BaseViewHolder<CarouselElementBinding, CarouselModel>(binding) {
 
@@ -43,7 +44,6 @@ class CarouselHolder(
             }
 
             textView.text = genre.first.genreName
-            textView.isSelected = genre.second
 
             textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
             textView.setTextColor(ContextCompat.getColor(layout.context, R.color.white))
@@ -58,6 +58,7 @@ class CarouselHolder(
 
             textView.background =
                 ContextCompat.getDrawable(layout.context, R.drawable.registration_selector_button)
+            textView.isSelected = true
 
             val layoutParams = textView.layoutParams as FlexboxLayout.LayoutParams
             layoutParams.marginStart = 2.dpToPx(layout.context)
@@ -66,7 +67,8 @@ class CarouselHolder(
             layoutParams.topMargin = 2.dpToPx(layout.context)
             textView.layoutParams = layoutParams
             textView.elevation = 1f.dpToPx(layout.context)
-            textView.setOnClickListener { genreOnClick(genre.first) }
+            textView.invalidate()
+            textView.setOnClickListener { genreOnClick(genre.second,genre.first) }
         }
     }
 

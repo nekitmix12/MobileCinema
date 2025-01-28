@@ -1,7 +1,19 @@
 package com.example.mobilecinema.presentation.profile
 
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.mobilecinema.R
+import com.example.mobilecinema.data.StringHelper
+import com.example.mobilecinema.data.datasource.local.TokenStorageDataSourceImpl
+import com.example.mobilecinema.data.model.auth.ProfileDTO
 import com.example.mobilecinema.domain.converters.ProfileConverter
+import com.example.mobilecinema.domain.converters.auth.LogoutConverter
+import com.example.mobilecinema.domain.converters.auth.PutProfileConverter
+import com.example.mobilecinema.domain.use_case.UiState
 import com.example.mobilecinema.domain.use_case.auth_use_case.LogOutUseCase
 import com.example.mobilecinema.domain.use_case.user_use_case.GetProfileUseCase
 import com.example.mobilecinema.domain.use_case.user_use_case.PutProfileUseCase
@@ -11,6 +23,15 @@ import com.example.mobilecinema.domain.use_case.validate.ValidateGender
 import com.example.mobilecinema.domain.use_case.validate.ValidateLink
 import com.example.mobilecinema.domain.use_case.validate.ValidateLogin
 import com.example.mobilecinema.domain.use_case.validate.ValidateName
+import com.squareup.picasso.Picasso
+import com.squareup.picasso.Target
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
+import java.time.LocalTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
 
 class ProfileViewModel(
     private val validateLogin: ValidateLogin = ValidateLogin(),
@@ -23,178 +44,112 @@ class ProfileViewModel(
     private val putProfileUseCase: PutProfileUseCase,
     private val logOutUseCase: LogOutUseCase,
     private val profileConverter: ProfileConverter,
+    private val putProfileConverter: PutProfileConverter,
+    private val logoutConverter: LogoutConverter,
 ) : ViewModel() {
 
-    /*private var _profile = MutableStateFlow<UiState<ProfileDTO>>(UiState.Loading)
-    val profile: StateFlow<UiState<ProfileDTO>> = _profile
+    private var _profile = MutableStateFlow<ProfileDTO?>(null)
+    val profile: StateFlow<ProfileDTO?> = _profile
 
-    private val _profileUpdateStatus = MutableStateFlow<Result<PutProfileUseCase.Response>?>(null)
-    val profileUpdateStatus: StateFlow<Result<PutProfileUseCase.Response>?> = _profileUpdateStatus
+    private var _error = MutableStateFlow<String?>(null)
+    val error: StateFlow<String?> = _error
 
-    var state by mutableStateOf(ProfileModel1())
-
-    private val validationEventChannel = Channel<ValidationEvent>()
-    val validationEvents = validationEventChannel.receiveAsFlow()
+    private var _isLogout = MutableStateFlow(false)
+    val isLogout: StateFlow<Boolean> = _isLogout
 
     fun loadProfile() {
         viewModelScope.launch {
-            getProfileUseCase.execute()
-                .map {
-                    profileConverter.convert(it)
-                }
-                .collect {
-                    _profile.value = it
-                }
-            profile.collect {
+            getProfileUseCase.execute().map {
+                profileConverter.convert(it)
+            }.collect {
                 when (it) {
                     is UiState.Loading -> {}
                     is UiState.Success -> {
-                        state = state.copy(
-                            id = it.data.id,
-                            gender = it.data.gender,
-                            email = it.data.email,
-                            birthDate = it.data.birthDate,
-                            login = it.data.nickName,
-                            avatarLink = it.data.avatarLink,
-                            name = it.data.name
-                        )
-                        Log.e(
-                            "profileVM", state.copy(
-                                id = it.data.id,
-                                gender = it.data.gender,
-                                email = it.data.email,
-                                birthDate = it.data.birthDate,
-                                login = it.data.nickName,
-                                avatarLink = it.data.avatarLink,
-                                name = it.data.name
-                            ).toString()
-                        )
+                        _profile.value = it.data
                     }
 
                     is UiState.Error -> {}
                 }
             }
-        }*/
-}
+        }
+    }
 
-/*private fun putProfile(profileDTO: ProfileDTO) {
-    viewModelScope.launch {
-        putProfileUseCase.execute(
-            PutProfileUseCase.Request(
-                profileDTO
-            )
-        )
-            .collect{
-                _profileUpdateStatus.value = it
+    fun urlToBitmap(urls: String?): Bitmap? {
+        var result: Bitmap? = null
+
+        Picasso.get().load(urls).into(object : Target {
+            override fun onBitmapLoaded(bitmap: Bitmap, from: Picasso.LoadedFrom) {
+                result = bitmap
+            }
+
+            override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {}
+
+            override fun onPrepareLoad(placeHolderDrawable: Drawable?) {}
+        })
+
+        return result
+    }
+
+    fun putProfile(profileDTO: ProfileDTO) {
+        viewModelScope.launch {
+            putProfileUseCase.execute(
+                PutProfileUseCase.Request(
+                    profileDTO
+                )
+            ).map {
+                putProfileConverter.convert(it)
+            }.collect {
+                if (it is UiState.Success) _error.value = null
+
+                if (it is UiState.Error) _error.value = it.errorMessage
 
             }
+        }
     }
-}
 
-fun logOut() {
-    viewModelScope.launch {
-        logOutUseCase.execute()
+    fun logOut() {
+        viewModelScope.launch {
+            logOutUseCase.execute().map { logoutConverter.convert(it) }.collect {
+                if (it is UiState.Success) {
+                    _error.value = null
+                    _isLogout.value = true
+                    TokenStorageDataSourceImpl().clearToken()
+                }
+
+                if (it is UiState.Error) _error.value = it.errorMessage
+            }
+        }
     }
-}
 
-fun onEvent(event: ProfileFormEvent) {
-    when (event) {
-        is ProfileFormEvent.NameChanged -> {
-            state = state.copy(name = event.name)
-        }
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun getData(): String {
+        val currentMillis = System.currentTimeMillis()
 
-        is ProfileFormEvent.EmailChanged -> {
-            state = state.copy(email = event.email)
-        }
-
-        is ProfileFormEvent.LoginChanged -> {
-            state = state.copy(login = event.login)
-
-        }
-
-        is ProfileFormEvent.BirthDateChanged -> {
-            state = state.copy(
-                birthDate = if (event.birthDate.length > 10) dataConverter.convertDateFormat(
-                    event.birthDate
-                ) else event.birthDate
+        val zoneId = ZoneId.of("Asia/Novosibirsk")
+        val zonedDateTime =
+            ZonedDateTime.ofInstant(java.time.Instant.ofEpochMilli(currentMillis), zoneId)
+        val currentTime = zonedDateTime.toLocalTime()
+        if (currentTime.isAfter(LocalTime.of(6, 0)) && currentTime.isBefore(
+                LocalTime.of(
+                    12,
+                    0
+                )
             )
-
-        }
-
-        is ProfileFormEvent.GenderChanged -> {
-            state = state.copy(gender = event.gender)
-
-        }
-
-        is ProfileFormEvent.Submit -> {
-            Log.d("asda", "sub")
-            submitData()
-            Log.d("asda", "sub")
-        }
+        ) return StringHelper().getString(R.string.good_morning) + ","
+        else if (currentTime.isBefore(
+                LocalTime.of(
+                    18,
+                    0
+                )
+            )
+        ) return StringHelper().getString(R.string.good_day) + ","
+        else if (currentTime.isBefore(
+                LocalTime.of(
+                    24,
+                    0
+                )
+            )
+        ) return StringHelper().getString(R.string.good_evening) + ","
+        else return StringHelper().getString(R.string.good_night) + ","
     }
 }
-
-
-private fun submitData() {
-    Log.d("profileVm","startSub")
-    val emailResult = validateEmail.execute(state.email)
-    val nameResult = validateName.execute(state.name)
-    val loginResult = validateLogin.execute(state.login)
-    val birthDateResult = validateBirthDate.execute(state.birthDate)
-    val genderResult = validateGender.execute(state.gender)
-    val avatarLinkResult = validationLink.execute(state.avatarLink)
-
-    val hasError = listOf(
-        nameResult,
-        emailResult,
-        loginResult,
-        //birthDateResult,
-        genderResult,
-        avatarLinkResult
-    ).any {
-        it.errorManager != null
-    }
-    Log.d("profileVm","is errors $hasError")
-
-    if (hasError) {
-        state = state.copy(
-            nameError = nameResult.errorManager,
-            emailError = emailResult.errorManager,
-            loginError = loginResult.errorManager,
-            birthDateError = birthDateResult.errorManager,
-            genderError = genderResult.errorManager,
-            avatarLinkError = avatarLinkResult.errorManager
-        )
-        Log.d("use_case", state.toString())
-        return
-    }
-
-    viewModelScope.launch {
-        validationEventChannel.send(ValidationEvent.Success)
-    }
-    Log.d(
-        "profile", ProfileDTO(
-            name = state.name,
-            nickName = state.login,
-            email = state.email,
-            birthDate = state.birthDate,
-            gender = state.gender,
-            id = state.id,
-            avatarLink = state.avatarLink
-        ).toString()
-    )
-    Log.d("profileVm","start request")
-    putProfile(
-        ProfileDTO(
-            name = state.name,
-            nickName = state.login,
-            email = state.email,
-            birthDate = state.birthDate,
-            gender = state.gender,
-            id = state.id,
-            avatarLink = state.avatarLink
-        )
-    )
-
-}
-}*/

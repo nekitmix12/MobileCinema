@@ -14,7 +14,7 @@ import com.example.mobilecinema.presentation.adapter.model.CarouselModel
 
 
 class CarouselDelegate(
-    private val genreOnClick: (GenreModel) -> Unit,
+    private val genreOnClick: (Boolean,GenreModel) -> Unit,
     private val buttonOnClick: (String) -> Unit,
 ) : Delegate<CarouselElementBinding, CarouselModel> {
 

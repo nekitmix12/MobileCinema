@@ -1,0 +1,9 @@
+<Button android:id="@+id/random_film_button"
+    style="@style/MoviesScreenScrollButton"
+    android:background="@drawable/gradient_accent"
+    android:drawableLeft="@drawable/game_die"
+    android:text="@string/rand_film"
+    xmlns:android="http://schemas.android.com/apk/res/android" />
+
+
+

@@ -66,65 +66,9 @@ class FeedScreen : Fragment(R.layout.feed_screen) {
         super.onViewCreated(view, savedInstanceState)
         binding = FeedScreenBinding.bind(view)
 
-        val sharedPreferences = requireContext().getSharedPreferences(
-            requireContext().getString(R.string.preference_is_logged_in), Context.MODE_PRIVATE
-        )
-        val dataBase = Room.databaseBuilder(
-            requireContext(), AppDataBase::class.java, "app_database"
-        ).build()
-        sharedPreferences.getString("authToken", "")?.let { Log.d("feed_screen", it) }
-
-        val tokenStorage = TokenStorageDataSourceImpl(sharedPreferences)
-        val networkModule = NetworkModule()
-        val interceptor = AuthInterceptor(tokenStorage)
-        val apiServiceMovies = networkModule.provideMovieService(
-            networkModule.provideRetrofit(
-                networkModule.provideOkHttpClient(interceptor)
-            )
-        )
-        val apiServiceFavoritesMovies = networkModule.provideFavoriteMoviesService(
-            networkModule.provideRetrofit(
-                networkModule.provideOkHttpClient(interceptor)
-            )
-        )
-        val filmLocalDataSource = FilmLocalDataSourceImpl(dataBase.filmDao())
-        val moviesRemoteDataSource = MoviesRemoteDataSourceImpl(apiServiceMovies)
-        val moviesRepository = MoviesRepositoryImpl(moviesRemoteDataSource, filmLocalDataSource)
-        val configuration = UseCase.Configuration(Dispatchers.IO)
-        val getMoviesPageUseCase = GetMoviesPageUseCase(configuration, moviesRepository)
-        val moviesConverter = MoviesConverter()
-        val favoriteRemoteDataSource =
-            FavoritesMoviesRemoteDataSourceImpl(apiServiceFavoritesMovies)
-        val favoriteMoviesRepository = FavoriteMoviesRepositoryImpl(favoriteRemoteDataSource)
-        val genreLocalDataSource = GenreLocalDataSourceImpl(dataBase.genreDao())
-        val genreRepository = GenreRepositoryImpl(genreLocalDataSource)
-        val addFilmToFavoriteUseCase =
-            AddFavoriteMovieUseCase(configuration, favoriteMoviesRepository)
-        val addFavoriteMovieConverter = AddFilmToFavoriteConverter()
-        val addGenreUseCase = AddGenreUseCase(genreRepository, configuration)
-        val addFavoriteGenreConverter = AddGenreToFavoriteConverter()
-        val getGenreUseCase = GetGenreUseCase(genreRepository, configuration)
-        val getGenresFromFavoriteConverter = GetGenresFromFavoriteConverter()
-        val deleteGenreUseCase = DeleteGenreUseCase(genreRepository, configuration)
-        val deleteGenreFromFavoriteConverter = DeleteGenreFromFavoriteConverter()
-        val addFilmToDislikedConverter = AddFilmToDislikedConverter()
-        val addFilmToDislikedUseCase = AddFilmToDislikedUseCase(moviesRepository, configuration)
 
         viewModel = ViewModelProvider(
-            this, FeedViewModelFactory(
-                getMoviesPageUseCase = getMoviesPageUseCase,
-                moviesConverter = moviesConverter,
-                addFilmToDislikedUseCase = addFilmToDislikedUseCase,
-                filmConverter = addFilmToDislikedConverter,
-                addFilmToFavoriteUseCase = addFilmToFavoriteUseCase,
-                addFavoriteMovieConverter = addFavoriteMovieConverter,
-                addGenreUseCase = addGenreUseCase,
-                addFavoriteGenreConverter = addFavoriteGenreConverter,
-                getGenreUseCase = getGenreUseCase,
-                getGenresFromFavoriteConverter = getGenresFromFavoriteConverter,
-                deleteGenreUseCase = deleteGenreUseCase,
-                deleteGenreFromFavoriteConverter = deleteGenreFromFavoriteConverter
-            )
+            this, FeedViewModelFactory()
         )[FeedViewModel::class]
 
         viewModel.load()

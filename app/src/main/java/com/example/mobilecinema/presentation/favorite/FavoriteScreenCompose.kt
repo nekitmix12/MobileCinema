@@ -55,6 +55,7 @@ import com.example.mobilecinema.data.model.favorite_movies.MoviesListModel
 import com.example.mobilecinema.data.model.movie.GenreModel
 import com.example.mobilecinema.data.model.movie.MovieElementModel
 import com.example.mobilecinema.domain.use_case.UiState
+import com.example.mobilecinema.presentation.ColorHelper
 import com.example.mobilecinema.presentation.movies_details.MoviesDetailsActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlin.math.max
@@ -95,6 +96,8 @@ fun FavoriteScreen(
                         context.navigateToActivity(MoviesDetailsActivity::class.java, it.id)
                     }
                 )
+            else
+                LoaderMain()
         }
 
         false -> {
@@ -104,7 +107,7 @@ fun FavoriteScreen(
         }
 
         else -> {
-
+            LoaderMain()
 
         }
     }
@@ -258,10 +261,9 @@ fun Genres(genres: List<GenreModel>, onClick: (GenreModel) -> Unit) {
 
 @Composable
 fun FilmCard(rating: Float, movie: MovieElementModel, onClick: (MovieElementModel) -> Unit) {
-    val startColor = colorResource(id = R.color.gradient_1)
-    val endColor = colorResource(id = R.color.green)
-    val normalizedValue = max(0f, min(rating, 10f)) / 10f
-    val currentColor = interpolateColor(startColor, endColor, normalizedValue)
+
+
+    val currentColor = colorResource(ColorHelper.getColor(rating.toInt()))
 
     Card(
         onClick = { onClick(movie) }, modifier = Modifier.padding(4.dp)
@@ -285,23 +287,6 @@ fun FilmCard(rating: Float, movie: MovieElementModel, onClick: (MovieElementMode
             )
         }
     }
-}
-
-fun interpolateColor(start: Color, end: Color, fraction: Float): Color {
-    val startRed = start.red * 255
-    val startGreen = start.green * 255
-    val startBlue = start.blue * 255
-
-    val endRed = end.red * 255
-    val endGreen = end.green * 255
-    val endBlue = end.blue * 255
-
-    val red = (startRed + (endRed - startRed) * fraction).toInt()
-    val green = (startGreen + (endGreen - startGreen) * fraction).toInt()
-    val blue = (startBlue + (endBlue - startBlue) * fraction).toInt()
-
-
-    return Color(red, green, blue)
 }
 
 @Composable

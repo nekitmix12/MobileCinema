@@ -9,8 +9,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fitsSystemWindows="true"
-        android:background="@color/dark">
+        android:background="@color/dark"
+        android:fitsSystemWindows="true">
 
         <ImageView
             android:id="@+id/imageView6"
@@ -19,6 +19,7 @@
             android:contentDescription="@string/film_image_description"
             android:scaleType="centerCrop"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/sub_container1" />
@@ -52,9 +53,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/manrope_light"
-                android:text="Доброе утро,"
                 android:textColor="@color/white"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                tools:text="Доброе утро," />
 
             <TextView
                 android:id="@+id/name_profile"
@@ -62,35 +63,120 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/manrope_semi_bold"
                 android:textColor="@color/white"
-                android:textSize="24sp" />
+                android:textSize="24sp"
+                tools:text="Васечка Пупкин" />
 
         </LinearLayout>
 
-        <ImageView
-            android:id="@+id/image_profile"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="120dp"
-            android:contentDescription="@string/film_image_description"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ellipse_22" />
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView3"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:visibility="gone"
+            app:cardCornerRadius="60dp"
+            app:layout_constraintBottom_toBottomOf="@+id/friends_profile"
+            app:layout_constraintEnd_toEndOf="@+id/friends_profile"
+            app:layout_constraintHorizontal_bias="0.05"
+            app:layout_constraintStart_toStartOf="@+id/friends_profile"
+            app:layout_constraintTop_toTopOf="@+id/friends_profile">
 
-        <Button
+            <com.google.android.material.imageview.ShapeableImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:scaleType="centerCrop"
+                tools:src="@drawable/b947fa16066e80d394148280cc805278" />
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/image_profile"
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            app:cardCornerRadius="50dp"
+            android:backgroundTint="@color/transparent"
+            app:layout_constraintBottom_toBottomOf="@+id/linearLayout7"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/linearLayout7">
+
+            <ImageView
+                android:id="@+id/image_profile_main"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="120dp"
+                android:contentDescription="@string/film_image_description"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ellipse_22" />
+        </androidx.cardview.widget.CardView>
+        <View
             android:id="@+id/friends_profile"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_marginStart="24dp"
             android:layout_marginTop="35dp"
             android:layout_marginEnd="24dp"
             android:background="@drawable/sing_in_input_text"
-            android:text="Button"
+            android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/image_profile" />
+            app:layout_constraintTop_toBottomOf="@+id/image_profile">
+
+        </View>
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            app:cardCornerRadius="60dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/friends_profile"
+            app:layout_constraintEnd_toEndOf="@+id/cardView3"
+            app:layout_constraintHorizontal_bias="0.05"
+            app:layout_constraintStart_toEndOf="@+id/cardView3"
+            app:layout_constraintTop_toTopOf="@+id/friends_profile">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:scaleType="centerCrop"
+                tools:src="@drawable/b947fa16066e80d394148280cc805278" />
+        </androidx.cardview.widget.CardView>
+
+
+
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView2"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            app:cardCornerRadius="60dp"
+            android:visibility="gone"
+            android:elevation="1dp"
+            app:layout_constraintBottom_toBottomOf="@+id/friends_profile"
+            app:layout_constraintEnd_toEndOf="@+id/cardView"
+            app:layout_constraintStart_toEndOf="@+id/cardView"
+            app:layout_constraintTop_toTopOf="@+id/friends_profile">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:scaleType="centerCrop"
+                tools:src="@drawable/b947fa16066e80d394148280cc805278" />
+        </androidx.cardview.widget.CardView>
+
+
+        <TextView
+            style="@style/EditTextLoginMenu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/y_friends"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="@+id/friends_profile"
+            app:layout_constraintEnd_toEndOf="@+id/friends_profile"
+            app:layout_constraintHorizontal_bias="0.35"
+            app:layout_constraintStart_toStartOf="@+id/friends_profile"
+            app:layout_constraintTop_toTopOf="@+id/friends_profile" />
 
         <TextView
             android:id="@+id/information_profile"
@@ -147,6 +233,8 @@
             android:paddingEnd="16dp"
             android:paddingBottom="14dp"
             android:textColorHint="@color/gray"
+            android:textColor="@color/gray"
+            tools:text="asdad"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -165,6 +253,7 @@
             android:paddingEnd="16dp"
             android:paddingBottom="14dp"
             android:textColorHint="@color/gray"
+            android:textColor="@color/gray"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -180,6 +269,7 @@
             android:background="@drawable/sing_in_input_text"
             android:paddingStart="16dp"
             android:paddingTop="14dp"
+            android:textColor="@color/gray"
             android:paddingEnd="16dp"
             android:paddingBottom="14dp"
             android:textColorHint="@color/gray"
@@ -196,8 +286,9 @@
             android:layout_marginTop="4dp"
             android:layout_marginEnd="24dp"
             android:autofillHints=""
-            android:inputType="textShortMessage"
+            android:textColor="@color/gray"
             android:background="@drawable/sing_in_input_text"
+            android:inputType="textShortMessage"
             android:paddingStart="16dp"
             android:paddingTop="14dp"
             android:paddingEnd="16dp"
@@ -252,43 +343,37 @@
 
         <LinearLayout
             android:id="@+id/linearLayout5"
-            style="?android:attr/buttonBarStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="24dp"
-            android:layout_marginBottom="32dp"
+            android:layout_marginBottom="150dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView7"
-            app:layout_constraintVertical_bias="1">
+            app:layout_constraintVertical_bias="0.0">
 
             <Button
-                android:id="@+id/men_button_profile"
-                style="?android:attr/buttonBarButtonStyle"
+                android:id="@+id/menButtonProfile"
+                style="@style/ButtonLoginMenu"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_marginEnd="0dp"
                 android:layout_weight="1"
-                android:background="@drawable/sing_in_input_text"
-                android:hint="@string/man"
-                android:paddingStart="15dp"
-                android:paddingEnd="15dp"
-                android:textColorHint="@color/white"
-                android:textSize="14sp" />
+                android:background="@drawable/left_button_selector"
+                android:hint="@string/man" />
 
-            <Button
-                android:id="@+id/women_button_profile"
-                style="?android:attr/buttonBarButtonStyle"
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/womenButtonProfile"
+                style="@style/ButtonLoginMenu"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_marginStart="0dp"
                 android:layout_weight="1"
-                android:background="@drawable/sing_in_input_text"
+
+                android:background="@drawable/right_button_selector"
                 android:hint="@string/women"
-                android:paddingStart="15dp"
-                android:paddingEnd="15dp"
-                android:textColorHint="@color/white"
-                android:textSize="14sp" />
+                app:cardPreventCornerOverlap="false"
+                app:shapeAppearanceOverlay="@style/RoundedEndCorners" />
         </LinearLayout>
 
         <Space
@@ -298,5 +383,20 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/linearLayout5" />
+
+        <FrameLayout
+            android:id="@+id/loading_screen"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:elevation="10dp"
+            tools:visibility="gone"
+            android:background="@color/black"
+           >
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"/>
+        </FrameLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

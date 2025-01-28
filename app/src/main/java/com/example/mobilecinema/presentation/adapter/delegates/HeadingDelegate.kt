@@ -13,7 +13,7 @@ import com.example.mobilecinema.presentation.adapter.UiEvent
 import com.example.mobilecinema.presentation.adapter.holders.HeadingHolder
 import com.example.mobilecinema.presentation.adapter.model.HeadingItem
 
-class HeadingDelegate : Delegate<MoviesFavoriteHeadingBinding, HeadingItem> {
+class HeadingDelegate(private val onClick:()->Unit) : Delegate<MoviesFavoriteHeadingBinding, HeadingItem> {
     override fun isRelativeItem(item: Item): Boolean =
         item is HeadingItem
 
@@ -24,7 +24,7 @@ class HeadingDelegate : Delegate<MoviesFavoriteHeadingBinding, HeadingItem> {
         parent: ViewGroup,
     ): BaseViewHolder<MoviesFavoriteHeadingBinding, HeadingItem> {
         val binding = MoviesFavoriteHeadingBinding.inflate(layoutInflater, parent, false)
-        return HeadingHolder(binding)
+        return HeadingHolder(onClick,binding)
     }
 
     override fun getDiffUtil(): DiffUtil.ItemCallback<HeadingItem> =

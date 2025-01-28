@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/grid_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="20dp"
+    android:columnCount="3"
+    android:horizontalSpacing="12dp"
+    android:useDefaultMargins="true"
+    android:orientation="horizontal"
+    android:verticalSpacing="18dp">
+
+
+
+
+    <include layout="@layout/movies_element_all_films" />
+
+    <include layout="@layout/movies_element_all_films" />
+
+    <include layout="@layout/movies_element_all_films" />
+
+    <include layout="@layout/movies_element_all_films" />
+
+    <include layout="@layout/movies_element_all_films" />
+</GridLayout>

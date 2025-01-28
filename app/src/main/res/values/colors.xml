@@ -16,5 +16,13 @@
     <color name="gradient_2">#FF6633</color>
     <color name="green">#00991A</color>
     <color name="splash_green">#7a8a80</color>
-
+    <color name="isOne">#FF1500</color>
+    <color name="isTwo">#FF2B00</color>
+    <color name="isThree">#FF4000</color>
+    <color name="isFour">#FF8000</color>
+    <color name="isFive">#E9A20C</color>
+    <color name="isSix">#F4E225</color>
+    <color name="isSeven">#9CB814</color>
+    <color name="isEight">#4EAD1F</color>
+    <color name="isNine">#00991A</color>
 </resources>

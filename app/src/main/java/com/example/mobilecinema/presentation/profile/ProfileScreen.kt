@@ -1,217 +1,147 @@
 package com.example.mobilecinema.presentation.profile
 
 import android.annotation.SuppressLint
-import android.content.Context
+import android.content.Intent
 import android.graphics.LinearGradient
 import android.graphics.Shader
+import android.os.Build
 import android.os.Bundle
+import android.text.Editable
 import android.util.Log
 import android.view.View
 import android.widget.TextView
-import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import com.example.mobilecinema.R
-import com.example.mobilecinema.data.datasource.local.TokenStorageDataSourceImpl
-import com.example.mobilecinema.data.datasource.remote.data_source.implementation.AuthRemoteDataSourceImpl
-import com.example.mobilecinema.data.datasource.remote.data_source.implementation.UserRemoteDataSourceImpl
-import com.example.mobilecinema.data.network.AuthInterceptor
-import com.example.mobilecinema.data.network.NetworkModule
-import com.example.mobilecinema.data.repository.AuthRepositoryImpl
-import com.example.mobilecinema.data.repository.UserRepositoryImpl
 import com.example.mobilecinema.databinding.ProfileBinding
-import com.example.mobilecinema.domain.Result
-import com.example.mobilecinema.domain.UseCase
-import com.example.mobilecinema.domain.converters.ProfileConverter
-import com.example.mobilecinema.domain.use_case.UiState
-import com.example.mobilecinema.domain.use_case.auth_use_case.LogOutUseCase
-import com.example.mobilecinema.domain.use_case.user_use_case.GetProfileUseCase
-import com.example.mobilecinema.domain.use_case.user_use_case.PutProfileUseCase
-import com.example.mobilecinema.presentation.sign_up.SignUpViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collectLatest
+import com.example.mobilecinema.presentation.start.MainActivity
+import com.squareup.picasso.Picasso
 import kotlinx.coroutines.launch
 
 class ProfileScreen : Fragment(R.layout.profile) {
     private var binding: ProfileBinding? = null
-    private var viewModel:ProfileViewModel?=null
+    private var viewModel: ProfileViewModel? = null
+
+    @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("UnsafeRepeatOnLifecycleDetector")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        /*binding = ProfileBinding.bind(view)
+        binding = ProfileBinding.bind(view)
 
         setGradientContext(
             binding!!.informationProfile,
             ContextCompat.getColor(requireContext(), R.color.gradient_1),
             ContextCompat.getColor(requireContext(), R.color.gradient_2)
         )
-
-        val sharedPreferences = requireContext().getSharedPreferences(
-            requireContext().getString(R.string.preference_is_logged_in), Context.MODE_PRIVATE
-        )
-        sharedPreferences.getString("authToken", "")?.let { Log.d("feed_screen", it) }
-        val tokenStorage = TokenStorageDataSourceImpl(sharedPreferences)
-        val networkModule = NetworkModule()
-        val interceptor = AuthInterceptor(tokenStorage)
-        val apiServiceUser = networkModule.provideUserService(
-            networkModule.provideRetrofit(
-                networkModule.provideOkHttpClient(interceptor)
-            )
-        )
-        val userRemoteDataSource = UserRemoteDataSourceImpl(apiServiceUser)
-        val userRepository = UserRepositoryImpl(userRemoteDataSource)
-        val configuration = UseCase.Configuration(Dispatchers.IO)
-        val profileConverter = ProfileConverter()
-        val apiServiceAuth = networkModule.provideAuthService(
-            networkModule.provideRetrofit(
-                networkModule.provideOkHttpClient(interceptor)
-            )
-        )
-        val authRemoteDataSourceImpl =
-            AuthRemoteDataSourceImpl(apiServiceAuth)
-        val favoriteUserRepository =
-            AuthRepositoryImpl(authRemoteDataSourceImpl, tokenStorage)
-        val logOutUseCase =
-            LogOutUseCase(favoriteUserRepository, configuration)
-        val getProfileUseCase = GetProfileUseCase(userRepository, configuration)
-        val putProfileUseCase = PutProfileUseCase(userRepository,configuration)
         viewModel = ViewModelProvider(
             this,
-            ProfileViewModelFactory(
-                getProfileUseCase,
-                profileConverter,
-                logOutUseCase,
-                putProfileUseCase
-            )
+            ProfileViewModelFactory()
         )[ProfileViewModel::class]
 
+        System.currentTimeMillis()
+        binding?.timeProfile?.text = viewModel!!.getData()
 
         viewModel!!.loadProfile()
 
         lifecycleScope.launch {
-            viewModel!!.profile.collect{
-                when(it){
-                    is UiState.Loading->{}
-                    is UiState.Error -> {}
-                    is UiState.Success -> {
-                        binding!!.nameProfile.text = it.data.name
-                        binding!!.loginProfile.setText(it.data.nickName, TextView.BufferType.EDITABLE)
-                        binding!!.nameProfileEditText.setText(it.data.name, TextView.BufferType.EDITABLE)
-                        binding!!.emailProfile.setText(it.data.email,TextView.BufferType.EDITABLE)
-                        binding!!.birthDateProfile.setText(it.data.birthDate, TextView.BufferType.EDITABLE)
-                        when(it.data.gender){
-                            0-> binding!!.menButtonProfile.setBackgroundResource(R.drawable.gradient_accent)
-                            1->binding!!.womenButtonProfile.setBackgroundResource(R.drawable.gradient_accent)
+            launch {
+                viewModel!!.isLogout.collect {
+                    if (it) {
+
+                        val intent = Intent(requireContext(), MainActivity::class.java)
+                        startActivity(intent)
+
+                    }
+                }
+            }
+            viewModel!!.profile.collect {
+                when (it) {
+                    null -> {
+                        binding!!.loadingScreen.visibility = View.VISIBLE
+                    }
+
+                    else -> {
+                        Picasso.get().load(it.avatarLink)
+                            .into(binding!!.imageProfileMain )
+                        binding!!.loadingScreen.visibility = View.GONE
+                        binding!!.nameProfile.text = it.name
+                        binding!!.loginProfile.text =
+                            Editable.Factory.getInstance().newEditable(it.nickName.toString())
+                        binding!!.nameProfileEditText.text =
+                            Editable.Factory.getInstance().newEditable(it.name)
+                        binding!!.emailProfile.text =
+                            Editable.Factory.getInstance().newEditable(it.email)
+                        binding!!.birthDateProfile.text =
+                            Editable.Factory.getInstance().newEditable(it.birthDate)
+
+                        when (it.gender) {
+                            0 -> binding!!.menButtonProfile.isSelected = true
+                            1 -> binding!!.womenButtonProfile.isSelected = true
                         }
                     }
                 }
             }
         }
 
-        binding!!.logOutProfile.setOnClickListener{
+        binding!!.logOutProfile.setOnClickListener {
             viewModel!!.logOut()
         }
 
         binding!!.loginProfile.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
             if (!hasFocus) {
-               viewModel!!.onEvent(ProfileFormEvent.LoginChanged(binding!!.loginProfile.text.toString()))
-
-                viewModel!!.onEvent(ProfileFormEvent.Submit)
+                viewModel?.profile?.value?.copy(name = binding!!.loginProfile.text.toString())
+                    ?.let { viewModel!!.putProfile(profileDTO = it) }
             }
         }
 
-        binding!!.nameProfileEditText.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) {
-                viewModel!!.onEvent(ProfileFormEvent.NameChanged(binding!!.nameProfileEditText.text.toString()))
-                viewModel!!.onEvent(ProfileFormEvent.Submit)
+        binding!!.nameProfileEditText.onFocusChangeListener =
+            View.OnFocusChangeListener { _, hasFocus ->
+                if (!hasFocus) {
+
+                    val temp =
+                        viewModel?.profile?.value?.copy(nickName = binding!!.nameProfileEditText.text.toString())
+                    Log.d("temp", temp.toString())
+                    temp?.let { viewModel!!.putProfile(profileDTO = it) }
+                }
             }
-        }
 
 
         binding!!.emailProfile.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
             if (!hasFocus) {
-                viewModel!!.onEvent(ProfileFormEvent.EmailChanged(binding!!.emailProfile.text.toString()))
-                viewModel!!.onEvent(ProfileFormEvent.Submit)
+                viewModel?.profile?.value?.copy(email = binding!!.emailProfile.text.toString())
+                    ?.let { viewModel!!.putProfile(profileDTO = it) }
             }
         }
 
-        binding!!.birthDateProfile.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) {
-                viewModel!!.onEvent(ProfileFormEvent.BirthDateChanged(binding!!.birthDateProfile.text.toString()))
-                viewModel!!.onEvent(ProfileFormEvent.Submit)
+        binding!!.birthDateProfile.onFocusChangeListener =
+            View.OnFocusChangeListener { _, hasFocus ->
+                if (!hasFocus) {
+                    viewModel?.profile?.value?.copy(birthDate = binding!!.birthDateProfile.text.toString())
+                        ?.let { viewModel!!.putProfile(profileDTO = it) }
+                }
             }
-        }
 
         val womenButtonSignUp = binding!!.womenButtonProfile
         val menButtonSignUp = binding!!.menButtonProfile
-        var clickFemale = false
-        var clickMale = false
+
         menButtonSignUp.setOnClickListener {
-            clickMale = !clickMale
-            clickFemale = false
-            womenButtonSignUp.setBackgroundResource(R.drawable.sing_in_input_text)
-            if (clickMale) {
-                viewModel!!.onEvent(ProfileFormEvent.GenderChanged(1))
-                menButtonSignUp.setBackgroundResource(R.drawable.gradient_accent)
-            } else {
-                viewModel!!.onEvent(ProfileFormEvent.GenderChanged(-1))
-                menButtonSignUp.setBackgroundResource(R.drawable.sing_in_input_text)
-            }
+            it.isSelected = true
+            womenButtonSignUp.isSelected = false
+            viewModel?.profile?.value?.copy(gender = 0)
+                ?.let { viewModel!!.putProfile(profileDTO = it) }
         }
 
         womenButtonSignUp.setOnClickListener {
-            clickMale = false
-            clickFemale = !clickFemale
-            menButtonSignUp.setBackgroundResource(R.drawable.sing_in_input_text)
-            if (clickFemale) {
-                viewModel!!.onEvent(ProfileFormEvent.GenderChanged(0))
-                womenButtonSignUp.setBackgroundResource(R.drawable.gradient_accent)
-            } else {
-                viewModel!!.onEvent(ProfileFormEvent.GenderChanged(-1))
-                womenButtonSignUp.setBackgroundResource(R.drawable.sing_in_input_text)
+            it.isSelected = true
+            menButtonSignUp.isSelected = false
+            viewModel?.profile?.value?.copy(gender = 1)
+                ?.let { viewModel!!.putProfile(profileDTO = it) }
 
-            }
         }
 
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel!!.validationEvents.collectLatest { event ->
-                    when (event) {
-                        is SignUpViewModel.ValidationEvent.Success -> {
-                            Toast.makeText(
-                                requireContext(),
-                                "Validation successful!",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    }
-                }
-            }
-        }
-
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED){
-                viewModel!!.profileUpdateStatus.collect{
-                    when(it){
-                        is Result.Error ->
-                        {
-                            Log.e("profile","error is: ${it.exception}")
-                        }
-                        is Result.Success -> {
-                            Log.e("profile","Success is: ${it.data}")
-
-                        }
-                        null -> {
-                            Log.e("profile","null is: ${it}")
-                        }
-                    }
-                }
-            }
-        }
 
     }
 
@@ -227,6 +157,6 @@ class ProfileScreen : Fragment(R.layout.profile) {
 
     override fun onDestroy() {
         super.onDestroy()
-        binding = null*/
+        binding = null
     }
 }

@@ -9,6 +9,7 @@ class FavoriteHolder(
 ) : BaseViewHolder<CommonFilmElementBinding, FavoriteModel>(binding) {
 
     override fun onBinding(item: FavoriteModel) = with(binding) {
+
         commonFilmElementImage.setImageBitmap(item.image)
     }
 

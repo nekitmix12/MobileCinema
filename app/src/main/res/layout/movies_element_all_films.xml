@@ -4,12 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:layout_marginEnd="5dp"
+    android:layout_marginStart="5dp"
     app:cardCornerRadius="16dp">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+
         app:cardCornerRadius="16dp">
 
         <ImageView
@@ -23,40 +26,53 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/image" />
 
-        <TextView
-            android:id="@+id/rating"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/rating_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/gradient_accent"
-            android:gravity="center"
-            android:paddingStart="10dp"
-            android:paddingTop="2.5dp"
-            android:paddingEnd="10dp"
-            android:paddingBottom="2.5dp"
-            android:text="1.0"
-            android:layout_marginEnd="5dp"
-            android:textColor="@color/white"
-            android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.122"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.087" />
+            app:layout_constraintVertical_bias="0.087"
+            android:paddingStart="10dp"
+            android:paddingTop="2.5dp"
+            android:paddingEnd="10dp"
+            android:paddingBottom="2.5dp"
+            android:layout_marginEnd="5dp"
+            tools:backgroundTint="@color/black"
+            app:cardCornerRadius="6dp"
+            >
+            <TextView
+                android:id="@+id/rating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                tools:text="1.0"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                 />
+        </androidx.cardview.widget.CardView>
+
 
         <ImageView
             android:id="@+id/favoriteMoviesAllFilms"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:src="@drawable/frame_174"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.51"
             android:contentDescription="@string/film_image_description"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.089" />
+            android:src="@drawable/frame_174"
+
+            app:layout_constraintBottom_toBottomOf="@+id/rating_container"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.1"
+            app:layout_constraintStart_toEndOf="@+id/rating_container"
+            app:layout_constraintTop_toTopOf="@+id/rating_container"
+            />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>

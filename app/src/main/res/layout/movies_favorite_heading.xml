@@ -2,8 +2,6 @@
 <LinearLayout android:id="@+id/linearLayoutMovies"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    style="@style/CommonLayout"
-    android:layout_marginBottom="16dp"
     app:layout_constraintVertical_bias="0"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"

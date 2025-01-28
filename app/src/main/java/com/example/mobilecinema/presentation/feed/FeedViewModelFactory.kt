@@ -16,18 +16,18 @@ import com.example.mobilecinema.domain.use_case.movies_use_case.AddFilmToDislike
 import com.example.mobilecinema.domain.use_case.movies_use_case.GetMoviesPageUseCase
 
 
-class FeedViewModelFactory(private val getMoviesPageUseCase: GetMoviesPageUseCase,
-                           private val moviesConverter: MoviesConverter,
-                           private val addFilmToDislikedUseCase: AddFilmToDislikedUseCase,
-                           private val filmConverter: AddFilmToDislikedConverter,
-                           private val addFilmToFavoriteUseCase: AddFavoriteMovieUseCase,
-                           private val addFavoriteMovieConverter: AddFilmToFavoriteConverter,
-                           private val addGenreUseCase: AddGenreUseCase,
-                           private val addFavoriteGenreConverter: AddGenreToFavoriteConverter,
-                           private val getGenreUseCase: GetGenreUseCase,
-                           private val getGenresFromFavoriteConverter: GetGenresFromFavoriteConverter,
-                           private val deleteGenreUseCase: DeleteGenreUseCase,
-                           private val deleteGenreFromFavoriteConverter: DeleteGenreFromFavoriteConverter,
+class FeedViewModelFactory(private val getMoviesPageUseCase: GetMoviesPageUseCase = GetMoviesPageUseCase(),
+                           private val moviesConverter: MoviesConverter = MoviesConverter(),
+                           private val addFilmToDislikedUseCase: AddFilmToDislikedUseCase = AddFilmToDislikedUseCase(),
+                           private val filmConverter: AddFilmToDislikedConverter= AddFilmToDislikedConverter(),
+                           private val addFilmToFavoriteUseCase: AddFavoriteMovieUseCase=AddFavoriteMovieUseCase(),
+                           private val addFavoriteMovieConverter: AddFilmToFavoriteConverter=AddFilmToFavoriteConverter(),
+                           private val addGenreUseCase: AddGenreUseCase=AddGenreUseCase(),
+                           private val addFavoriteGenreConverter: AddGenreToFavoriteConverter=AddGenreToFavoriteConverter(),
+                           private val getGenreUseCase: GetGenreUseCase=GetGenreUseCase(),
+                           private val getGenresFromFavoriteConverter: GetGenresFromFavoriteConverter=GetGenresFromFavoriteConverter(),
+                           private val deleteGenreUseCase: DeleteGenreUseCase=DeleteGenreUseCase(),
+                           private val deleteGenreFromFavoriteConverter: DeleteGenreFromFavoriteConverter=DeleteGenreFromFavoriteConverter(),
                            ) : ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")
